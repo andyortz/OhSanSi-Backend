@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\NivelCategoria;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\StoreNivelRequest;
 
 class NivelCategoriaController extends Controller
 {
@@ -14,43 +13,19 @@ class NivelCategoriaController extends Controller
         return response()->json($niveles, 200);
     }
 
-    public function store(Request $request)
-    {
-        // Validaciones con Validator
-        $validator = Validator::make($request->all(), [
-            'nombre'   => 'required|string|max:50',
-            'codigo'   => 'required|string|max:10',
-            'id_area'  => 'required|integer|exists:areas_competencia,id_area'
-        ]);
-
-        if ($validator->fails()) {
-            $data = [
-                'message' => 'Error al subir datos',
-                'errors'  => $validator->errors(),
-                'status'  => 400
-            ];
-            return response()->json($data, 400);
-        }
-
-        // Crear el nuevo nivel
-        $nivel = NivelCategoria::create([
-            'nombre'  => $request->nombre,
-            'codigo'  => $request->codigo,
-            'id_area' => $request->id_area
-        ]);
+    public function store(StoreNivelRequest $request) {
+        $nivel = NivelCategoria::create($request->validated());
 
         if (!$nivel) {
-            $data = [
+            return response()->json([
                 'message' => 'Error al crear el nivel',
                 'status'  => 500
-            ];
-            return response()->json($data, 500);
+            ], 500);
         }
 
-        $data = [
+        return response()->json([
             'nivel'  => $nivel,
             'status' => 201
-        ];
-        return response()->json($data, 201);
+        ], 201);
     }
 }
