@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('niveles_categoria', function (Blueprint $table) {
             $table->id('id_nivel');
             $table->string('nombre', 50);
-            $table->string('codigo', 10);
 
             $table->unsignedBigInteger('id_area');
             $table->foreign('id_area')->references('id_area')->on('areas_competencia')->onDelete('cascade');
