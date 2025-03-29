@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use App\models\Tutor;
 
 class TutoresControllator extends Controller
 {
@@ -13,10 +15,10 @@ class TutoresControllator extends Controller
         $validator = Validator::make($request->all(), [
             'nombres' => 'required|max:255',
             'apellidos' => 'required|max:255',
-            'ci' => 'required|digits',
-            'celular' => 'required|digits:10',
-            'correo_electronico' => 'required|email|unique:tutor',
-            'rol_parentesco' => 'required|in:English,Spanish,French'
+            'ci' => 'required|integer',
+            'celular' => 'required|digits:8',
+            'correo_electronico' => 'required|email|unique:tutores',
+            'rol_parentesco' => 'required|string'
         ]);
 
         if ($validator->fails()) {
@@ -34,7 +36,7 @@ class TutoresControllator extends Controller
             'ci' => $request -> ci,
             'celular' => $request -> celular,
             'correo_electronico' => $request -> correo_electronico,
-            'rol_parentesco' => $rquest -> rol_parenteszo
+            'rol_parentesco' => $request -> rol_parenteszo
         ]);
 
         if (!$tutor) {
