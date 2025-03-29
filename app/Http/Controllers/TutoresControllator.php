@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+// use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\StoreTutorRequest;
 use App\models\Tutor;
 
 class TutoresControllator extends Controller
@@ -12,23 +13,23 @@ class TutoresControllator extends Controller
     public function store(Request $request)
     {
 
-        $validator = Validator::make($request->all(), [
-            'nombres' => 'required|max:255',
-            'apellidos' => 'required|max:255',
-            'ci' => 'required|integer',
-            'celular' => 'required|digits:8',
-            'correo_electronico' => 'required|email|unique:tutores',
-            'rol_parentesco' => 'required|string'
-        ]);
+        // $validator = Validator::make($request->all(), [
+        //     'nombres' => 'required|max:255',
+        //     'apellidos' => 'required|max:255',
+        //     'ci' => 'required|integer',
+        //     'celular' => 'required|digits:8',
+        //     'correo_electronico' => 'required|email|unique:tutores',
+        //     'rol_parentesco' => 'required|string'
+        // ]);
 
-        if ($validator->fails()) {
-            $data = [
-                'message' => 'Error en la validación de los datos',
-                'errors' => $validator->errors(),
-                'status' => 400
-            ];
-            return response()->json($data, 400);
-        }
+        // if ($validator->fails()) {
+        //     $data = [
+        //         'message' => 'Error en la validación de los datos',
+        //         'errors' => $validator->errors(),
+        //         'status' => 400
+        //     ];
+        //     return response()->json($data, 400);
+        // }
 
         $tutor = Tutor::create([
             'nombres' => $request ->nombres,
