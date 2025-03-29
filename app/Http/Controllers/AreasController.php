@@ -38,7 +38,7 @@ class AreasController extends Controller
         $imagePath = $request->file('imagen')->store('areas', 'public');
         
         $areaExiste =DB::table('areas_competencia')
-            ->where('nombre', $request->nombre)
+            ->whereRaw('LOWER(nombre) = ?', [strtolower($request->nombre)])
             ->where('id_olimpiada',$request -> id_olimpiada)
             ->first();
         if(!$areaExiste){
