@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('niveles_grados', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id('id_nivel_grado');
+
+            $table->unsignedBigInteger('id_nivel');
+            $table->unsignedBigInteger('id_grado');
+
+            // Claves foráneas
+            $table->foreign('id_nivel')->references('id_nivel')->on('niveles_categoria')->onDelete('cascade');
+            $table->foreign('id_grado')->references('id_grado')->on('grados')->onDelete('cascade');
         });
     }
 

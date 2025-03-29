@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('provincias', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->smallIncrements('id_provincia'); // int2
+            $table->string('nombre_provincia', 50);
+
+            $table->unsignedSmallInteger('id_departamento'); // FK a int2
+
+            // Foreign key constraint
+            $table->foreign('id_departamento')->references('id_departamento')->on('departamentos')->onDelete('cascade');
         });
     }
 

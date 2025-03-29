@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tutores', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id('id_tutor'); // int4 PK
+            $table->string('nombres', 100);
+            $table->string('apellidos', 100);
+            $table->integer('ci');
+            $table->integer('celular');
+            $table->string('correo_electronico', 100);
+            $table->enum('rol_parentesco', ['padre', 'madre', 'tutor_legal']);
+
         });
     }
 

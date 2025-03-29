@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('olimpiadas', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id('id_olimpiada');
+            $table->smallInteger('gestion'); // int2
+            $table->decimal('costo', 10, 2); // numeric(10,2)
+            $table->date('fecha_inicio');
+            $table->date('fecha_fin');
+            $table->timestamp('creado_en', 6)->useCurrent();
+            $table->integer('max_categorias_olimpista');
         });
     }
 

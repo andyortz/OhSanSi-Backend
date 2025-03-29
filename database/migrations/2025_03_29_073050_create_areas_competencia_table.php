@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('areas_competencia', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id('id_area');
+            $table->unsignedBigInteger('id_olimpiada'); // FK a olimpiadas
+            $table->string('nombre', 50);
+            $table->text('imagen')->nullable(); 
+
+            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiadas')->onDelete('cascade');
         });
     }
 

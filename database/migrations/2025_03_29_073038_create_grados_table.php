@@ -12,8 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('grados', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->smallIncrements('id_grado'); // int2
+            $table->string('nombre_grado', 50);
+            $table->string('nivel_academico', 20);
+            $table->integer('orden'); 
         });
     }
 
