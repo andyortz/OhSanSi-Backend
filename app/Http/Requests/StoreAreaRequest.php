@@ -24,7 +24,7 @@ class StoreAreaRequest extends FormRequest
         return [
             //
             'id_olimpiada' => 'required|integer|exists:olimpiadas,id_olimpiada',
-            'nombre' => 'required|string|max:50',
+            'nombre' => 'required|string|unique|max:50',
             'imagen' => 'required|image|max:2048'
         ];
     }
@@ -35,6 +35,7 @@ class StoreAreaRequest extends FormRequest
             'id_olimpiada.required' => 'La olimpiada es obligatoria',
             'id_olimpiada.exists' => 'La olimpiada seleccionada no existe',
             'nombre.required' => 'El nombre del área es obligatorio',
+            'nombre.unique' => 'Ya se ha registrado esta area',
             'nombre.max' => 'El tamaño máximo para el nombre es de 50 carácteres',
             'imagen.required' => 'La imagen es obligatoria',
             'imagen.image' => 'El archivo debe ser una imagen válida',
