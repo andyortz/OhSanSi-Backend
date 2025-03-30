@@ -16,6 +16,7 @@ class NivelCategoria extends Model
     protected $fillable = [
         'nombre',
         'id_area',
+        'permite_seleccion_nivel',
     ];
 
     

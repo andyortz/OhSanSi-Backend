@@ -17,9 +17,14 @@ class NivelCategoriaController extends Controller
 
     public function store(StoreNivelRequest $request)
     {
+        // Calcular si el nivel es seleccionable (más de un grado)
+        $permiteSeleccion = $request->grado_min != $request->grado_max;
+
+        // Crear el nivel con ese valor
         $nivel = NivelCategoria::create([
             'nombre' => $request->nombre,
             'id_area' => $request->id_area,
+            'permite_seleccion_nivel' => $permiteSeleccion
         ]);
 
         if (!$nivel) {
@@ -29,16 +34,17 @@ class NivelCategoriaController extends Controller
             ], 500);
         }
 
-        // Rango de IDs directos
+        // Buscar grados dentro del intervalo (por ID)
         $grados = Grado::whereBetween('id_grado', [$request->grado_min, $request->grado_max])->get();
 
-        if ($grados->count() === 0) {
+        if ($grados->isEmpty()) {
             return response()->json([
                 'message' => 'No se encontraron grados en el rango especificado',
                 'status' => 400
             ], 400);
         }
 
+        // Crear las relaciones nivel ↔ grado
         foreach ($grados as $grado) {
             NivelGrado::create([
                 'id_nivel' => $nivel->id_nivel,
