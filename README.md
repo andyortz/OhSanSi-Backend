@@ -97,15 +97,19 @@ Guía para levantar el proyecto desde cero
    DB_USERNAME=usuario
    DB_PASSWORD=contraseña
 
-6. Ejecuta las migraciones:
+6. Crea el enlace simbólico para archivos públicos:
+
+   php artisan storage:link
+
+7. Ejecuta las migraciones:
 
    php artisan migrate
 
-7. Ejecuta los seeders de datos:
+8. Ejecuta los seeders de datos:
 
    php artisan db:seed
 
-8. Levanta el servidor local:
+9. Levanta el servidor local:
 
    php artisan serve
 
