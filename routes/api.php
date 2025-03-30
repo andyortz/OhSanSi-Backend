@@ -6,6 +6,7 @@ use App\Http\Controllers\OlimpiadaAreaController;
 use App\Http\Controllers\NivelCategoriaController;
 use App\Http\Controllers\AreasController;
 use App\Http\Controllers\GradosController;
+use App\Http\Controllers\InscripcionAreaController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -27,3 +28,4 @@ Route::get('/areas/{id}/niveles', [NivelCategoriaController::class, 'nivelesPorA
 
 Route::get('/olimpiadas/{id}/max-categorias', [OlimpiadaAreaController::class, 'maxCategorias']);
 
+Route::post('/inscripciones', [InscripcionAreaController::class, 'store']);
