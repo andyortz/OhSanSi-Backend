@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('nombre', 50);
 
             $table->unsignedBigInteger('id_area');
+
+            $table->boolean('permite_seleccion_nivel')->default(false);
             $table->foreign('id_area')->references('id_area')->on('areas_competencia')->onDelete('cascade');
         });
     }
