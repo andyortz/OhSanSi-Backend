@@ -64,3 +64,51 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+----------------------------------------
+Guía para levantar el proyecto desde cero
+-----------------------------------------
+
+1. Clona el repositorio:
+
+   git clone https://github.com/andyortz/OhSanSi-Backend.git
+   cd OhSanSi-Backend
+
+   Asegúrate de estar en la rama principal (develop)
+
+2. Instala dependencias PHP con Composer:
+
+   composer install
+
+3. Copia el archivo de entorno:
+
+   cp .env.example .env
+
+4. Genera la APP KEY de Laravel:
+
+   php artisan key:generate
+
+5. Configura la base de datos en el archivo .env:
+
+   DB_CONNECTION=pgsql
+   DB_HOST=127.0.0.1
+   DB_PORT=5432
+   DB_DATABASE=nombre_de_base
+   DB_USERNAME=usuario
+   DB_PASSWORD=contraseña
+
+6. Ejecuta las migraciones:
+
+   php artisan migrate
+
+7. Ejecuta los seeders de datos:
+
+   php artisan db:seed
+
+8. Levanta el servidor local:
+
+   php artisan serve
+
+   Accede en tu navegador a:
+
+   http://localhost:8000
