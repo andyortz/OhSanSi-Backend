@@ -15,6 +15,18 @@ class NivelCategoriaController extends Controller
         return response()->json($niveles, 200);
     }
 
+    public function nivelesPorArea($id_area)
+    {
+        $niveles = NivelCategoria::where('id_area', $id_area)
+            ->where('permite_seleccion_nivel', true)
+            ->get();
+
+        return response()->json([
+            'permite_seleccionar_nivel' => $niveles->count() > 1,
+            'niveles' => $niveles
+        ], 200);
+    }
+
     public function store(StoreNivelRequest $request)
     {
         // Calcular si el nivel es seleccionable (más de un grado)

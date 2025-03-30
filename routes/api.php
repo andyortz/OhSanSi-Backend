@@ -15,3 +15,5 @@ Route::post('/niveles', [NivelCategoriaController::class, 'store']);
 Route::get('/areas', [AreasController::class, 'index']);
 
 Route::get('/grados', [GradosController::class, 'index']);
+
+Route::get('/niveles/area/{id_area}', [NivelCategoriaController::class, 'nivelesPorArea']);
