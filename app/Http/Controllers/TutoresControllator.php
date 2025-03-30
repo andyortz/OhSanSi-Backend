@@ -37,7 +37,7 @@ class TutoresControllator extends Controller
             'ci' => $request -> ci,
             'celular' => $request -> celular,
             'correo_electronico' => $request -> correo_electronico,
-            'rol_parentesco' => $request -> rol_parenteszo
+            'rol_parentesco' => $request -> rol_parentesco
         ]);
 
         if (!$tutor) {

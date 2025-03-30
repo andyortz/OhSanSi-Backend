@@ -28,7 +28,7 @@ class StoreTutorRequest extends FormRequest
             'ci' => 'required|integer',
             'celular' => 'required|digits:8',
             'correo_electronico' => 'required|email|unique:tutores',
-            'rol_parentesco' => 'required|string'
+            'rol_parentesco' => 'required|in:padre,madre,tutor,apoderado'
         ];
     }
     public function messages()
