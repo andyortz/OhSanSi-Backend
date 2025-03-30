@@ -16,9 +16,11 @@ class Olimpiada extends Model
         'fecha_inicio',
         'fecha_fin',
         'creado_en' 
+
     ];
     public function areas()
     {
         return $this->hasMany(Area::class, 'id_olimpiada');
     }
+
 }
