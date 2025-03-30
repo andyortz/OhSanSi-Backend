@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NivelCategoriaController;
 use App\Http\Controllers\AreasController;
 use App\Http\Controllers\GradosController;
-use App\Http\Controllers\TutoresController;
+use App\Http\Controllers\TutoresControllator;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -20,7 +20,7 @@ Route::get('/niveles/area/{id_area}', [NivelCategoriaController::class, 'niveles
 Route::get('/grados', [GradosController::class, 'index']);
 
 // Tutores
-Route::post('/tutores', [TutoresController::class, 'store']);
+Route::post('/tutores', [TutoresControllator::class, 'store']);
 
 // Áreas
 Route::get('/areas', [AreasController::class, 'index']);
