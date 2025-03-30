@@ -14,9 +14,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            DepartamentosSeeder::class,
-            GradosSeeder::class,
-            ProvinciasSeeder::class,
+            OlimpiadasSeeder::class,
+            //DepartamentosSeeder::class,
+            //GradosSeeder::class,
+            //ProvinciasSeeder::class,
         ]);
 
         User::factory()->create([
