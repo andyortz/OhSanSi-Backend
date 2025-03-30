@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\OlimpiadaAreaController;
 use App\Http\Controllers\NivelCategoriaController;
 use App\Http\Controllers\AreasController;
 use App\Http\Controllers\GradosController;
@@ -23,3 +24,6 @@ Route::get('/olimpiada/{id}/areas', [AreasController::class, 'areasPorOlimpiada'
 
 // Niveles por área
 Route::get('/areas/{id}/niveles', [NivelCategoriaController::class, 'nivelesPorArea']);
+
+Route::get('/olimpiadas/{id}/max-categorias', [OlimpiadaAreaController::class, 'maxCategorias']);
+
