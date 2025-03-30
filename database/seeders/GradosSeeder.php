@@ -26,4 +26,7 @@ class GradosSeeder extends Seeder
 
         DB::table('grados')->insert($grados);
     }
+
 }
+
+
