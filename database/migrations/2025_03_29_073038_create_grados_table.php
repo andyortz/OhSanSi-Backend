@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('grados', function (Blueprint $table) {
             $table->id('id_grado'); 
-
             $table->string('nombre_grado', 50);
             $table->string('nivel_academico', 20);
             $table->integer('orden'); 

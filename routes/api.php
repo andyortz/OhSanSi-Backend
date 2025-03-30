@@ -10,6 +10,8 @@ use App\Http\Controllers\GradosController;
 use App\Http\Controllers\InscripcionAreaController;
 
 use App\Http\Controllers\TutoresControllator;
+use App\Http\Controllers\OlympiadRegistrationController;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -40,3 +42,5 @@ Route::post('/tutores', [TutoresControllator::class, 'store']);
 // Áreas
 Route::get('/areas', [AreasController::class, 'index']);
 Route::post('/areas', [AreasController::class, 'store']);
+Route::post('/olympiad-registration', [OlympiadRegistrationController::class, 'store']);
+Route::get('/olympiad-registration', [OlympiadRegistrationController::class, 'index']);
