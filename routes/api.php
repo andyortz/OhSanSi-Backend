@@ -3,9 +3,12 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\OlimpiadaAreaController;
 use App\Http\Controllers\NivelCategoriaController;
 use App\Http\Controllers\AreasController;
 use App\Http\Controllers\GradosController;
+use App\Http\Controllers\InscripcionAreaController;
+
 use App\Http\Controllers\TutoresControllator;
 
 Route::get('/user', function (Request $request) {
@@ -18,6 +21,18 @@ Route::get('/niveles/area/{id_area}', [NivelCategoriaController::class, 'niveles
 
 // Grados
 Route::get('/grados', [GradosController::class, 'index']);
+
+Route::get('/niveles/area/{id_area}', [NivelCategoriaController::class, 'nivelesPorArea']);
+
+// Áreas por olimpiada
+Route::get('/olimpiada/{id}/areas', [AreasController::class, 'areasPorOlimpiada']);
+
+// Niveles por área
+Route::get('/areas/{id}/niveles', [NivelCategoriaController::class, 'nivelesPorArea']);
+
+Route::get('/olimpiadas/{id}/max-categorias', [OlimpiadaAreaController::class, 'maxCategorias']);
+
+Route::post('/inscripciones', [InscripcionAreaController::class, 'store']);
 
 // Tutores
 Route::post('/tutores', [TutoresControllator::class, 'store']);

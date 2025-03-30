@@ -17,12 +17,17 @@ class NivelCategoriaController extends Controller
 
     public function nivelesPorArea($id_area)
     {
-        $niveles = NivelCategoria::where('id_area', $id_area)
-            ->where('permite_seleccion_nivel', true)
-            ->get();
+        $niveles = NivelCategoria::where('id_area', $id_area)->get();
+
+        if ($niveles->isEmpty()) {
+            return response()->json([
+                'message' => 'No se encontraron niveles para esta área.',
+                'niveles' => []
+            ], 404);
+        }
 
         return response()->json([
-            'permite_seleccionar_nivel' => $niveles->count() > 1,
+            'message' => 'Niveles encontrados exitosamente.',
             'niveles' => $niveles
         ], 200);
     }

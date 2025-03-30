@@ -19,6 +19,26 @@ class AreasController extends Controller
     }
 
     /**
+     * Obtener áreas por ID de olimpiada
+     */
+    public function areasPorOlimpiada($id_olimpiada)
+    {
+        $areas = Area::where('id_olimpiada', $id_olimpiada)->get();
+
+        if ($areas->isEmpty()) {
+            return response()->json([
+                'message' => 'No se encontraron áreas para la olimpiada especificada.',
+                'areas' => []
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Áreas encontradas exitosamente.',
+            'areas' => $areas
+        ], 200);
+    }
+
+    /**
      * Registrar una nueva área
      */
     public function store(Request $request)
