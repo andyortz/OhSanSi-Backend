@@ -24,4 +24,5 @@ class Area extends Model
     {
         return $this->belongsTo(Olimpiada::class, 'id_olimpiada');
     }
+
 }
