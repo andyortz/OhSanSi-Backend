@@ -42,51 +42,50 @@ class AreasController extends Controller
      * Registrar una nueva área
      */
     public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'id_olimpiada' => 'required|integer|exists:olimpiadas,id_olimpiada',
-            'nombre' => 'required|string|max:50',
-            'imagen' => 'required|image|max:2048'
-        ]);
+{
+    // Decodificar JSON de 'areas'
+    $areas = json_decode($request->input('areas'), true);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Error al subir datos',
-                'errors' => $validator->errors(),
-                'status' => 400
-            ], 400);
+    if (!is_array($areas) || empty($areas)) {
+        return response()->json([
+            'message' => 'Debe enviar al menos un área válida.',
+            'status' => 400
+        ], 400);
+    }
+
+    // Guardar la imagen
+    if (!$request->hasFile('imagen')) {
+        return response()->json([
+            'message' => 'La imagen es obligatoria.',
+            'status' => 400
+        ], 400);
+    }
+    $imagePath = $request->file('imagen')->store('areas', 'public');
+
+    foreach ($areas as $areaData) {
+        if (!isset($areaData['nombre'])) {
+            continue; 
         }
 
-        $imagePath = $request->file('imagen')->store('areas', 'public');
-
         $areaExiste = DB::table('areas_competencia')
-            ->whereRaw('LOWER(nombre) = ?', [strtolower($request->nombre)])
-            ->where('id_olimpiada', $request->id_olimpiada)
+            ->whereRaw('LOWER(nombre) = ?', [strtolower($areaData['nombre'])])
             ->first();
 
         if ($areaExiste) {
-            return response()->json([
-                'data' => 'El área ya fue registrada anteriormente',
-                'status' => 201
-            ], 201);
+            continue; 
         }
 
-        $area = Area::create([
+        Area::create([
             'id_olimpiada' => $request->id_olimpiada,
-            'nombre' => $request->nombre,
+            'nombre' => $areaData['nombre'],
             'imagen' => $imagePath
         ]);
-
-        if (!$area) {
-            return response()->json([
-                'message' => 'Error al crear el área',
-                'status' => 500
-            ], 500);
-        }
-
-        return response()->json([
-            'area' => $area,
-            'status' => 201
-        ], 201);
     }
+
+    return response()->json([
+        'message' => 'Áreas registradas exitosamente',
+        'status' => 201
+    ], 201);
+}
+
 }
