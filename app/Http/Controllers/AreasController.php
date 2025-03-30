@@ -61,7 +61,7 @@ class AreasController extends Controller
             
         }else{
             $data=[
-                'message'=>'El Area ha sido registrada con anterioridad',
+                'data'=>'El Area ha sido registrada con anterioridad',
                 'status' =>201
             ];
         }
