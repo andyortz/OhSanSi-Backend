@@ -9,7 +9,6 @@ class StudentRegistration extends Model
     //
     protected $table = 'olimpistas';
     public $timestamps = false;
-    
     protected $primaryKey = 'id_olimpista';
     protected $fillable = [
         'nombres',
@@ -34,6 +33,10 @@ class StudentRegistration extends Model
     public function grado()
     {
         return $this->belongsTo(Grado::class, 'id_grado');
+    }
+    public function inscripciones()
+    {
+        return $this->hasMany(Inscripcion::class, 'id_olimpista');
     }
     //
 }

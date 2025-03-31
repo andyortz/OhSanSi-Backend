@@ -22,28 +22,16 @@ class StoreStudentRegistrationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombres' => 'required|string|max:100',
-            'apellidos' => 'required|string|max:100',
-            'cedula_identidad' => [
-                'required',
-                'numeric',
-                'digits_between:6,15',
-                Rule::unique('student_registrations')->ignore($this->student)
-            ],
-            'numero_celular' => 'required|numeric|digits_between:7,15',
-            'correo_electronico' => [
-                'required',
-                'email',
-                'max:100',
-                Rule::unique('student_registrations')->ignore($this->student)
-            ],
-            'fecha_nacimiento' => 'required|date', //|before_or_equal:-13 years', // Mínimo 13 años
-            'unidad_educativa' => 'required|string|max:100',
-
-            // Claves foráneas
-            'id_grado' => 'required|integer|exists:grados,id',
-            'id_provincia' => 'required|integer|exists:provincias,id',
-            'id_tutor' => 'required|integer|exists:tutores,id'
+            'nombres' => 'required|string',
+            'apellidos' => 'required|string',
+            'cedula_identidad' => 'required|numeric',
+            'numero_celular' => 'required|numeric',
+            'correo_electronico' => 'required|email',
+            'fecha_nacimiento' => 'required|date',
+            'unidad_educativa' => 'required|string',
+            'id_grado' => 'required|integer',
+            'id_provincia' => 'required|integer',
+            'id_tutor' => 'required|integer'
         ];
     }
     public function messages(): array
@@ -55,15 +43,15 @@ class StoreStudentRegistrationRequest extends FormRequest
             'numero_celular.required' => 'El numero de celular es obligatorio',
             'correo_electronico.required' => 'El correo electronico es obligatorio',
             'unidad_educativa.required' => 'La unidad educativa es obligatoria',
-            'id_grado' => 'El grado es obligatorio',
-            'id_provincia' => 'La provincia es obligatoria',
-            'id_tutor' => 'El tutor es obligatorio',
+            'id_grado.required' => 'El grado es obligatorio',
+            'id_provincia.required' => 'La provincia es obligatoria',
+            'id_tutor.required' => 'El tutor es obligatorio',
             //'fecha_nacimiento.before_or_equal' => 'El estudiante debe tener al menos 13 años.',
-            'cedula_identidad.unique' => 'La cédula ya está registrada.',
-            'correo_electronico.unique' => 'El correo electrónico ya está en uso.',
-            'id_grado.exists' => 'El grado seleccionado no existe.',
-            'id_provincia.exists' => 'La provincia seleccionada no existe.',
-            'id_tutor.exists' => 'El tutor seleccionado no existe.'
+            // 'cedula_identidad.unique' => 'La cédula ya está registrada.',
+            // 'correo_electronico.unique' => 'El correo electrónico ya está en uso.',
+            // 'id_grado.exists' => 'El grado seleccionado no existe.',
+            // 'id_provincia.exists' => 'La provincia seleccionada no existe.',
+            // 'id_tutor.exists' => 'El tutor seleccionado no existe.'
         ];
     }
 }
