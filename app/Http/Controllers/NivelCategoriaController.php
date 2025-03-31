@@ -5,75 +5,63 @@ namespace App\Http\Controllers;
 use App\Models\NivelCategoria;
 use App\Models\NivelGrado;
 use App\Models\Grado;
-use App\Http\Requests\StoreNivelRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class NivelCategoriaController extends Controller
 {
-    public function index()
+    public function store(Request $request)
     {
-        $niveles = NivelCategoria::all();
-        return response()->json($niveles, 200);
-    }
+        
+        $nivelesGuardados = [];
 
-    public function nivelesPorArea($id_area)
-    {
-        $niveles = NivelCategoria::where('id_area', $id_area)->get();
-
-        if ($niveles->isEmpty()) {
+        DB::beginTransaction();
+        try {
+            $index = 0;
+            foreach ($request->all() as $nivelData) {
+                $index++;
+    
+                $permiteSeleccion = $nivelData['grado_min'] != $nivelData['grado_max'];
+    
+                $nivel = NivelCategoria::create([
+                    'nombre' => $nivelData['nombre'],
+                    'id_area' => $nivelData['id_area'],
+                    'permite_seleccion_nivel' => $permiteSeleccion
+                ]);
+    
+                $grados = Grado::whereBetween('id_grado', [
+                    $nivelData['grado_min'],
+                    $nivelData['grado_max']
+                ])->get();
+    
+                foreach ($grados as $grado) {
+                    NivelGrado::create([
+                        'id_nivel' => $nivel->id_nivel,
+                        'id_grado' => $grado->id_grado
+                    ]);
+                }
+    
+                $nivelesGuardados[] = [
+                    'index' => $index,
+                    'nivel' => $nivel,
+                    'grados_asociados' => $grados->pluck('id_grado')
+                ];
+            }
+    
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
-                'message' => 'No se encontraron niveles para esta área.',
-                'niveles' => []
-            ], 404);
-        }
-
-        return response()->json([
-            'message' => 'Niveles encontrados exitosamente.',
-            'niveles' => $niveles
-        ], 200);
-    }
-
-    public function store(StoreNivelRequest $request)
-    {
-        // Calcular si el nivel es seleccionable (más de un grado)
-        $permiteSeleccion = $request->grado_min != $request->grado_max;
-
-        // Crear el nivel con ese valor
-        $nivel = NivelCategoria::create([
-            'nombre' => $request->nombre,
-            'id_area' => $request->id_area,
-            'permite_seleccion_nivel' => $permiteSeleccion
-        ]);
-
-        if (!$nivel) {
-            return response()->json([
-                'message' => 'Error al crear el nivel',
-                'status' => 500
+                'message' => 'Error al crear los niveles',
+                'error'   => $e->getMessage(),
+                'status'  => 500
             ], 500);
         }
-
-        // Buscar grados dentro del intervalo (por ID)
-        $grados = Grado::whereBetween('id_grado', [$request->grado_min, $request->grado_max])->get();
-
-        if ($grados->isEmpty()) {
-            return response()->json([
-                'message' => 'No se encontraron grados en el rango especificado',
-                'status' => 400
-            ], 400);
-        }
-
-        // Crear las relaciones nivel ↔ grado
-        foreach ($grados as $grado) {
-            NivelGrado::create([
-                'id_nivel' => $nivel->id_nivel,
-                'id_grado' => $grado->id_grado
-            ]);
-        }
-
+    
         return response()->json([
-            'nivel' => $nivel,
-            'asociaciones_grados' => $grados->pluck('id_grado'),
-            'status' => 201
+            'message' => 'Niveles creados exitosamente',
+            'niveles_guardados' => $nivelesGuardados,
+            'status'  => 201
         ], 201);
     }
-
 }
