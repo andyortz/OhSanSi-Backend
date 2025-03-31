@@ -12,6 +12,7 @@ use App\Http\Controllers\TutoresControllator;
 use App\Http\Controllers\OlympiadRegistrationController;
 use App\Http\Controllers\StudentRegistrationController;
 use App\Http\Controllers\DepartamentoController;
+use App\Http\Controllers\ProvinciaController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -51,3 +52,6 @@ Route::get('/student-registration', [StudentRegistrationController::class, 'inde
 
 //Departamentos
 Route::get('/departamentos', [DepartamentoController::class, 'index']);
+
+//Provincias
+Route::get('/provincias/{id}', [ProvinciaController::class, 'porDepartamento']);
