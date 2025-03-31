@@ -11,6 +11,8 @@ use App\Http\Controllers\InscripcionAreaController;
 use App\Http\Controllers\TutoresControllator;
 use App\Http\Controllers\OlympiadRegistrationController;
 use App\Http\Controllers\StudentRegistrationController;
+use App\Http\Controllers\DepartamentoController;
+use App\Http\Controllers\ProvinciaController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -47,3 +49,9 @@ Route::get('/olympiad-registration', [OlympiadRegistrationController::class, 'in
 //Olimpistas
 Route::post('/student-registration', [StudentRegistrationController::class, 'store']);
 Route::get('/student-registration', [StudentRegistrationController::class, 'index']);
+
+//Departamentos
+Route::get('/departamentos', [DepartamentoController::class, 'index']);
+
+//Provincias
+Route::get('/provincias/{id}', [ProvinciaController::class, 'porDepartamento']);
