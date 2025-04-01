@@ -38,6 +38,14 @@ class TutoresControllator extends Controller
 
         $tutorExiste = Tutor::where('ci', $request->ci)->first();
         
+        $tutorConCorreo = Tutor::where('correo_electronico', $request->correo_electronico)->first();
+        if ($tutorConCorreo) {
+            return response()->json([
+                'message' => 'El correo electrónico ya está registrado en el sistema',
+                'tutor_existente' => $tutorConCorreo,
+                'status' => 409
+            ], 409);
+        }
         
         if ($tutorExiste) {
             $data = [
