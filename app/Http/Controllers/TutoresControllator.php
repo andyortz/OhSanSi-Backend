@@ -35,36 +35,15 @@ class TutoresControllator extends Controller
 
     public function store(Request $request)
     {
-
-        $tutorExiste = Tutor::where('ci', $request->ci)->first();
+        $tutor = Tutor::create([
+            'nombres' => $request->nombres,
+            'apellidos' => $request->apellidos,
+            'ci' => $request->ci,
+            'celular' => $request->celular,
+            'correo_electronico' => $request->correo_electronico,
+            'rol_parentesco' => $request->rol_parentesco
+        ]);
         
-        $tutorConCorreo = Tutor::where('correo_electronico', $request->correo_electronico)->first();
-        if ($tutorConCorreo) {
-            return response()->json([
-                'message' => 'El correo electrónico ya está registrado en el sistema',
-                'tutor_existente' => $tutorConCorreo,
-                'status' => 409
-            ], 409);
-        }
-        
-        if ($tutorExiste) {
-            $data = [
-                'message' => 'El tutor ya está registrado en el sistema',
-                'tutor_existente' => $tutorExiste,
-                'status' => 409
-            ];
-            return response()->json($data, 409);
-        }else{
-        
-            $tutor = Tutor::create([
-                'nombres' => $request->nombres,
-                'apellidos' => $request->apellidos,
-                'ci' => $request->ci,
-                'celular' => $request->celular,
-                'correo_electronico' => $request->correo_electronico,
-                'rol_parentesco' => $request->rol_parentesco
-            ]);
-        }
         
 
         if (!$tutor) {
