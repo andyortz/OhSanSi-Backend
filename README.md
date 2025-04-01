@@ -133,16 +133,7 @@ Para que las pruebas con Postman funcionen correctamente, asegúrate de tener al
    - niveles_categoria
    - pagos
 
-✅ Ya se incluye un seeder para la tabla `olimpiadas`.  
-Puedes ingresar los demás datos manualmente o crear sus respectivos seeders.
 
-📌 Ejecutar todos los seeders disponibles:
-
-   php artisan db:seed
-
-📌 Ejecutar un seeder específico:
-
-   php artisan db:seed --class=NombreDelSeeder
 
 
 
