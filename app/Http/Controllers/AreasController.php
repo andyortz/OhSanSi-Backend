@@ -42,50 +42,74 @@ class AreasController extends Controller
      * Registrar una nueva área
      */
     public function store(Request $request)
-{
-    // Decodificar JSON de 'areas'
-    $areas = json_decode($request->input('areas'), true);
+    {
+        // Decodificar JSON de 'areas'
+        $areas = json_decode($request->input('areas'), true);
 
-    if (!is_array($areas) || empty($areas)) {
-        return response()->json([
-            'message' => 'Debe enviar al menos un área válida.',
-            'status' => 400
-        ], 400);
-    }
-
-    // Guardar la imagen
-    if (!$request->hasFile('imagen')) {
-        return response()->json([
-            'message' => 'La imagen es obligatoria.',
-            'status' => 400
-        ], 400);
-    }
-    $imagePath = $request->file('imagen')->store('areas', 'public');
-
-    foreach ($areas as $areaData) {
-        if (!isset($areaData['nombre'])) {
-            continue; 
+        if (!is_array($areas) || empty($areas)) {
+            return response()->json([
+                'message' => 'Debe enviar al menos un área válida.',
+                'status' => 400
+            ], 400);
         }
 
-        $areaExiste = DB::table('areas_competencia')
-            ->whereRaw('LOWER(nombre) = ?', [strtolower($areaData['nombre'])])
-            ->first();
+        // Guardar la imagen
+        if (!$request->hasFile('imagen')) {
+            return response()->json([
+                'message' => 'La imagen es obligatoria.',
+                'status' => 400
+            ], 400);
+        }
+        $imagePath = $request->file('imagen')->store('areas', 'public');
 
-        if ($areaExiste) {
-            continue; 
+        foreach ($areas as $areaData) {
+            if (!isset($areaData['nombre'])) {
+                continue; 
+            }
+
+            $areaExiste = DB::table('areas_competencia')
+                ->whereRaw('LOWER(nombre) = ?', [strtolower($areaData['nombre'])])
+                ->first();
+
+            if ($areaExiste) {
+                continue; 
+            }
+
+            Area::create([
+                'id_olimpiada' => $request->id_olimpiada,
+                'nombre' => $areaData['nombre'],
+                'imagen' => $imagePath
+            ]);
         }
 
-        Area::create([
-            'id_olimpiada' => $request->id_olimpiada,
-            'nombre' => $areaData['nombre'],
-            'imagen' => $imagePath
-        ]);
+        return response()->json([
+            'message' => 'Áreas registradas exitosamente',
+            'status' => 201
+        ], 201);
     }
 
-    return response()->json([
-        'message' => 'Áreas registradas exitosamente',
-        'status' => 201
-    ], 201);
-}
+    public function areasConNivelesYGrados()
+    {
+        $areas = Area::with(['niveles.grados'])->get()->map(function ($area) {
+            return [
+                'id_area' => $area->id_area,
+                'nombre_area' => $area->nombre,
+                'niveles' => $area->niveles->map(function ($nivel) {
+                    return [
+                        'id_nivel' => $nivel->id_nivel,
+                        'nombre_nivel' => $nivel->nombre,
+                        'permite_seleccion_nivel' => $nivel->permite_seleccion_nivel,
+                        'grados' => $nivel->grados->map(function ($grado) {
+                            return [
+                                'id_grado' => $grado->id_grado,
+                                'nombre_grado' => $grado->nombre_grado
+                            ];
+                        })
+                    ];
+                })
+            ];
+        });
 
+        return response()->json($areas, 200);
+    }
 }

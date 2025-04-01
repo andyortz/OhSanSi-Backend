@@ -24,5 +24,10 @@ class Area extends Model
     {
         return $this->belongsTo(Olimpiada::class, 'id_olimpiada');
     }
+    
+    public function niveles()
+    {
+        return $this->hasMany(NivelCategoria::class, 'id_area');
+    }
 
 }
