@@ -55,3 +55,5 @@ Route::get('/departamentos', [DepartamentoController::class, 'index']);
 
 //Provincias
 Route::get('/provincias/{id}', [ProvinciaController::class, 'porDepartamento']);
+
+Route::get('/areas-niveles-grados', [AreasController::class, 'areasConNivelesYGrados']);
