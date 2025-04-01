@@ -91,11 +91,9 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 🛢️ 5. Configura la base de datos en el archivo .env
 
-Previo a la configuración debe crear la base de datos en postgreSQL con el siguiente comando:
+Previo a la configuración debes crear una nueva base de datos que este VACIA
+y conectarla
   
-  psql -U postgres
-  CREATE DATABASE nombre_db;
-  \q
    
    DB_CONNECTION=pgsql  
    DB_HOST=127.0.0.1  
