@@ -58,12 +58,4 @@ Route::get('/departamentos', [DepartamentoController::class, 'index']);
 Route::get('/provincias/{id}', [ProvinciaController::class, 'porDepartamento']);
 
 Route::get('/areas-niveles-grados', [AreasController::class, 'areasConNivelesYGrados']);
-//tutores
-Route::post('/tutores', [TutoresControllator::class, 'store']);
-Route::get('/tutores',[TutoresControllator::class,'buscarCi' ]);
 
-
-
-//areas
-Route::post('/areas', [AreasController::class,'store']);
-Route::post('/areas',[AreasController::class,'index']);
