@@ -29,9 +29,7 @@ class StoreOlympiadRequest extends FormRequest
                 'integer',
                 'min:2000',
                 'max:2200',
-                Rule::unique('olympiads')->where(function ($query) {
-                    return $query->where('deleted_at', null); // Opcional: si usas soft deletes
-                })->ignore($this->olympiad) // Ignora el registro actual al editar
+                Rule::unique('olimpiadas')->ignore($this->olympiad) // Ignora el registro actual al editar
             ],
             'costo' => 'required|numeric|min:0|max:999999.99',
             'fecha_inicio' => 'required|date',
@@ -45,7 +43,7 @@ class StoreOlympiadRequest extends FormRequest
     {
         return [
             'gestion.required' => 'La gestión es obligatoria.',
-            'gestion.unique' => 'Ya existe una olimpiada registrada para esta gestión',
+            'gestion.unique' => 'Ya existe una olimpiada registrada para esa gestión',
             'costo.required' => 'El costo es obligatorio.',
             'fecha_inicio.required' => 'La fecha inicio es obligatoria.',
             'fecha_fin.required'   => 'La fecha fin es obligatoria.',
