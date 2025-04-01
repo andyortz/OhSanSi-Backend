@@ -13,29 +13,11 @@ class TutoresControllator extends Controller
     public function store(Request $request)
     {
 
-        // $validator = Validator::make($request->all(), [
-        //     'nombres' => 'required|max:255',
-        //     'apellidos' => 'required|max:255',
-        //     'ci' => 'required|integer',
-        //     'celular' => 'required|digits:8',
-        //     'correo_electronico' => 'required|email|unique:tutores',
-        //     'rol_parentesco' => 'required|string'
-        // ]);
-
-        // if ($validator->fails()) {
-        //     $data = [
-        //         'message' => 'Error en la validación de los datos',
-        //         'errors' => $validator->errors(),
-        //         'status' => 400
-        //     ];
-        //     return response()->json($data, 400);
-        // }
-
         $tutorExiste = Tutor::where('ci', $request->ci)
             ->orWhere('correo_electronico', $request->correo_electronico)
             ->first();
         
-        
+        // Validar los datos de entrada
         if ($tutorExiste) {
             $data = [
                 'message' => 'El tutor ya está registrado en el sistema',

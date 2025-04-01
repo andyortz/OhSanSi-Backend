@@ -91,11 +91,9 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 🛢️ 5. Configura la base de datos en el archivo .env
 
-Previo a la configuración debe crear la base de datos en postgreSQL con el siguiente comando:
+Previo a la configuración debes crear una nueva base de datos que este VACIA
+y conectarla
   
-  psql -U postgres
-  CREATE DATABASE nombre_db;
-  \q
    
    DB_CONNECTION=pgsql  
    DB_HOST=127.0.0.1  
@@ -133,16 +131,7 @@ Para que las pruebas con Postman funcionen correctamente, asegúrate de tener al
    - niveles_categoria
    - pagos
 
-✅ Ya se incluye un seeder para la tabla `olimpiadas`.  
-Puedes ingresar los demás datos manualmente o crear sus respectivos seeders.
 
-📌 Ejecutar todos los seeders disponibles:
-
-   php artisan db:seed
-
-📌 Ejecutar un seeder específico:
-
-   php artisan db:seed --class=NombreDelSeeder
 
 
 

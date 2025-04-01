@@ -18,7 +18,6 @@ class DatabaseSeeder extends Seeder
 
             OlimpiadasSeeder::class,
             DepartamentosSeeder::class,
-            GradosSeeder::class,
             ProvinciasSeeder::class,
         ]);
 
