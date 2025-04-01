@@ -13,6 +13,7 @@ use App\Http\Controllers\OlympiadRegistrationController;
 use App\Http\Controllers\StudentRegistrationController;
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
+use App\Http\Controllers\OlimpiadaGestionController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -44,9 +45,13 @@ Route::get('/tutores',[TutoresControllator::class,'buscarCi' ]);
 // Áreas
 Route::get('/areas', [AreasController::class, 'index']);
 Route::post('/areas', [AreasController::class, 'store']);
+Route::get('/areas-niveles-grados', [AreasController::class, 'areasConNivelesYGrados']);
+
 //Olimpiadas
 Route::post('/olympiad-registration', [OlympiadRegistrationController::class, 'store']);
 Route::get('/olympiad-registration', [OlympiadRegistrationController::class, 'index']);
+Route::get('/olympiad/{gestion}', [OlimpiadaGestionController::class, 'show']);
+
 //Olimpistas
 Route::post('/student-registration', [StudentRegistrationController::class, 'store']);
 Route::get('/student-registration', [StudentRegistrationController::class, 'index']);
@@ -57,5 +62,4 @@ Route::get('/departamentos', [DepartamentoController::class, 'index']);
 //Provincias
 Route::get('/provincias/{id}', [ProvinciaController::class, 'porDepartamento']);
 
-Route::get('/areas-niveles-grados', [AreasController::class, 'areasConNivelesYGrados']);
 
