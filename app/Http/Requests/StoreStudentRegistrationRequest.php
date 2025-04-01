@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreStudentRegistrationRequest extends FormRequest
 {
@@ -24,7 +25,11 @@ class StoreStudentRegistrationRequest extends FormRequest
         return [
             'nombres' => 'required|string',
             'apellidos' => 'required|string',
-            'cedula_identidad' => 'required|numeric',
+            'cedula_identidad' => [
+                'required',
+                'numeric',
+                Rule::unique('olimpistas')->ignore($this->student)
+            ],
             'numero_celular' => 'required|numeric',
             'correo_electronico' => 'required|email',
             'fecha_nacimiento' => 'required|date',
@@ -37,6 +42,7 @@ class StoreStudentRegistrationRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'cedula_identidad.unique' => 'Ya existe un olimpista con ese numero de carnet',
             'nombres.required' => 'El nombre es obligatorio',
             'apellidos.required' => 'El apllido es obligatorio',
             'cedula_identidad.required' => 'La cedula de identidad es obligatoria',
