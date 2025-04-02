@@ -31,7 +31,11 @@ class StoreStudentRegistrationRequest extends FormRequest
                 Rule::unique('olimpistas')->ignore($this->student)
             ],
             'numero_celular' => 'required|numeric',
-            'correo_electronico' => 'required|email',
+            'correo_electronico' => [
+                'required',
+                'email',
+                Rule::unique('olimpistas')->ignore($this->student)
+            ],
             'fecha_nacimiento' => 'required|date',
             'unidad_educativa' => 'required|string',
             'id_grado' => 'required|integer',
@@ -48,6 +52,7 @@ class StoreStudentRegistrationRequest extends FormRequest
             'cedula_identidad.required' => 'La cedula de identidad es obligatoria',
             'numero_celular.required' => 'El numero de celular es obligatorio',
             'correo_electronico.required' => 'El correo electronico es obligatorio',
+            'correo_electronico.unique' => 'El correo electronico ya esta en uso',
             'unidad_educativa.required' => 'La unidad educativa es obligatoria',
             'id_grado.required' => 'El grado es obligatorio',
             'id_provincia.required' => 'La provincia es obligatoria',
