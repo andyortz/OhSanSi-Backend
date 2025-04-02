@@ -34,32 +34,40 @@ class TutoresControllator extends Controller
     }
 
     public function store(Request $request)
-    {
-        $tutor = Tutor::create([
-            'nombres' => $request->nombres,
-            'apellidos' => $request->apellidos,
-            'ci' => $request->ci,
-            'celular' => $request->celular,
-            'correo_electronico' => $request->correo_electronico,
-            'rol_parentesco' => $request->rol_parentesco
-        ]);
-        
-        
-
-        if (!$tutor) {
-            $data = [
-                'message' => 'Error al crear el tutor',
-                'status' => 500
-            ];
-            return response()->json($data, 500);
-        }
-
-        // Respuesta de éxito
-        $data = [
-            'message' => 'Tutor registrado exitosamente',
-            'tutor' => $tutor,
-            'status' => 201 // Created
-        ];
-        return response()->json($data, 201);
+{
+    // Verificar si el tutor ya existe por CI antes de crearlo
+    $tutorExistente = Tutor::where('ci', $request->ci)->first();
+    if ($tutorExistente) {
+        return response()->json([
+            'message' => 'Error: Ya existe un tutor con este CI.',
+            'id_tutor' => $tutorExistente->id_tutor, // Se agrega el ID del tutor existente
+            'status' => 400
+        ], 400);
     }
+
+    // Si no existe, se crea el tutor
+    $tutor = Tutor::create([
+        'nombres' => $request->nombres,
+        'apellidos' => $request->apellidos,
+        'ci' => $request->ci,
+        'celular' => $request->celular,
+        'correo_electronico' => $request->correo_electronico,
+        'rol_parentesco' => $request->rol_parentesco
+    ]);
+
+    if (!$tutor) {
+        return response()->json([
+            'message' => 'Error al crear el tutor',
+            'status' => 500
+        ], 500);
+    }
+
+    // Respuesta de éxito
+    return response()->json([
+        'message' => 'Tutor registrado exitosamente',
+        'tutor' => $tutor,
+        'status' => 201
+    ], 201);
+}
+
 }
