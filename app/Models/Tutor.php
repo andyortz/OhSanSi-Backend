@@ -30,7 +30,6 @@ class Tutor extends Model
         $this->attributes['apellidos'] = strtoupper($value);
     }
 
-    
     public function olimpistas()
     {
         return $this->hasMany(Olimpista::class, 'id_tutor');

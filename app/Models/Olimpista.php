@@ -36,6 +36,21 @@ class Olimpista extends Model
         $this->attributes['unidad_educativa'] = strtoupper($value);
     }
 
+    public function setNombresAttribute($value)
+    {
+        $this->attributes['nombres'] = strtoupper($value);
+    }
+
+    public function setApellidosAttribute($value)
+    {
+        $this->attributes['apellidos'] = strtoupper($value);
+    }
+
+    public function setUnidadEducativaAttribute($value)
+    {
+        $this->attributes['unidad_educativa'] = strtoupper($value);
+    }
+
     public function inscripciones()
     {
         return $this->hasMany(Inscripcion::class, 'id_olimpista');

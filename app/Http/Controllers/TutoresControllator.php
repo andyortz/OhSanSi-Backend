@@ -3,53 +3,71 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-// use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\StoreTutorRequest;
 use App\models\Tutor;
 
 class TutoresControllator extends Controller
 {
     //
-    public function store(Request $request)
+    // Método para verificar si un tutor existe por CI
+    public function buscarCi(Request $request)
     {
+        // Validar que se envíe el parámetro CI
+        $request->validate([
+            'ci' => 'required|numeric'
+        ]);
 
-        $tutorExiste = Tutor::where('ci', $request->ci)
-            ->orWhere('correo_electronico', $request->correo_electronico)
-            ->first();
-        
-        // Validar los datos de entrada
-        if ($tutorExiste) {
-            $data = [
-                'message' => 'El tutor ya está registrado en el sistema',
-                'tutor_existente' => $tutorExiste,
-                'status' => 409 // Conflict
-            ];
-            return response()->json($data, 409);
-        }else{
-            $tutor = Tutor::create([
-                'nombres' => $request->nombres,
-                'apellidos' => $request->apellidos,
-                'ci' => $request->ci,
-                'celular' => $request->celular,
-                'correo_electronico' => $request->correo_electronico,
-                'rol_parentesco' => $request->rol_parentesco
-            ]);
-    
-            if (!$tutor) {
-                $data = [
-                    'message' => 'Error al crear el tutor',
-                    'status' => 500
-                ];
-                return response()->json($data, 500);
-            }
+        $tutor = Tutor::where('ci', $request->ci)->first();
 
-            // Respuesta de éxito
-            $data = [
-                'message' => 'Tutor registrado exitosamente',
+        if ($tutor) {
+            return response()->json([
+                'message' => 'Tutor encontrado',
                 'tutor' => $tutor,
-                'status' => 201 // Created
-            ];
-            return response()->json($data, 201);
+                'status' => 200
+            ], 200);
         }
+
+        return response()->json([
+            'message' => 'Tutor no encontrado',
+            'status' => 404
+        ], 404);
     }
+
+    public function store(Request $request)
+{
+    // Verificar si el tutor ya existe por CI antes de crearlo
+    $tutorExistente = Tutor::where('ci', $request->ci)->first();
+    if ($tutorExistente) {
+        return response()->json([
+            'message' => 'Error: Ya existe un tutor con este CI.',
+            'id_tutor' => $tutorExistente->id_tutor, // Se agrega el ID del tutor existente
+            'status' => 400
+        ], 400);
+    }
+
+    // Si no existe, se crea el tutor
+    $tutor = Tutor::create([
+        'nombres' => $request->nombres,
+        'apellidos' => $request->apellidos,
+        'ci' => $request->ci,
+        'celular' => $request->celular,
+        'correo_electronico' => $request->correo_electronico,
+        'rol_parentesco' => $request->rol_parentesco
+    ]);
+
+    if (!$tutor) {
+        return response()->json([
+            'message' => 'Error al crear el tutor',
+            'status' => 500
+        ], 500);
+    }
+
+    // Respuesta de éxito
+    return response()->json([
+        'message' => 'Tutor registrado exitosamente',
+        'tutor' => $tutor,
+        'status' => 201
+    ], 201);
+}
+
 }

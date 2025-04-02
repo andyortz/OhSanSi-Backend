@@ -68,12 +68,14 @@ class AreasController extends Controller
             }
 
             $areaExiste = DB::table('areas_competencia')
-                ->whereRaw('LOWER(nombre) = ?', [strtolower($areaData['nombre'])])
-                ->first();
+            ->where('id_olimpiada', $request->id_olimpiada)
+            ->whereRaw('LOWER(nombre) = ?', [strtolower($areaData['nombre'])])
+            ->first();
 
             if ($areaExiste) {
-                continue; 
-            }
+                continue;
+            }   
+
 
             Area::create([
                 'id_olimpiada' => $request->id_olimpiada,
