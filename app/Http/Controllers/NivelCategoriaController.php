@@ -64,4 +64,21 @@ class NivelCategoriaController extends Controller
             'status'  => 201
         ], 201);
     }
+
+    public function nivelesPorArea($id_area)
+    {
+        $niveles = NivelCategoria::where('id_area', $id_area)->with('grados')->get();
+
+        if ($niveles->isEmpty()) {
+            return response()->json([
+                'message' => 'No se encontraron niveles para esta área.',
+                'niveles' => []
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Niveles encontrados correctamente.',
+            'niveles' => $niveles
+        ], 200);
+    }
 }

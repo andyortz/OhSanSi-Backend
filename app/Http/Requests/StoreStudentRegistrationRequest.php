@@ -31,11 +31,7 @@ class StoreStudentRegistrationRequest extends FormRequest
                 Rule::unique('olimpistas')->ignore($this->student)
             ],
             'numero_celular' => 'required|numeric',
-            'correo_electronico' => [
-                'required',
-                'email',
-                Rule::unique('olimpistas')->ignore($this->student)
-            ],
+            'correo_electronico' => 'required|email',
             'fecha_nacimiento' => 'required|date',
             'unidad_educativa' => 'required|string',
             'id_grado' => 'required|integer',
@@ -52,17 +48,10 @@ class StoreStudentRegistrationRequest extends FormRequest
             'cedula_identidad.required' => 'La cedula de identidad es obligatoria',
             'numero_celular.required' => 'El numero de celular es obligatorio',
             'correo_electronico.required' => 'El correo electronico es obligatorio',
-            'correo_electronico.unique' => 'El correo electronico ya esta en uso',
             'unidad_educativa.required' => 'La unidad educativa es obligatoria',
             'id_grado.required' => 'El grado es obligatorio',
             'id_provincia.required' => 'La provincia es obligatoria',
             'id_tutor.required' => 'El tutor es obligatorio',
-            //'fecha_nacimiento.before_or_equal' => 'El estudiante debe tener al menos 13 años.',
-            // 'cedula_identidad.unique' => 'La cédula ya está registrada.',
-            // 'correo_electronico.unique' => 'El correo electrónico ya está en uso.',
-            // 'id_grado.exists' => 'El grado seleccionado no existe.',
-            // 'id_provincia.exists' => 'La provincia seleccionada no existe.',
-            // 'id_tutor.exists' => 'El tutor seleccionado no existe.'
         ];
     }
 }

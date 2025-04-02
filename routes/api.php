@@ -29,8 +29,6 @@ Route::get('/niveles/area/{id_area}', [NivelCategoriaController::class, 'niveles
 // Grados
 Route::get('/grados', [GradosController::class, 'index']);
 
-Route::get('/niveles/area/{id_area}', [NivelCategoriaController::class, 'nivelesPorArea']);
-
 // Áreas por olimpiada
 Route::get('/olimpiada/{id}/areas', [AreasController::class, 'areasPorOlimpiada']);
 
