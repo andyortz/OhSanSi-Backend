@@ -15,4 +15,14 @@ class Grado extends Model
         'nivel_academico',
         'orden'
     ];
+
+    public function setnombreGradoAttribute($value)
+    {
+        $this->attributes['nombre_grado'] = strtoupper($value);
+    }
+    public function setnivelAcademicoAttribute($value)
+    {
+        $this->attributes['nivel_academico'] = strtoupper($value);
+    }
+
 }

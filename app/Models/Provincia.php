@@ -16,6 +16,12 @@ class Provincia extends Model
         'id_departamento'
     ];
 
+
+    public function setNombresProvinciaAttribute($value)
+    {
+        $this->attributes['nombre_provincia'] = strtoupper($value);
+    }
+
     public function departamento()
     {
         return $this->belongsTo(Departamento::class, 'id_departamento');

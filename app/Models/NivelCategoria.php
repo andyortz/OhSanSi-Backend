@@ -19,6 +19,7 @@ class NivelCategoria extends Model
         'permite_seleccion_nivel',
     ];
 
+
     public function setNombreAttribute($value)
     {
         $this->attributes['nombre'] = strtoupper($value);

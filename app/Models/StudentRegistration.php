@@ -22,6 +22,20 @@ class StudentRegistration extends Model
         'id_provincia',
         'id_tutor'
     ];
+
+    public function setNombresAttribute($value)
+    {
+        $this->attributes['nombres'] = strtoupper($value);
+    }
+    public function setapellidosAttribute($value)
+    {
+        $this->attributes['apellidos'] = strtoupper($value);
+    }
+    public function setUnidadEducativaAttribute($value)
+    {
+        $this->attributes['unidad_educativa'] = strtoupper($value);
+    }
+    
     public function provincia()
     {
         return $this->belongsTo(Provincia::class, 'id_provincia');
