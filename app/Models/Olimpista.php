@@ -23,6 +23,18 @@ class Olimpista extends Model
         'id_provincia',
         'id_tutor',
     ];
+    public function setnombresAttribute($value)
+    {
+        $this->attributes['nombres'] = strtoupper($value);
+    }
+    public function setapellidosAttribute($value)
+    {
+        $this->attributes['apellidos'] = strtoupper($value);
+    }
+    public function setUnidadEducativaAttribute($value)
+    {
+        $this->attributes['unidad_educativa'] = strtoupper($value);
+    }
 
     public function inscripciones()
     {

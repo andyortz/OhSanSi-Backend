@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
@@ -136,3 +137,7 @@ Para que las pruebas con Postman funcionen correctamente, asegúrate de tener al
 
 
 
+=======
+# OhSanSi-Backend
+Aplicación web de inscripción a las olimpiadas Oh! SanSi
+>>>>>>> a6ac235 (Initial commit)

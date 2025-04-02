@@ -15,7 +15,6 @@ class NivelGrado extends Model
         'id_grado',
     ];
 
-    // Relaciones opcionales
     public function nivel()
     {
         return $this->belongsTo(NivelCategoria::class, 'id_nivel');

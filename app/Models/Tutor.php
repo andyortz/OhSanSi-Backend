@@ -20,6 +20,17 @@ class Tutor extends Model
         'rol_parentesco'
     ];
 
+    public function setNombresAttribute($value)
+    {
+        $this->attributes['nombres'] = strtoupper($value);
+    }
+
+    public function setApellidosAttribute($value)
+    {
+        $this->attributes['apellidos'] = strtoupper($value);
+    }
+
+    
     public function olimpistas()
     {
         return $this->hasMany(Olimpista::class, 'id_tutor');

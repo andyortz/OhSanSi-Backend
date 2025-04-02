@@ -17,7 +17,8 @@ class Area extends Model
     protected $fillable = [
         'id_olimpiada',
         'nombre',
-        'imagen'
+        'imagen',
+        'limite_categoria',
     ];
     
     public function olimpiada()
