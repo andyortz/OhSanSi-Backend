@@ -14,6 +14,7 @@ use App\Http\Controllers\StudentRegistrationController;
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\OlimpiadaGestionController;
+use App\Http\Controllers\AreasFiltroController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -61,4 +62,5 @@ Route::get('/departamentos', [DepartamentoController::class, 'index']);
 //Provincias
 Route::get('/provincias/{id}', [ProvinciaController::class, 'porDepartamento']);
 
+Route::get('/olimpistas/{id_olimpista}/olimpiadas/{id_olimpiada}/areas-disponibles', [AreasFiltroController::class, 'obtenerAreasDisponibles']);
 
