@@ -19,6 +19,11 @@ class Olimpiada extends Model
         'max_categorias_olimpista', 
     ];
 
+    public function setNombreAttribute($value)
+    {
+        $this->attributes['nombre'] = strtoupper($value);
+    }
+
     public function areas()
     {
         return $this->hasMany(Area::class, 'id_olimpiada');

@@ -20,6 +20,11 @@ class Area extends Model
         'imagen'
     ];
     
+    public function setNombreAttribute($value)
+    {
+        $this->attributes['nombre'] = strtoupper($value);
+    }
+
     public function olimpiada()
     {
         return $this->belongsTo(Olimpiada::class, 'id_olimpiada');

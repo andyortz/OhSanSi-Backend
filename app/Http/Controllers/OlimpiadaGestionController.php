@@ -7,6 +7,15 @@ use Illuminate\Http\Request;
 
 class OlimpiadaGestionController extends Controller
 {
+
+     /**
+     * Devuelve todas las olimpiadas registradas en la base de datos.
+     */
+    public function index()
+    {
+        $olimpiadas = Olimpiada::all();
+        return response()->json($olimpiadas, 200);
+    }
     /**
      * Retorna los datos de la olimpiada correspondiente a una gestión (año).
      *
