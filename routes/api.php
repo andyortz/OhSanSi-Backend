@@ -14,6 +14,8 @@ use App\Http\Controllers\StudentRegistrationController;
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\OlimpiadaGestionController;
+use App\Http\Controllers\OlimpistaController;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -53,10 +55,12 @@ Route::post('/olympiad-registration', [OlympiadRegistrationController::class, 's
 Route::get('/olympiad-registration', [OlympiadRegistrationController::class, 'index']);
 Route::get('/olympiad/{gestion}', [OlimpiadaGestionController::class, 'show']);
 
-//Olimpistas
+//Olimpista Regitro
 Route::post('/student-registration', [StudentRegistrationController::class, 'store']);
 Route::get('/student-registration', [StudentRegistrationController::class, 'index']);
-
+//Olimpista
+Route::get('olimpistas/cedula/{cedula}', [OlimpistaController::class, 'getByCedula']);
+Route::get('olimpistas/email/{email}', [OlimpistaController::class, 'getByEmail']);
 //Departamentos
 Route::get('/departamentos', [DepartamentoController::class, 'index']);
 
