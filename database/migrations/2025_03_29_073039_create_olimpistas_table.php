@@ -16,16 +16,17 @@ return new class extends Migration
             $table->string('nombres', 100);
             $table->string('apellidos', 100);
             $table->integer('cedula_identidad');
-            $table->integer('numero_celular');
-            $table->string('correo_electronico', 100);
             $table->date('fecha_nacimiento');
-            $table->string('unidad_educativa', 100);
+            
 
             // Foreign keys
+            $table->unsignedBigInteger('unidad_educativa', 100);
             $table->unsignedBigInteger('id_grado');
             $table->unsignedSmallInteger('id_provincia');
             $table->unsignedBigInteger('id_tutor');
 
+            //Relación a unidad educativa
+            $table->foreign('unidad_educativa')->references('id_colegio')->on('colegios')->onDelete('restrict');
             // Relación a grados
             $table->foreign('id_grado')->references('id_grado')->on('grados')->onDelete('restrict');
 
