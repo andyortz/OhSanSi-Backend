@@ -10,15 +10,8 @@ return new class extends Migration
     {
         Schema::create('areas_competencia', function (Blueprint $table) {
             $table->id('id_area');
-            $table->unsignedBigInteger('id_olimpiada'); // FK a olimpiadas
             $table->string('nombre', 50);
-            $table->text('imagen')->nullable(); 
             $table->unsignedTinyInteger('limite_categoria')->default(99); 
-
-            $table->foreign('id_olimpiada')
-                  ->references('id_olimpiada')
-                  ->on('olimpiadas')
-                  ->onDelete('cascade');
         });
     }
 
