@@ -20,7 +20,7 @@ return new class extends Migration
             
 
             // Foreign keys
-            $table->unsignedBigInteger('unidad_educativa', 100);
+            $table->unsignedBigInteger('unidad_educativa');
             $table->unsignedBigInteger('id_grado');
             $table->unsignedSmallInteger('id_provincia');
             $table->unsignedBigInteger('id_tutor');
