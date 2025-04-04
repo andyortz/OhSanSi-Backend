@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Area;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\StoreAreaRequest;
+use Illuminate\Http\Request\Request;
 use Illuminate\Support\Facades\DB;
 
 class AreasController extends Controller
@@ -41,24 +41,11 @@ class AreasController extends Controller
     /**
      * Registrar una nueva área
      */
-    public function store(Request $request)
+    public function store(StoreAreaRequest $request)
     {
-        
-        $areaExiste = DB::table('areas_competencia')
-        ->whereRaw('LOWER(nombre) = ?', [strtolower($request->nombre)])
-        ->first();
-
-
-        if (!$areaExiste) {
-            Area::create([
-                'nombre' => $request->nombre,
-            ]);
-        }else{
-            return response()->json([
-                'message' => 'El área ya existe para la olimpiada especificada.',
-                'status' => 400
-            ], 400);
-        }   
+        Area::create([
+            'nombre' => $request->nombre,
+        ]);
 
         return response()->json([
             'message' => 'Área registrada exitosamente',
