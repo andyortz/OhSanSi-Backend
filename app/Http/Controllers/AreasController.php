@@ -43,49 +43,25 @@ class AreasController extends Controller
      */
     public function store(Request $request)
     {
-        // Decodificar JSON de 'areas'
-        $areas = json_decode($request->input('areas'), true);
-
-        if (!is_array($areas) || empty($areas)) {
-            return response()->json([
-                'message' => 'Debe enviar al menos un área válida.',
-                'status' => 400
-            ], 400);
-        }
-
-        // Guardar la imagen
-        if (!$request->hasFile('imagen')) {
-            return response()->json([
-                'message' => 'La imagen es obligatoria.',
-                'status' => 400
-            ], 400);
-        }
-        $imagePath = $request->file('imagen')->store('areas', 'public');
-
-        foreach ($areas as $areaData) {
-            if (!isset($areaData['nombre'])) {
-                continue; 
-            }
-
-            $areaExiste = DB::table('areas_competencia')
-            ->where('id_olimpiada', $request->id_olimpiada)
-            ->whereRaw('LOWER(nombre) = ?', [strtolower($areaData['nombre'])])
-            ->first();
-
-            if ($areaExiste) {
-                continue;
-            }   
+        
+        $areaExiste = DB::table('areas_competencia')
+        ->whereRaw('LOWER(nombre) = ?', [strtolower($request->nombre)])
+        ->first();
 
 
+        if (!$areaExiste) {
             Area::create([
-                'id_olimpiada' => $request->id_olimpiada,
-                'nombre' => $areaData['nombre'],
-                'imagen' => $imagePath
+                'nombre' => $request->nombre,
             ]);
-        }
+        }else{
+            return response()->json([
+                'message' => 'El área ya existe para la olimpiada especificada.',
+                'status' => 400
+            ], 400);
+        }   
 
         return response()->json([
-            'message' => 'Áreas registradas exitosamente',
+            'message' => 'Área registrada exitosamente',
             'status' => 201
         ], 201);
     }
