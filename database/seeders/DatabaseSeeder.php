@@ -15,10 +15,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             GradosSeeder::class,
-
             OlimpiadasSeeder::class,
             DepartamentosSeeder::class,
             ProvinciasSeeder::class,
+            AreasSeeder::class,
+            ColegiosSeeder::class,
+            NivelesSedeer::class,
         ]);
 
         User::factory()->create([
