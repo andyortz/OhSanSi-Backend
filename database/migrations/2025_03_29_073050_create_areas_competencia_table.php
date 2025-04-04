@@ -11,7 +11,6 @@ return new class extends Migration
         Schema::create('areas_competencia', function (Blueprint $table) {
             $table->id('id_area');
             $table->string('nombre', 50);
-            $table->unsignedTinyInteger('limite_categoria')->default(99); 
         });
     }
 

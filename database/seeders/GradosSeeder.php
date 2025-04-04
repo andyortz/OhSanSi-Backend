@@ -10,8 +10,6 @@ class GradosSeeder extends Seeder
     public function run(): void
     {
         $grados = [
-            ['nombre_grado' => '1ro Primaria'],
-            ['nombre_grado' => '2do Primaria'],
             ['nombre_grado' => '3ro Primaria'],
             ['nombre_grado' => '4to Primaria'],
             ['nombre_grado' => '5to Primaria'],

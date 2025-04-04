@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('id_olimpista');
             $table->unsignedBigInteger('id_pago');
-            $table->unsignedBigInteger('id_categoria');
+            $table->unsignedBigInteger('id_nivel');
             
 
             $table->timestamp('fecha_inscripcion', 6)->useCurrent();
@@ -24,7 +24,7 @@ return new class extends Migration
 
             // Foreign keys
             $table->foreign('id_olimpista')->references('id_olimpista')->on('olimpistas')->onDelete('cascade');
-            $table->foreign('id_categoría')->references('id_niveles')->on('niveles_categoria')->onDelete('cascade');
+            $table->foreign('id_nivel')->references('id_nivel')->on('niveles_categoria')->onDelete('cascade');
             $table->foreign('id_pago')->references('id_pago')->on('pagos')->onDelete('cascade');
         });
     }

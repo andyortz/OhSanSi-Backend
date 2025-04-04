@@ -15,8 +15,8 @@ return new class extends Migration
             $table->unsignedSmallInteger('id_nivel'); // FK a int8
             $table->unsignedSmallInteger('id_grado'); // FK a int2
 
-            $table->forign('id_nivel')->references('id_nivel')->on('niveles_categoria')->onDelete('cascade');
-            $table->forign('id_grado')->references('id_grado')->on('grados')->onDelete('cascade');
+            $table->foreign('id_nivel')->references('id_nivel')->on('niveles_categoria')->onDelete('cascade');
+            $table->foreign('id_grado')->references('id_grado')->on('grados')->onDelete('cascade');
         });
     }
 

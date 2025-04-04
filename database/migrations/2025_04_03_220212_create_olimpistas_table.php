@@ -23,7 +23,6 @@ return new class extends Migration
             $table->unsignedBigInteger('unidad_educativa');
             $table->unsignedBigInteger('id_grado');
             $table->unsignedSmallInteger('id_provincia');
-            $table->unsignedBigInteger('id_tutor');
 
             //Relación a unidad educativa
             $table->foreign('unidad_educativa')->references('id_colegio')->on('colegios')->onDelete('restrict');
@@ -32,9 +31,6 @@ return new class extends Migration
 
             // Relación a provincias
             $table->foreign('id_provincia')->references('id_provincia')->on('provincias')->onDelete('restrict');
-
-            // Relación a tutores
-            $table->foreign('id_tutor')->references('id_tutor')->on('tutores')->onDelete('cascade');
         });
     }
 
