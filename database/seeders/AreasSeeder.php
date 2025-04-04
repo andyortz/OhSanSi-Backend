@@ -15,12 +15,12 @@ class AreasSeeder extends Seeder
     {
         //
         $areas =[
-            ['id_area'=>1, 'nombre'=>'MATEMÁTICAS'],
-            ['id_area'=>2, 'nombre'=>'BIOLOGÍA'],
-            ['id_area'=>3, 'nombre'=>'ASTRONOMÍA - ASTROFÍSICA'],
-            ['id_area'=>4, 'nombre'=>'ROBÓTICA'],
-            ['id_area'=>5, 'nombre'=>'INFORMÁTICA'],
-            ['id_area'=>6, 'nombre'=>'QUÍMICA'],
+            ['nombre'=>'MATEMÁTICAS'],
+            ['nombre'=>'BIOLOGÍA'],
+            ['nombre'=>'ASTRONOMÍA - ASTROFÍSICA'],
+            ['nombre'=>'ROBÓTICA'],
+            ['nombre'=>'INFORMÁTICA'],
+            ['nombre'=>'QUÍMICA'],
             // ['nombre'=>'Geografia'],
             // ['nombre'=>'Historia'],
         ];
