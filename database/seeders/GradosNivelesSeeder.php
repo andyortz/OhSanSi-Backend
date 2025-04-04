@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class GradosNivelesSeeder extends Seeder
 {
@@ -26,6 +27,6 @@ class GradosNivelesSeeder extends Seeder
             ['id_nivel'=>10, 'id_grado'=> 10],
         ];
 
-        DB::class(grados_niveles)->insert($gradoXnivel);
+        DB::table('grados_niveles')->insert($gradoXnivel);
     }
 }

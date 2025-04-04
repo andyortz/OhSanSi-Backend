@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
             ProvinciasSeeder::class,
             AreasSeeder::class,
             ColegiosSeeder::class,
-            NivelesSedeer::class,
+            NivelesSeeder::class,
+            GradosNivelesSeeder::class,
         ]);
 
         User::factory()->create([
