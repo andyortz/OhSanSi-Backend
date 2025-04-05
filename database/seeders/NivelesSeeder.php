@@ -15,6 +15,8 @@ class NivelesSeeder extends Seeder
     {
         //
         $niveles =[
+            ['nombre'=>'1P'],
+            ['nombre'=>'2P'],
             ['nombre'=>'3P'],
             ['nombre'=>'4P'],
             ['nombre'=>'5P'],
