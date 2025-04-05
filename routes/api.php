@@ -34,7 +34,7 @@ Route::get('/olimpiada/{id}/areas', [AreasController::class, 'areasPorOlimpiada'
 
 // Niveles por área
 Route::get('/areas/{id}/niveles', [NivelCategoriaController::class, 'nivelesPorArea']);
-
+Route::get('/get-niveles', [NivelCategoriaController::class, 'index']);
 Route::get('/olimpiadas/{id}/max-categorias', [OlimpiadaAreaController::class, 'maxCategorias']);
 
 Route::post('/inscripciones', [InscripcionAreaController::class, 'store']);
