@@ -16,7 +16,8 @@ use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\OlimpiadaGestionController;
 use App\Http\Controllers\AreasFiltroController;
 use App\Http\Controllers\OlimpistaController;
-use App\Http\Controllers\NivelAreaOlimpiadaController;
+use App\Http\Controllers\EstructuraOlimpiadaController;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -68,6 +69,4 @@ Route::get('/provincias/{id}', [ProvinciaController::class, 'porDepartamento']);
 
 Route::get('/olimpistas/{id_olimpista}/olimpiadas/{id_olimpiada}/areas-disponibles', [AreasFiltroController::class, 'obtenerAreasDisponibles']);
 
-//Nivel en Area
-Route::post('niveles-areas-olimpiadas', [NivelAreaOlimpiadaController::class, 'store']);
-
+Route::get('/estructura-olimpiada/{id_olimpiada}', [EstructuraOlimpiadaController::class, 'obtenerEstructuraOlimpiada']);
