@@ -81,4 +81,14 @@ class NivelCategoriaController extends Controller
             'niveles' => $niveles
         ], 200);
     }
+
+    public function index()
+    {
+        $niveles = NivelCategoria::all();
+
+        return response()->json([
+            'message' => 'Lista de niveles cargada correctamente.',
+            'niveles' => $niveles
+        ], 200);
+    }
 }
