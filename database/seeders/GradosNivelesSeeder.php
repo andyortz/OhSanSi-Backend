@@ -25,6 +25,8 @@ class GradosNivelesSeeder extends Seeder
             ['id_nivel'=>8, 'id_grado'=> 8],
             ['id_nivel'=>9, 'id_grado'=> 9],
             ['id_nivel'=>10, 'id_grado'=> 10],
+            ['id_nivel'=>11, 'id_grado'=> 11],
+            ['id_nivel'=>12, 'id_grado'=> 12],
         ];
 
         DB::table('grados_niveles')->insert($gradoXnivel);
