@@ -8,7 +8,7 @@ class GradosController extends Controller
 {
     public function index()
     {
-        $grados = Grado::orderBy('orden')->get();
+        $grados = Grado::all();
         return response()->json($grados, 200);
     }
 }
