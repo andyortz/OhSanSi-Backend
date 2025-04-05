@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\NivelCategoria;
 use App\Models\NivelGrado;
 use App\Models\Grado;
+use App\Models\NivelAreaOlimpiada;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -12,58 +13,78 @@ class NivelCategoriaController extends Controller
 {
     public function store(Request $request)
     {
-        
-        $nivelesGuardados = [];
+        $datos = $request->all();
+
+        if (!is_array($datos) || empty($datos)) {
+            return response()->json([
+                'message' => 'Debes enviar un array de relaciones a registrar.'
+            ], 400);
+        }
+
+        $errores = [];
+        $registrosGuardados = [];
 
         DB::beginTransaction();
         try {
-            $index = 0;
-            foreach ($request->all() as $nivelData) {
-                $index++;
-    
-                $permiteSeleccion = $nivelData['grado_min'] != $nivelData['grado_max'];
-    
-                $nivel = NivelCategoria::create([
-                    'nombre' => $nivelData['nombre'],
-                    'id_area' => $nivelData['id_area'],
-                    'permite_seleccion_nivel' => $permiteSeleccion
-                ]);
-    
-                $grados = Grado::whereBetween('id_grado', [
-                    $nivelData['grado_min'],
-                    $nivelData['grado_max']
-                ])->get();
-    
-                foreach ($grados as $grado) {
-                    NivelGrado::create([
-                        'id_nivel' => $nivel->id_nivel,
-                        'id_grado' => $grado->id_grado
-                    ]);
+            foreach ($datos as $index => $registro) {
+                // Validaciones básicas
+                $faltantes = [];
+                foreach (['id_nivel', 'id_area', 'id_olimpiada'] as $campo) {
+                    if (empty($registro[$campo])) {
+                        $faltantes[] = $campo;
+                    }
                 }
-    
-                $nivelesGuardados[] = [
-                    'index' => $index,
-                    'nivel' => $nivel,
-                    'grados_asociados' => $grados->pluck('id_grado')
-                ];
+
+                if (!empty($faltantes)) {
+                    $errores[] = "Item #" . ($index + 1) . ": Faltan los campos " . implode(', ', $faltantes);
+                    continue;
+                }
+
+                // Validar que la relación no exista
+                $existe = NivelAreaOlimpiada::where('id_nivel', $registro['id_nivel'])
+                    ->where('id_area', $registro['id_area'])
+                    ->where('id_olimpiada', $registro['id_olimpiada'])
+                    ->exists();
+
+                if ($existe) {
+                    $errores[] = "Item #" . ($index + 1) . ": Ya existe esta relación.";
+                    continue;
+                }
+
+                // Crear la relación
+                $registroNuevo = NivelAreaOlimpiada::create([
+                    'id_nivel' => $registro['id_nivel'],
+                    'id_area' => $registro['id_area'],
+                    'id_olimpiada' => $registro['id_olimpiada'],
+                ]);
+
+                $registrosGuardados[] = $registroNuevo;
             }
-    
+
             DB::commit();
+
+            if (!empty($errores)) {
+                return response()->json([
+                    'message' => 'Algunas relaciones fueron registradas, pero otras fallaron.',
+                    'guardados' => $registrosGuardados,
+                    'errores' => $errores
+                ], 207); // 207: Multi-Status
+            }
+
+            return response()->json([
+                'message' => 'Todas las relaciones registradas exitosamente.',
+                'guardados' => $registrosGuardados
+            ], 201);
+
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
-                'message' => 'Error al crear los niveles',
-                'error'   => $e->getMessage(),
-                'status'  => 500
+                'message' => 'Error al registrar las relaciones.',
+                'error' => $e->getMessage()
             ], 500);
         }
-    
-        return response()->json([
-            'message' => 'Niveles creados exitosamente',
-            'niveles_guardados' => $nivelesGuardados,
-            'status'  => 201
-        ], 201);
     }
+
 
     public function nivelesPorArea($id_area)
     {

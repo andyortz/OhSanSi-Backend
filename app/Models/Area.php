@@ -6,34 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Area extends Model
 {
-    
-    
     protected $table = 'areas_competencia';
-
-      // Deshabilitar timestamps
+    protected $primaryKey = 'id_area';
     public $timestamps = false;
 
-    protected $primaryKey = 'id_area'; 
     protected $fillable = [
-        'id_olimpiada',
         'nombre',
-        'imagen',
-        'limite_categoria',
     ];
-    
+
     public function setNombreAttribute($value)
     {
         $this->attributes['nombre'] = strtoupper($value);
     }
 
-    public function olimpiada()
+    public function asociaciones()
     {
-        return $this->belongsTo(Olimpiada::class, 'id_olimpiada');
+        return $this->hasMany(NivelAreaOlimpiada::class, 'id_area');
     }
-    
-    public function niveles()
-    {
-        return $this->hasMany(NivelCategoria::class, 'id_area');
-    }
-
 }
