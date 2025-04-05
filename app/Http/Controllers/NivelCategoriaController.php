@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\NivelCategoria;
-use App\Models\NivelGrado;
 use App\Models\Grado;
+use App\Models\NivelGrado;
 use App\Models\NivelAreaOlimpiada;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -27,10 +27,10 @@ class NivelCategoriaController extends Controller
         DB::beginTransaction();
         try {
             foreach ($datos as $index => $registro) {
-                // Validaciones básicas
+                // Validar campos requeridos
                 $faltantes = [];
-                foreach (['id_nivel', 'id_area', 'id_olimpiada'] as $campo) {
-                    if (empty($registro[$campo])) {
+                foreach (['id_nivel', 'id_area', 'id_olimpiada', 'grados'] as $campo) {
+                    if (!isset($registro[$campo]) || empty($registro[$campo])) {
                         $faltantes[] = $campo;
                     }
                 }
@@ -40,41 +40,41 @@ class NivelCategoriaController extends Controller
                     continue;
                 }
 
-                // Validar que la relación no exista
-                $existe = NivelAreaOlimpiada::where('id_nivel', $registro['id_nivel'])
-                    ->where('id_area', $registro['id_area'])
-                    ->where('id_olimpiada', $registro['id_olimpiada'])
-                    ->exists();
-
-                if ($existe) {
-                    $errores[] = "Item #" . ($index + 1) . ": Ya existe esta relación.";
-                    continue;
-                }
-
-                // Crear la relación
-                $registroNuevo = NivelAreaOlimpiada::create([
+                // Crear relación en niveles_areas_olimpiadas si no existe
+                $existeRelacion = DB::table('niveles_areas_olimpiadas')->where([
                     'id_nivel' => $registro['id_nivel'],
                     'id_area' => $registro['id_area'],
-                    'id_olimpiada' => $registro['id_olimpiada'],
-                ]);
+                    'id_olimpiada' => $registro['id_olimpiada']
+                ])->exists();
 
-                $registrosGuardados[] = $registroNuevo;
+                if (!$existeRelacion) {
+                    DB::table('niveles_areas_olimpiadas')->insert([
+                        'id_nivel' => $registro['id_nivel'],
+                        'id_area' => $registro['id_area'],
+                        'id_olimpiada' => $registro['id_olimpiada']
+                    ]);
+                }
+
+                // Registrar grados asociados al nivel
+                foreach ($registro['grados'] as $id_grado) {
+                    DB::table('grados_niveles')->updateOrInsert([
+                        'id_nivel' => $registro['id_nivel'],
+                        'id_grado' => $id_grado
+                    ]);
+                }
+
+                $registrosGuardados[] = $registro;
             }
 
             DB::commit();
 
-            if (!empty($errores)) {
-                return response()->json([
-                    'message' => 'Algunas relaciones fueron registradas, pero otras fallaron.',
-                    'guardados' => $registrosGuardados,
-                    'errores' => $errores
-                ], 207); // 207: Multi-Status
-            }
-
             return response()->json([
-                'message' => 'Todas las relaciones registradas exitosamente.',
-                'guardados' => $registrosGuardados
-            ], 201);
+                'message' => empty($errores) 
+                    ? 'Relaciones registradas exitosamente.' 
+                    : 'Algunas relaciones fueron registradas, pero otras fallaron.',
+                'guardados' => $registrosGuardados,
+                'errores' => $errores
+            ], empty($errores) ? 201 : 207);
 
         } catch (\Exception $e) {
             DB::rollBack();
