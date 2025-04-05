@@ -23,13 +23,13 @@ class StoreOlympiadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //'id_olimpiada' => 'required|integer|unique:olympiads',
             'gestion' => [
                 'required',
                 'integer',
                 'min:2000',
                 'max:2200',
                 Rule::unique('olimpiadas')->ignore($this->olympiad) // Ignora el registro actual al editar
+                
             ],
             'costo' => 'required|numeric|min:0|max:999999.99',
             'fecha_inicio' => 'required|date',

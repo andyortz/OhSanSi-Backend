@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -16,4 +17,33 @@ class NivelAreaOlimpiada extends Model
 
     public $incrementing = false;
     protected $primaryKey = null;
+    // Relaciones
+    public function olimpiada()
+    {
+        return $this->belongsTo(Olimpiada::class, 'id_olimpiada', 'id_olimpiada');
+    }
+    
+    public function area()
+    {
+        return $this->belongsTo(AreaCompetencia::class, 'id_area', 'id_area');
+    }
+    
+    public function nivel()
+    {
+        return $this->belongsTo(NivelCategoria::class, 'id_nivel', 'id_nivel');
+    }
+    
+    public function getRouteKeyName()
+    {
+        return 'id_olimpiada';
+    }    
+    public function resolveRouteBinding($value, $field = null)
+    {
+        $parts = explode('-', $value);
+        return $this->where([
+            'id_olimpiada' => $parts[0],
+            'id_area' => $parts[1],
+            'id_nivel' => $parts[2],
+        ])->firstOrFail();
+    }
 }
