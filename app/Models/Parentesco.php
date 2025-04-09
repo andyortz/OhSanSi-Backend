@@ -12,7 +12,6 @@ class Parentesco extends Model
     protected $fillable = [
         'id_olimpista',
         'id_tutor',
-        'parentesco',
     ];
 
     public function tutor()

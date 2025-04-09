@@ -11,18 +11,11 @@ class Grado extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nombre_grado',
-        'nivel_academico',
-        'orden'
+        'nombre_grado'
     ];
 
-    public function setnombreGradoAttribute($value)
+    public function setNombreGradoAttribute($value)
     {
         $this->attributes['nombre_grado'] = strtoupper($value);
     }
-    public function setnivelAcademicoAttribute($value)
-    {
-        $this->attributes['nivel_academico'] = strtoupper($value);
-    }
-
 }

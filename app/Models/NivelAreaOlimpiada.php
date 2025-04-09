@@ -13,11 +13,11 @@ class NivelAreaOlimpiada extends Model
         'id_nivel',
         'id_area',
         'id_olimpiada',
+        'max_niveles',
     ];
 
     public $incrementing = false;
     protected $primaryKey = null;
-    // Relaciones
     public function olimpiada()
     {
         return $this->belongsTo(Olimpiada::class, 'id_olimpiada', 'id_olimpiada');
@@ -25,7 +25,7 @@ class NivelAreaOlimpiada extends Model
     
     public function area()
     {
-        return $this->belongsTo(AreaCompetencia::class, 'id_area', 'id_area');
+        return $this->belongsTo(Area::class, 'id_area', 'id_area');
     }
     
     public function nivel()
