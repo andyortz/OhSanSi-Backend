@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Olimpiada extends Model
 {
     protected $table = 'olimpiadas';
-    protected $primaryKey = 'id_olimpiada'; 
+    protected $primaryKey = 'id_olimpiada';
     public $timestamps = false;
 
     protected $fillable = [
@@ -16,16 +16,11 @@ class Olimpiada extends Model
         'fecha_inicio',
         'fecha_fin',
         'creado_en',
-        'max_categorias_olimpista', 
+        'max_categorias_olimpista'
     ];
 
-    public function setNombreAttribute($value)
+    public function nivelesAreas()
     {
-        $this->attributes['nombre'] = strtoupper($value);
-    }
-
-    public function areas()
-    {
-        return $this->hasMany(Area::class, 'id_olimpiada');
+        return $this->hasMany(NivelAreaOlimpiada::class, 'id_olimpiada');
     }
 }

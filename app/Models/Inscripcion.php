@@ -12,7 +12,6 @@ class Inscripcion extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_olimpiada',
         'id_olimpista',
         'id_nivel',
         'id_pago',
@@ -20,15 +19,9 @@ class Inscripcion extends Model
         'estado',
     ];
 
-
     public function olimpista()
     {
         return $this->belongsTo(Olimpista::class, 'id_olimpista');
-    }
-
-    public function olimpiada()
-    {
-        return $this->belongsTo(Olimpiada::class, 'id_olimpiada');
     }
 
     public function nivel()
@@ -38,6 +31,6 @@ class Inscripcion extends Model
 
     public function pago()
     {
-        return $this->belongsTo(Pago::class, 'id_pago');
+        return $this->belongsTo(Pagos::class, 'id_pago');
     }
 }
