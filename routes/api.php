@@ -21,8 +21,7 @@ use App\Http\Controllers\VincularController;
 use App\Http\Controllers\EstructuraOlimpiadaController;
 use App\Http\Controllers\OlimpiadaController;
 use App\Http\Controllers\VerificarInscripcionController;
-
-
+use App\Http\Controllers\InscripcionNivelesController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -43,7 +42,8 @@ Route::get('/areas/{id}/niveles', [NivelCategoriaController::class, 'nivelesPorA
 Route::get('/get-niveles', [NivelCategoriaController::class, 'index']);
 Route::get('/olimpiadas/{id}/max-categorias', [OlimpiadaAreaController::class, 'maxCategorias']);
 
-Route::post('/inscripciones', [InscripcionAreaController::class, 'store']);
+//Route::post('/inscripciones', [InscripcionAreaController::class, 'store']);
+Route::post('/inscripciones', [InscripcionNivelesController::class, 'store']);
 
 // Tutores
 Route::post('/tutores', [TutoresControllator::class, 'store']);
