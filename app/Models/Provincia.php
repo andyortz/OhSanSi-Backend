@@ -26,4 +26,9 @@ class Provincia extends Model
     {
         return $this->belongsTo(Departamento::class, 'id_departamento');
     }
+
+    public function asociaciones()
+    {
+        return $this->hasMany(Colegio::class, 'provincia');
+    }
 }

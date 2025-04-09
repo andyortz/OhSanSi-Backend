@@ -14,9 +14,9 @@ class OlimpistasSeeder extends Seeder
             'apellidos' => 'Isa',
             'cedula_identidad' => 8,
             'fecha_nacimiento' => '2025-04-09',
+            'correo_electronico' => 'deysonIsa@gmail.com',
             'unidad_educativa' => 1,
             'id_grado' => 6,
-            'id_provincia' => 2,
         ]);
     }
 }
