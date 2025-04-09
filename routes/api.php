@@ -18,6 +18,7 @@ use App\Http\Controllers\AreasFiltroController;
 use App\Http\Controllers\OlimpistaController;
 use App\Http\Controllers\VincularController;
 use App\Http\Controllers\EstructuraOlimpiadaController;
+use App\Http\Controllers\OlimpiadaController;
 
 
 
@@ -76,3 +77,4 @@ Route::get('/estructura-olimpiada/{id_olimpiada}', [EstructuraOlimpiadaControlle
 
 //new db
 Route::post('/vincular-olimpista-tutor', [VincularController::class, 'registrarConParentesco']);
+Route::get('/olimpiada/abierta', [OlimpiadaController::class, 'verificarOlimpiadaAbierta']);
