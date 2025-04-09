@@ -16,7 +16,10 @@ use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\OlimpiadaGestionController;
 use App\Http\Controllers\AreasFiltroController;
 use App\Http\Controllers\OlimpistaController;
+use App\Http\Controllers\VincularController;
 use App\Http\Controllers\EstructuraOlimpiadaController;
+use App\Http\Controllers\OlimpiadaController;
+
 
 
 Route::get('/user', function (Request $request) {
@@ -69,4 +72,9 @@ Route::get('/provincias/{id}', [ProvinciaController::class, 'porDepartamento']);
 
 Route::get('/olimpistas/{id_olimpista}/olimpiadas/{id_olimpiada}/areas-disponibles', [AreasFiltroController::class, 'obtenerAreasDisponibles']);
 
+
 Route::get('/estructura-olimpiada/{id_olimpiada}', [EstructuraOlimpiadaController::class, 'obtenerEstructuraOlimpiada']);
+
+//new db
+Route::post('/vincular-olimpista-tutor', [VincularController::class, 'registrarConParentesco']);
+Route::get('/olimpiada/abierta', [OlimpiadaController::class, 'verificarOlimpiadaAbierta']);
