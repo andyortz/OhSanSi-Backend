@@ -15,6 +15,7 @@ use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\OlimpiadaGestionController;
 use App\Http\Controllers\AreasFiltroController;
+use App\Http\Controllers\colegiosController;
 use App\Http\Controllers\OlimpistaController;
 use App\Http\Controllers\VincularController;
 use App\Http\Controllers\EstructuraOlimpiadaController;
@@ -52,6 +53,8 @@ Route::get('/areas', [AreasController::class, 'index']);
 Route::post('/areas', [AreasController::class, 'store']);
 Route::get('/areas-niveles-grados', [AreasController::class, 'areasConNivelesYGrados']);
 
+//Colegios
+Route::get('/colegios', [colegiosController::class, 'index']);
 //Olimpiadas
 Route::get('/olimpiadas', [OlimpiadaGestionController::class, 'index']);
 Route::post('/olympiad-registration', [OlympiadRegistrationController::class, 'store']);
