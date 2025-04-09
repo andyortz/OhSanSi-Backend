@@ -30,13 +30,10 @@ class StoreStudentRegistrationRequest extends FormRequest
                 'numeric',
                 Rule::unique('olimpistas')->ignore($this->student)
             ],
-            'numero_celular' => 'required|numeric',
             'correo_electronico' => 'required|email',
             'fecha_nacimiento' => 'required|date',
             'unidad_educativa' => 'required|string',
             'id_grado' => 'required|integer',
-            'id_provincia' => 'required|integer',
-            'id_tutor' => 'required|integer'
         ];
     }
     public function messages(): array
@@ -46,12 +43,9 @@ class StoreStudentRegistrationRequest extends FormRequest
             'nombres.required' => 'El nombre es obligatorio',
             'apellidos.required' => 'El apllido es obligatorio',
             'cedula_identidad.required' => 'La cedula de identidad es obligatoria',
-            'numero_celular.required' => 'El numero de celular es obligatorio',
             'correo_electronico.required' => 'El correo electronico es obligatorio',
             'unidad_educativa.required' => 'La unidad educativa es obligatoria',
             'id_grado.required' => 'El grado es obligatorio',
-            'id_provincia.required' => 'La provincia es obligatoria',
-            'id_tutor.required' => 'El tutor es obligatorio',
         ];
     }
 }

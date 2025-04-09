@@ -14,13 +14,10 @@ class StudentRegistration extends Model
         'nombres',
         'apellidos',
         'cedula_identidad',
-        'numero_celular',
         'correo_electronico',
         'fecha_nacimiento',
         'unidad_educativa',
         'id_grado',
-        'id_provincia',
-        'id_tutor'
     ];
 
     public function setNombresAttribute($value)
@@ -36,14 +33,6 @@ class StudentRegistration extends Model
         $this->attributes['unidad_educativa'] = strtoupper($value);
     }
     
-    public function provincia()
-    {
-        return $this->belongsTo(Provincia::class, 'id_provincia');
-    }
-    public function tutor()
-    {
-        return $this->belongsTo(Grado::class, 'id_tutor');
-    }
     public function grado()
     {
         return $this->belongsTo(Grado::class, 'id_grado');
