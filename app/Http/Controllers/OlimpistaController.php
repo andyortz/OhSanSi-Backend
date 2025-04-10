@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Olimpista;
-use App\Http\Requests\StoreStudentRegistrationRequest;
+use App\Http\Requests\StoreOlimpistaRequest;
 
 class OlimpistaController extends Controller
 {
@@ -26,10 +26,10 @@ class OlimpistaController extends Controller
             : response()->json(['message' => 'No encontrado'], 404);
     }
 
-    public function store(StoreStudentRegistrationRequest $request)
+    public function store(StoreOlimpistaRequest $request)
     {
         try {
-            $student = Olimpista::create($request->validated());    
+            $student = StoreOlimpistaRequest::create($request->validated());    
             return response()->json([
                 'message' => 'Olimpista creado exitosamente',
                 'olimpista'   => $student

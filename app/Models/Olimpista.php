@@ -10,17 +10,18 @@ class Olimpista extends Model
     protected $primaryKey = 'id_olimpista';
     protected $keyType = 'int';
     public $timestamps = false;
-
     protected $fillable = [
         'nombres',
         'apellidos',
         'cedula_identidad',
-        'correo_electronico',
         'fecha_nacimiento',
+        'correo_electronico',
         'unidad_educativa',
-        'id_grado',
+        'id_grado'
     ];
-
+    protected $casts = [
+        'fecha_nacimiento' => 'date',
+    ];
     public function setNombresAttribute($value)
     {
         $this->attributes['nombres'] = strtoupper($value);
