@@ -65,18 +65,18 @@ Route::get('/olympiad/{gestion}', [OlimpiadaGestionController::class, 'show']);
 //Olimpista Regitro
 Route::post('/student-registration', [StudentRegistrationController::class, 'store']);
 Route::get('/student-registration', [StudentRegistrationController::class, 'index']);
+
 //Olimpista
 Route::get('olimpistas/cedula/{cedula}', [OlimpistaController::class, 'getByCedula']);
 Route::get('olimpistas/email/{email}', [OlimpistaController::class, 'getByEmail']);
+Route::post('/olimpistas',[OlimpistaController::class, 'store']);
+
 //Departamentos
 Route::get('/departamentos', [DepartamentoController::class, 'index']);
 
 //Provincias
 Route::get('/provincias/{id}', [ProvinciaController::class, 'porDepartamento']);
-
 Route::get('/olimpistas/{id_olimpista}/olimpiadas/{id_olimpiada}/areas-disponibles', [AreasFiltroController::class, 'obtenerAreasDisponibles']);
-
-
 Route::get('/estructura-olimpiada/{id_olimpiada}', [EstructuraOlimpiadaController::class, 'obtenerEstructuraOlimpiada']);
 
 //new db

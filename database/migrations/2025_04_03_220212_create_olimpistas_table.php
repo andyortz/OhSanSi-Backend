@@ -17,20 +17,19 @@ return new class extends Migration
             $table->string('apellidos', 100);
             $table->integer('cedula_identidad');
             $table->date('fecha_nacimiento');
+            $table->string('correo_electronico',100);
             
 
             // Foreign keys
             $table->unsignedBigInteger('unidad_educativa');
             $table->unsignedBigInteger('id_grado');
-            $table->unsignedSmallInteger('id_provincia');
 
             //Relación a unidad educativa
             $table->foreign('unidad_educativa')->references('id_colegio')->on('colegios')->onDelete('restrict');
             // Relación a grados
             $table->foreign('id_grado')->references('id_grado')->on('grados')->onDelete('restrict');
 
-            // Relación a provincias
-            $table->foreign('id_provincia')->references('id_provincia')->on('provincias')->onDelete('restrict');
+            
         });
     }
 

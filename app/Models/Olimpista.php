@@ -10,19 +10,18 @@ class Olimpista extends Model
     protected $primaryKey = 'id_olimpista';
     protected $keyType = 'int';
     public $timestamps = false;
-
     protected $fillable = [
         'nombres',
         'apellidos',
         'cedula_identidad',
-        'numero_celular',
-        'correo_electronico',
         'fecha_nacimiento',
+        'correo_electronico',
         'unidad_educativa',
-        'id_grado',
-        'id_provincia',
+        'id_grado'
     ];
-
+    protected $casts = [
+        'fecha_nacimiento' => 'date',
+    ];
     public function setNombresAttribute($value)
     {
         $this->attributes['nombres'] = strtoupper($value);
@@ -37,12 +36,14 @@ class Olimpista extends Model
     {
         $this->attributes['unidad_educativa'] = strtoupper($value);
     }
-
+    public function grado()
+    {
+        return $this->belongsTo(Grado::class, 'id_grado');
+    }
     public function inscripciones()
     {
         return $this->hasMany(Inscripcion::class, 'id_olimpista');
     }
-
     public function parentescos()
     {
         return $this->hasMany(Parentesco::class, 'id_olimpista');
