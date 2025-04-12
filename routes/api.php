@@ -22,6 +22,7 @@ use App\Http\Controllers\EstructuraOlimpiadaController;
 use App\Http\Controllers\OlimpiadaController;
 use App\Http\Controllers\VerificarInscripcionController;
 use App\Http\Controllers\InscripcionNivelesController;
+use App\Imports\OlimpistaImport;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -70,6 +71,14 @@ Route::get('/student-registration', [StudentRegistrationController::class, 'inde
 Route::get('olimpistas/cedula/{cedula}', [OlimpistaController::class, 'getByCedula']);
 Route::get('olimpistas/email/{email}', [OlimpistaController::class, 'getByEmail']);
 Route::post('/olimpistas',[OlimpistaController::class, 'store']);
+Route::post('/olimpistas/excel', function() {
+    try {
+        Excel::import(new OlimpistaImport, request()->file('file'));
+        return response()->json(['message' => 'Archivo importado con éxito'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Error al importar el archivo', 'error' => $e->getMessage()], 400);
+    }
+});
 
 //Departamentos
 Route::get('/departamentos', [DepartamentoController::class, 'index']);
