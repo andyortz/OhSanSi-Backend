@@ -23,6 +23,7 @@ use App\Http\Controllers\OlimpiadaController;
 use App\Http\Controllers\VerificarInscripcionController;
 use App\Http\Controllers\InscripcionNivelesController;
 use App\Imports\OlimpistaImport;
+use App\Imports\TutoresImport;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -49,6 +50,14 @@ Route::post('/inscripciones', [InscripcionNivelesController::class, 'store']);
 // Tutores
 Route::post('/tutores', [TutoresControllator::class, 'store']);
 Route::get('/tutores',[TutoresControllator::class,'buscarCi' ]);
+route::post('/tutores/excel', function() {
+    try {
+        Excel::import(new TutoresImport, request()->file('file'));
+        return response()->json(['message' => 'Archivo importado con éxito'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Error al importar el archivo', 'error' => $e->getMessage()], 400);
+    }
+});
 
 // Áreas
 Route::get('/areas', [AreasController::class, 'index']);
