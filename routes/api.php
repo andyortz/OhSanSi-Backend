@@ -24,6 +24,8 @@ use App\Http\Controllers\VerificarInscripcionController;
 use App\Http\Controllers\InscripcionNivelesController;
 use App\Imports\OlimpistaImport;
 use App\Imports\TutoresImport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();

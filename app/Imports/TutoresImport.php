@@ -17,7 +17,7 @@ class TutoresImport implements ToCollection
         foreach($collection as $row)
         {
             // dd($row);
-            Tutores::create([
+            Tutor::create([
                 'nombres'=>$row[10],
                 'apellidos'=>$row[11],
                 'ci'=>$row[12],

@@ -18,7 +18,7 @@ class OlimpistaImport implements ToCollection
         //
         foreach($collection as $row)
         {
-            $unidadEducatia = $this->ZfindUnidadEducativa($row[6]);
+            $unidadEducatia = $this->findUnidadEducativa($row[6]);
             $grado = $this->findGrado($row[7]);
             Olimpista::create([
                 'nombres'=>$row[1],
