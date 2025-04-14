@@ -22,6 +22,10 @@ use App\Http\Controllers\EstructuraOlimpiadaController;
 use App\Http\Controllers\OlimpiadaController;
 use App\Http\Controllers\VerificarInscripcionController;
 use App\Http\Controllers\InscripcionNivelesController;
+use App\Imports\OlimpistaImport;
+use App\Imports\TutoresImport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -48,6 +52,14 @@ Route::post('/inscripciones', [InscripcionNivelesController::class, 'store']);
 // Tutores
 Route::post('/tutores', [TutoresControllator::class, 'store']);
 Route::get('/tutores',[TutoresControllator::class,'buscarCi' ]);
+route::post('/tutores/excel', function() {
+    try {
+        Excel::import(new TutoresImport, request()->file('file'));
+        return response()->json(['message' => 'Archivo importado con éxito'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Error al importar el archivo', 'error' => $e->getMessage()], 400);
+    }
+});
 
 // Áreas
 Route::get('/areas', [AreasController::class, 'index']);
@@ -55,7 +67,8 @@ Route::post('/areas', [AreasController::class, 'store']);
 Route::get('/areas-niveles-grados', [AreasController::class, 'areasConNivelesYGrados']);
 
 //Colegios
-Route::get('/colegios', [colegiosController::class, 'index']);
+Route::get('/colegios', [ColegiosController::class, 'index']);
+Route::get('/colegios/{id}', [ColegiosController::class, 'porProvincia']);
 //Olimpiadas
 Route::get('/olimpiadas', [OlimpiadaGestionController::class, 'index']);
 Route::post('/olympiad-registration', [OlympiadRegistrationController::class, 'store']);
@@ -70,6 +83,14 @@ Route::get('/student-registration', [StudentRegistrationController::class, 'inde
 Route::get('olimpistas/cedula/{cedula}', [OlimpistaController::class, 'getByCedula']);
 Route::get('olimpistas/email/{email}', [OlimpistaController::class, 'getByEmail']);
 Route::post('/olimpistas',[OlimpistaController::class, 'store']);
+Route::post('/olimpistas/excel', function() {
+    try {
+        Excel::import(new OlimpistaImport, request()->file('file'));
+        return response()->json(['message' => 'Archivo importado con éxito'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Error al importar el archivo', 'error' => $e->getMessage()], 400);
+    }
+});
 
 //Departamentos
 Route::get('/departamentos', [DepartamentoController::class, 'index']);

@@ -12,6 +12,7 @@ class ParentescosSeeder extends Seeder
         Parentesco::create([
             'id_olimpista' => 1,
             'id_tutor' => 1,
+            'rol_parentesco' => 'Tutor Academico',
         ]);
     }
 }
