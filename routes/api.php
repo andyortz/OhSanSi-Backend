@@ -55,7 +55,8 @@ Route::post('/areas', [AreasController::class, 'store']);
 Route::get('/areas-niveles-grados', [AreasController::class, 'areasConNivelesYGrados']);
 
 //Colegios
-Route::get('/colegios', [colegiosController::class, 'index']);
+Route::get('/colegios', [ColegiosController::class, 'index']);
+Route::get('/colegios/{id}', [ColegiosController::class, 'porProvincia']);
 //Olimpiadas
 Route::get('/olimpiadas', [OlimpiadaGestionController::class, 'index']);
 Route::post('/olympiad-registration', [OlympiadRegistrationController::class, 'store']);
