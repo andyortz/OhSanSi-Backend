@@ -10,13 +10,14 @@ class Tutor extends Model
     public $timestamps = false;
 
     protected $primaryKey = 'id_tutor';
+    public $incrementing = true;
+    protected $keyType = 'int';
     protected $fillable = [
         'nombres',
         'apellidos',
         'ci',
         'celular',
         'correo_electronico',
-        'rol_parentesco'
     ];
 
     public function setNombresAttribute($value)
