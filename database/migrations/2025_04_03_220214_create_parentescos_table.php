@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('parentescos', function (Blueprint $table) {
             $table->unsignedMediumInteger('id_olimpista');
             $table->unsignedMediumInteger('id_tutor');
+            $table->enum('rol_parentesco', ['Tutor Legal', 'Tutor Academico']);
 
 
             $table->foreign('id_olimpista')->references('id_olimpista')->on('olimpistas')->onDelete('cascade');

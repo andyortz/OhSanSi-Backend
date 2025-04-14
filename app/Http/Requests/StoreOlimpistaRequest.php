@@ -34,6 +34,8 @@ class StoreOlimpistaRequest extends FormRequest
             'fecha_nacimiento' => 'required|date',
             'unidad_educativa' => 'required|string',
             'id_grado' => 'required|integer',
+
+            'ci_tutor' => ['required', 'integer', 'exists:tutores,ci'],
         ];
     }
     public function messages(): array

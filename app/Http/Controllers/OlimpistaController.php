@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Olimpista;
+use App\Models\Parentesco;
+use App\Models\Tutor;
 use App\Http\Requests\StoreOlimpistaRequest;
 
 class OlimpistaController extends Controller
@@ -29,16 +31,32 @@ class OlimpistaController extends Controller
     public function store(StoreOlimpistaRequest $request)
     {
         try {
-            $student = StoreOlimpistaRequest::create($request->validated());    
+            $data = $request->validated();
+            $ciTutor = $data['ci_tutor'];
+            unset($data['ci_tutor']);
+    
+            $olimpista = Olimpista::create($data);
+            $tutor = Tutor::where('ci', $ciTutor)->first();
+    
+            if (!$tutor) {
+                return response()->json(['message' => 'No se encontró un tutor con esa cédula'], 404);
+            }
+    
+            Parentesco::create([
+                'id_olimpista' => $olimpista->id_olimpista,
+                'id_tutor' => $tutor->id_tutor,
+                'rol_parentesco' => 'Tutor Legal'
+            ]);
+    
             return response()->json([
-                'message' => 'Olimpista creado exitosamente',
-                'olimpista'   => $student
+                'message' => 'Olimpista y vínculo con tutor creados correctamente',
+                'olimpista' => $olimpista
             ], 201);
     
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return response()->json([
-                'message' => 'Error al crear al olimpista',
-                'error'   => $e->getMessage()
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ], 500);
         }
     }

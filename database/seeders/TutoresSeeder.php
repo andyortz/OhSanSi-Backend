@@ -15,7 +15,6 @@ class TutoresSeeder extends Seeder
             'ci' => 9,
             'celular' => 9,
             'correo_electronico' => 'leti',
-            'rol_parentesco' => 'Tutor Academico',
         ]);
     }
 }
