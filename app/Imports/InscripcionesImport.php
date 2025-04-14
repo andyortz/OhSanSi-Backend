@@ -4,30 +4,18 @@ namespace App\Imports;
 
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use App\Services\ImportHelpers\GradoResolver;
+use App\Services\ImportHelpers\DepartamentoResolver;
+use App\Services\ImportHelpers\ProvinciaResolver;
 
 class InscripcionesImport implements ToCollection
 {
-    private $grados = [
-        '1ro de Primaria' => 1,
-        '2do de Primaria' => 2,
-        '3ro de Primaria' => 3,
-        '4to de Primaria' => 4,
-        '5to de Primaria' => 5,
-        '6to de Primaria' => 6,
-        '1ro de Secundaria' => 7,
-        '2do de Secundaria' => 8,
-        '3ro de Secundaria' => 9,
-        '4to de Secundaria' => 10,
-        '5to de Secundaria' => 11,
-        '6to de Secundaria' => 12,
-    ];
-
     public function collection(Collection $rows)
     {
-        $rows->shift();
+        $rows->shift(); //heads
+        $rows->shift(); //example
 
         foreach ($rows as $index => $row) {
-            // Ignorar filas completamente vacías
             if ($row->filter()->isEmpty()) continue;
 
             if (!$row[0] || !$row[1] || !$row[2] || !$row[8]) {
@@ -35,10 +23,21 @@ class InscripcionesImport implements ToCollection
                 continue;
             }
 
-            $gradoTexto = trim($row[8]);
-            $idGrado = $this->grados[$gradoTexto] ?? null;
+            $idGrado = GradoResolver::resolve($row[8]);
             if (!$idGrado) {
-                logger()->error("Fila $index: Grado inválido: $gradoTexto");
+                logger()->error("Fila $index: Grado inválido: {$row[8]}");
+                continue;
+            }
+
+            $idDepartamento = DepartamentoResolver::resolve($row[5]);
+            if (!$idDepartamento) {
+                logger()->error("Fila $index: Departamento inválido: {$row[5]}");
+                continue;
+            }
+
+            $idProvincia = ProvinciaResolver::resolve($row[6], $idDepartamento);
+            if (!$idProvincia) {
+                logger()->error("Fila $index: No se pudo encontrar la provincia ni asignar 'Otro'");
                 continue;
             }
 
@@ -48,8 +47,8 @@ class InscripcionesImport implements ToCollection
                 'cedula_identidad' => $row[2],
                 'fecha_nacimiento' => $row[3],
                 'correo_electronico' => $row[4],
-                'departamento' => $row[5],
-                'provincia' => $row[6],
+                'id_departamento' => $idDepartamento,
+                'id_provincia' => $idProvincia,
                 'unidad_educativa' => $row[7],
                 'id_grado' => $idGrado,
             ];
@@ -65,7 +64,7 @@ class InscripcionesImport implements ToCollection
 
             $inscripcion = [
                 'area' => $row[15],
-                'nivel_categoria' => $row[16]
+                'nivel_categoria' => $row[16],
             ];
 
             logger()->info("Fila $index procesada correctamente.", compact('olimpista', 'tutor', 'inscripcion'));
