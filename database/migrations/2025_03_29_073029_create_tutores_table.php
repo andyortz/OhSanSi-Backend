@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('ci');
             $table->integer('celular');
             $table->string('correo_electronico', 100);
-            $table->enum('rol_parentesco', ['Tutor Legal', 'Tutor Academico']);
 
         });
     }
