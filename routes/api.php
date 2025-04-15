@@ -114,3 +114,6 @@ Route::get('/verificar-inscripcion', [VerificarInscripcionController::class, 've
 
 //Areas de inscripcion para un Olimpista
 Route::get('/olimpistas/{ci}/areas-niveles', [OlimpistaController::class, 'getAreasNivelesInscripcion']);
+
+//maxima cantidad de categorias
+Route::get('/olimpiada/max-categorias', [OlimpiadaController::class, 'getMaxCategorias']);
