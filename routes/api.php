@@ -85,4 +85,4 @@ Route::get('/olimpiada/abierta', [OlimpiadaController::class, 'verificarOlimpiad
 Route::get('/verificar-inscripcion', [VerificarInscripcionController::class, 'verificar']);
 
 //Areas de inscripcion para un Olimpista
-Route::get('/areas/{ci}/inscripcion', [OlimpistaController::class, 'getAreasInscripcion']);
+Route::get('/olimpistas/{ci}/areas-niveles', [OlimpistaController::class, 'getAreasNivelesInscripcion']);
