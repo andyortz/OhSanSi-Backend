@@ -22,6 +22,7 @@ use App\Http\Controllers\EstructuraOlimpiadaController;
 use App\Http\Controllers\OlimpiadaController;
 use App\Http\Controllers\VerificarInscripcionController;
 use App\Http\Controllers\InscripcionNivelesController;
+use App\Http\Controllers\ParentescoController;
 use App\Imports\OlimpistaImport;
 use App\Imports\TutoresImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -50,7 +51,7 @@ Route::get('/olimpiadas/{id}/max-categorias', [OlimpiadaAreaController::class, '
 Route::post('/inscripciones', [InscripcionNivelesController::class, 'store']);
 
 // inscrpcion con posible tutor
-Route::post('/inscripciones-con-tutor', [InscripcionController::class, 'storeWithTutor']);
+Route::post('/inscripciones-con-tutor', [InscripcionNivelesController::class, 'storeWithTutor']);
 
 //Asociar Tutor con Olimpista mediante tabla Parentesco
 Route::post('/asociar-tutor', [ParentescoController::class, 'asociarTutor']);
@@ -113,3 +114,6 @@ Route::get('/verificar-inscripcion', [VerificarInscripcionController::class, 've
 
 //Areas de inscripcion para un Olimpista
 Route::get('/olimpistas/{ci}/areas-niveles', [OlimpistaController::class, 'getAreasNivelesInscripcion']);
+
+//maxima cantidad de categorias
+Route::get('/olimpiada/max-categorias', [OlimpiadaController::class, 'getMaxCategorias']);

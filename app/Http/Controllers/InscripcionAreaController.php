@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreInscripcionRequest;
 use App\Models\Inscripcion;
 use App\Models\Pagos;
 use App\Models\NivelCategoria;
 use App\Models\Area;
+use App\Http\Requests\StoreInscripcionRequest;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
 
 class InscripcionAreaController extends Controller
 {

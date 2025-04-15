@@ -6,8 +6,10 @@ use App\Models\Pagos;
 use App\Models\Olimpista;
 use App\Models\Inscripcion;
 use App\Models\Tutor;
+use App\Http\Controllers\ParentescoController;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -63,54 +65,75 @@ class InscripcionNivelesController extends Controller
             ], 500);
         }
     }
-    public function storeWithTutor(StoreInscripcionRequest $request)
+    public function storeWithTutor(Request $request)
     {
-        // Primero llamar al endpoint de inscripción existente
-        $inscripcionResponse = Http::post(config('app.url').'/api/inscripciones', [
-            'ci_olimpista' => $request->ci_olimpista,
-            'areas' => $request->areas
-        ]);
-        if (!$inscripcionResponse->successful()) {
+        DB::beginTransaction();
+        try {
+            // Validación básica
+            $request->validate([
+                'ci' => 'required|exists:olimpistas,cedula_identidad',
+                'niveles' => 'required|array|min:1',
+                'ci_tutor' => 'nullable|exists:tutores,ci'
+            ]);
+    
+            // 1. Obtener olimpista
+            $olimpista = Olimpista::where('cedula_identidad', $request->ci)->first();
+            if (!$olimpista) {
+                throw new \Exception('Olimpista no encontrado');
+            }
+    
+            $inscripcionRequest = new Request([
+                'ci' => $request->ci,
+                'niveles' => $request->niveles
+            ]);
+
+            $inscripcionResponse = app(InscripcionNivelesController::class)->store($inscripcionRequest);
+            
+            if ($inscripcionResponse->getStatusCode() !== 201) {
+                $errorData = $inscripcionResponse->getData(true);
+                throw new \Exception('Error en inscripción: ' . ($errorData['message'] ?? 'Sin mensaje'));
+            }
+    
+            $responseData = [
+                'inscripciones' => $inscripcionResponse->getData(true),
+                'tutor_asociado' => false
+            ];
+    
+            // 3. Procesar tutor si existe
+            if ($request->ci_tutor) {
+                $tutor = Tutor::where('ci', $request->ci_tutor)->firstOrFail();
+                
+                $tutorRequest = new Request([
+                    'id_olimpista' => $olimpista->id_olimpista,
+                    'id_tutor' => $tutor->id_tutor
+                ]);
+                
+                // Llamar directamente al método que maneja la lógica
+                $tutorResponse = app(ParentescoController::class)->asociarTutor($tutorRequest);
+                
+                if ($tutorResponse->getStatusCode() !== 201) {
+                    $errorData = $tutorResponse->getData(true);
+                    throw new \Exception('Error en asociación tutor: ' . ($errorData['message'] ?? 'Sin mensaje'));
+                }
+
+                $responseData['tutor_asociado'] = true;
+            }
+
+            DB::commit();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Proceso completado',
+                'data' => $responseData
+            ]);
+    
+        } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'success' => false,
-                'message' => 'Error al crear inscripción',
-                'errors' => $inscripcionResponse->json()
-            ], $inscripcionResponse->status());
+                'message' => 'Error en el proceso',
+                'error' => $e->getMessage()
+            ], 500);
         }
-        $responseData = [
-            'inscripciones' => $inscripcionResponse->json(),
-            'tutor_asociado' => false
-        ];
-        // Si se proporcionó tutor, llamar al endpoint de asociación
-        if ($request->has('ci_tutor') && $request->ci_tutor) {
-            $olimpista = Olimpista::where('cedula_identidad', $request->ci_olimpista)->first();
-            try {
-                // Obtener el ID del tutor basado en su CI
-                $tutor = Tutor::where('ci_tutor', $request->ci_tutor)->firstOrFail();
-                
-                // Llamar al endpoint de asociación usando el ID del tutor
-                $tutorResponse = Http::post(config('app.url').'/api/asociar-tutor', [
-                    'ci_olimpista' => $olimpista->id_olimpista,
-                    'id_tutor' => $tutor->id
-                ]);
-    
-                $responseData['tutor_asociado'] = $tutorResponse->successful();
-                
-                if (!$tutorResponse->successful()) {
-                    $responseData['tutor_error'] = $tutorResponse->json();
-                }
-            } catch (\Exception $e) {
-                $responseData['tutor_error'] = [
-                    'message' => 'Error al encontrar el tutor',
-                    'error' => $e->getMessage()
-                ];
-            }
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Proceso completado',
-            'data' => $responseData
-        ]);
     }
 }
