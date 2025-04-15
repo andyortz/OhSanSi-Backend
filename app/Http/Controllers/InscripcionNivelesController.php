@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Pagos;
 use App\Models\Olimpista;
 use App\Models\Inscripcion;
+use App\Models\Tutor;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -60,5 +62,55 @@ class InscripcionNivelesController extends Controller
                 'line' => $e->getLine()
             ], 500);
         }
+    }
+    public function storeWithTutor(StoreInscripcionRequest $request)
+    {
+        // Primero llamar al endpoint de inscripción existente
+        $inscripcionResponse = Http::post(config('app.url').'/api/inscripciones', [
+            'ci_olimpista' => $request->ci_olimpista,
+            'areas' => $request->areas
+        ]);
+        if (!$inscripcionResponse->successful()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al crear inscripción',
+                'errors' => $inscripcionResponse->json()
+            ], $inscripcionResponse->status());
+        }
+        $responseData = [
+            'inscripciones' => $inscripcionResponse->json(),
+            'tutor_asociado' => false
+        ];
+        // Si se proporcionó tutor, llamar al endpoint de asociación
+        if ($request->has('ci_tutor') && $request->ci_tutor) {
+            $olimpista = Olimpista::where('cedula_identidad', $request->ci_olimpista)->first();
+            try {
+                // Obtener el ID del tutor basado en su CI
+                $tutor = Tutor::where('ci_tutor', $request->ci_tutor)->firstOrFail();
+                
+                // Llamar al endpoint de asociación usando el ID del tutor
+                $tutorResponse = Http::post(config('app.url').'/api/asociar-tutor', [
+                    'ci_olimpista' => $olimpista->id_olimpista,
+                    'id_tutor' => $tutor->id
+                ]);
+    
+                $responseData['tutor_asociado'] = $tutorResponse->successful();
+                
+                if (!$tutorResponse->successful()) {
+                    $responseData['tutor_error'] = $tutorResponse->json();
+                }
+            } catch (\Exception $e) {
+                $responseData['tutor_error'] = [
+                    'message' => 'Error al encontrar el tutor',
+                    'error' => $e->getMessage()
+                ];
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Proceso completado',
+            'data' => $responseData
+        ]);
     }
 }
