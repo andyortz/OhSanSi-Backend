@@ -35,4 +35,7 @@ return [
         ],
     ],
 
+    'excel_api' => [
+        'url' => env('EXCEL_API_BASE_URL'),
+    ],
 ];
