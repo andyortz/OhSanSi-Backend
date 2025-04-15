@@ -22,14 +22,15 @@ use App\Http\Controllers\EstructuraOlimpiadaController;
 use App\Http\Controllers\OlimpiadaController;
 use App\Http\Controllers\VerificarInscripcionController;
 use App\Http\Controllers\InscripcionNivelesController;
-use App\Imports\OlimpistaImport;
-use App\Imports\TutoresImport;
-use Maatwebsite\Excel\Facades\Excel;
-
+use App\Http\Controllers\ExcelImportController;
+use App\Http\Controllers\ExcelTestController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
+
+Route::post('/olimpistas/excel', [ExcelImportController::class, 'import']);
 
 // Niveles
 Route::post('/niveles', [NivelCategoriaController::class, 'store']);
@@ -89,3 +90,4 @@ Route::post('/vincular-olimpista-tutor', [VincularController::class, 'registrarC
 Route::get('/olimpiada/abierta', [OlimpiadaController::class, 'verificarOlimpiadaAbierta']);
 Route::get('/verificar-inscripcion', [VerificarInscripcionController::class, 'verificar']);
 Route::post('/registro-olimpista', [OlimpistaController::class, 'store']);
+

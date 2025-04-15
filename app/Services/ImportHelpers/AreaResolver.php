@@ -30,10 +30,10 @@ class AreaResolver
      */
     public static function getValidAreas(int $idOlimpiada): array
     {
-        return NivelAreaOlimpiada::with('areaCompetencia')
+        return NivelAreaOlimpiada::with('area')
         ->where('id_olimpiada', $idOlimpiada)
         ->get()
-        ->pluck('areaCompetencia.nombre')
+        ->pluck('area.nombre')
         ->map(fn($a) => strtolower(trim($a)))
         ->unique()
         ->values()

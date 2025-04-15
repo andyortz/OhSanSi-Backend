@@ -13,8 +13,14 @@ class ExcelService
     public static function registerTutor(array $tutor): ?int
     {
         try {
-            $url = config('services.excel_api.url') . '/tutores';
-            $response = Http::post($url, $tutor);
+            Log::info("➡️ Enviando datos del tutor al endpoint:", $tutor);
+
+            $response = Http::post('http://localhost:8000/api/tutores', $tutor);
+
+            Log::info("📥 Respuesta del endpoint de tutor:", [
+                'status' => $response->status(),
+                'body' => $response->json(),
+            ]);
 
             if ($response->status() === 201) {
                 return $response->json('tutor.id_tutor');
@@ -24,11 +30,11 @@ class ExcelService
                 return $response->json('id_tutor');
             }
 
-            Log::error("Tutor registration failed. Response: " . $response->body());
+            Log::error(" Registro fallido de tutor: " . $response->body());
             return null;
 
         } catch (\Exception $e) {
-            Log::error("Exception during tutor registration: " . $e->getMessage());
+            Log::error(" Excepción durante el registro del tutor: " . $e->getMessage());
             return null;
         }
     }
