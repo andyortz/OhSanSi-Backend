@@ -52,7 +52,7 @@ Route::post('/inscripciones', [InscripcionNivelesController::class, 'store']);
 // Tutores
 Route::post('/tutores', [TutoresControllator::class, 'store']);
 Route::get('/tutores',[TutoresControllator::class,'buscarCi' ]);
-route::post('/tutores/excel', function() {
+Route::post('/tutores/excel', function() {
     try {
         Excel::import(new TutoresImport, request()->file('file'));
         return response()->json(['message' => 'Archivo importado con éxito'], 200);
