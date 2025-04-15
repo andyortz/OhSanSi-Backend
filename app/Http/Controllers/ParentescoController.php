@@ -12,14 +12,14 @@ class ParentescoController extends Controller
     public function asociarTutor(Request $request): JsonResponse
     {
         $request->validate([
-            'id_olimpista' => 'required|exists:olimpistas,ci',
-            'id_tutor' => 'required|exists:tutores,id'
+            'id_olimpista' => 'required|exists:olimpistas,id_olimpista',
+            'id_tutor' => 'required|exists:tutores,id_tutor'
         ]);
 
         try {
             // Verificar si ya existe la asociación
-            $existe = DB::table('olimpista_tutor')
-                      ->where('ci_olimpista', $request->id_olimpista)
+            $existe = DB::table('parentescos')
+                      ->where('id_olimpista', $request->id_olimpista)
                       ->where('id_tutor', $request->id_tutor)
                       ->exists();
 
@@ -31,8 +31,8 @@ class ParentescoController extends Controller
             }
 
             // Crear la asociación
-            DB::table('olimpista_tutor')->insert([
-                'ci_olimpista' => $request->id_olimpista,
+            DB::table('parentescos')->insert([
+                'id_olimpista' => $request->id_olimpista,
                 'id_tutor' => $request->id_tutor,
             ]);
 
