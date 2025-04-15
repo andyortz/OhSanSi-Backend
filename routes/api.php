@@ -53,6 +53,9 @@ Route::post('/inscripciones', [InscripcionNivelesController::class, 'store']);
 // inscrpcion con posible tutor
 Route::post('/inscripciones-con-tutor', [InscripcionNivelesController::class, 'storeWithTutor']);
 
+// inscripciones por olimpista
+Route::get('/olimpista/{ci}/total-inscripciones', [VerificarInscripcionController::class, 'getTotalInscripciones']);
+
 //Asociar Tutor con Olimpista mediante tabla Parentesco
 Route::post('/asociar-tutor', [ParentescoController::class, 'asociarTutor']);
 

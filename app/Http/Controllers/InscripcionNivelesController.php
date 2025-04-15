@@ -6,6 +6,8 @@ use App\Models\Pagos;
 use App\Models\Olimpista;
 use App\Models\Inscripcion;
 use App\Models\Tutor;
+use App\Models\Parentesco;
+
 use App\Http\Controllers\ParentescoController;
 
 use Illuminate\Http\Request;
@@ -103,19 +105,26 @@ class InscripcionNivelesController extends Controller
             if ($request->ci_tutor) {
                 $tutor = Tutor::where('ci', $request->ci_tutor)->firstOrFail();
                 
-                $tutorRequest = new Request([
-                    'id_olimpista' => $olimpista->id_olimpista,
-                    'id_tutor' => $tutor->id_tutor
-                ]);
-                
-                // Llamar directamente al método que maneja la lógica
-                $tutorResponse = app(ParentescoController::class)->asociarTutor($tutorRequest);
-                
-                if ($tutorResponse->getStatusCode() !== 201) {
-                    $errorData = $tutorResponse->getData(true);
-                    throw new \Exception('Error en asociación tutor: ' . ($errorData['message'] ?? 'Sin mensaje'));
-                }
+                // Verificar si ya está asociado
+                $yaAsociado = Parentesco::where('id_olimpista', $olimpista->id_olimpista)
+                    ->where('id_tutor', $tutor->id_tutor)
+                    ->exists();
 
+                if (!$yaAsociado) {
+
+                    $tutorRequest = new Request([
+                        'id_olimpista' => $olimpista->id_olimpista,
+                        'id_tutor' => $tutor->id_tutor
+                    ]);
+                    
+                    // Llamar directamente al método que maneja la lógica
+                    $tutorResponse = app(ParentescoController::class)->asociarTutor($tutorRequest);
+                    
+                    if ($tutorResponse->getStatusCode() !== 201) {
+                        $errorData = $tutorResponse->getData(true);
+                        throw new \Exception('Error en asociación tutor: ' . ($errorData['message'] ?? 'Sin mensaje'));
+                    }
+                }
                 $responseData['tutor_asociado'] = true;
             }
 
