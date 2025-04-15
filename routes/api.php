@@ -104,3 +104,6 @@ Route::get('/estructura-olimpiada/{id_olimpiada}', [EstructuraOlimpiadaControlle
 Route::post('/vincular-olimpista-tutor', [VincularController::class, 'registrarConParentesco']);
 Route::get('/olimpiada/abierta', [OlimpiadaController::class, 'verificarOlimpiadaAbierta']);
 Route::get('/verificar-inscripcion', [VerificarInscripcionController::class, 'verificar']);
+
+//Areas de inscripcion para un Olimpista
+Route::get('/olimpistas/{ci}/areas-niveles', [OlimpistaController::class, 'getAreasNivelesInscripcion']);

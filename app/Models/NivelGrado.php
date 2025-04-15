@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GradoNivel extends Model
+class NivelGrado extends Model
 {
     protected $table = 'grados_niveles';
     public $timestamps = false;
@@ -25,5 +25,10 @@ class GradoNivel extends Model
     public function nivel()
     {
         return $this->belongsTo(NivelCategoria::class, 'id_nivel');
+    }
+    public function nivelAreas()
+    {
+        // hasMany(Modelo, llave_foránea_en_la_OTRA_tabla)
+        return $this->hasMany(NivelAreaOlimpiada::class, 'id_nivel', 'id_nivel');
     }
 }
