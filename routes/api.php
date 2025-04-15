@@ -45,6 +45,12 @@ Route::get('/olimpiadas/{id}/max-categorias', [OlimpiadaAreaController::class, '
 //Route::post('/inscripciones', [InscripcionAreaController::class, 'store']);
 Route::post('/inscripciones', [InscripcionNivelesController::class, 'store']);
 
+// inscrpcion con posible tutor
+Route::post('/inscripciones-con-tutor', [InscripcionController::class, 'storeWithTutor']);
+
+//Asociar Tutor con Olimpista mediante tabla Parentesco
+Route::post('/asociar-tutor', [ParentescoController::class, 'asociarTutor']);
+
 // Tutores
 Route::post('/tutores', [TutoresControllator::class, 'store']);
 Route::get('/tutores',[TutoresControllator::class,'buscarCi' ]);
