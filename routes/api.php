@@ -23,7 +23,7 @@ use App\Http\Controllers\OlimpiadaController;
 use App\Http\Controllers\VerificarInscripcionController;
 use App\Http\Controllers\InscripcionNivelesController;
 use App\Http\Controllers\ExcelImportController;
-use App\Http\Controllers\ExcelTestController;
+use App\Http\Controllers\DatosExcelController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -31,6 +31,7 @@ Route::get('/user', function (Request $request) {
 
 
 Route::post('/olimpistas/excel', [ExcelImportController::class, 'import']);
+Route::post('/registro/excel', [DatosExcelController::class, 'cleanDates']);
 
 // Niveles
 Route::post('/niveles', [NivelCategoriaController::class, 'store']);

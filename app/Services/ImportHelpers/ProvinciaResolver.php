@@ -6,18 +6,20 @@ use App\Models\Provincia;
 
 class ProvinciaResolver
 {
-    public static function resolve(string $nombre, int $idDepartamento): ?int
+    public static function resolve(string $nombreProvincia, int $idDepartamento): ?int
     {
-        $id = Provincia::where('nombre_provincia', 'ilike', trim($nombre))
+        // Try to find the province by its name and department ID
+        $provincia = Provincia::where('nombre_provincia', 'ilike', trim($nombreProvincia))
             ->where('id_departamento', $idDepartamento)
-            ->value('id_provincia');
+            ->first();
 
-        if (!$id) {
-            $id = Provincia::where('nombre_provincia', 'ilike', 'Otro')
-                ->where('id_departamento', $idDepartamento)
-                ->value('id_provincia');
+        if ($provincia) {
+            return $provincia->id_provincia;
         }
 
-        return $id;
+        // If no province found, set it to "Otro" for the same department
+        return Provincia::where('nombre_provincia', 'ilike', 'Otro')
+            ->where('id_departamento', $idDepartamento)
+            ->value('id_provincia');
     }
 }

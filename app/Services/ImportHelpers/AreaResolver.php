@@ -2,46 +2,20 @@
 
 namespace App\Services\ImportHelpers;
 
-
-use App\Services\OlimpiadaService;
-use App\Models\NivelAreaOlimpiada;
-
-
-
 class AreaResolver
 {
     /**
-     * Consulta el endpoint para obtener la olimpiada abierta
+     * Extraer los datos del área desde la fila del Excel.
+     * 
+     * @param array $row
+     * @return array
      */
-    public static function getOlimpiadaAbiertaId(): ?int
+    public static function extractAreaData(array $row): array
     {
-        $idOlimpiada = OlimpiadaService::getOlimpiadaAbierta()?->id_olimpiada;
-
-        if (!$idOlimpiada) {
-            logger()->error("No hay olimpiada activa.");
-            return null;
-        }
-
-        return $idOlimpiada;
-    }
-
-    /**
-     * Devuelve una lista de nombres de áreas para la olimpiada
-     */
-    public static function getValidAreas(int $idOlimpiada): array
-    {
-        return NivelAreaOlimpiada::with('area')
-        ->where('id_olimpiada', $idOlimpiada)
-        ->get()
-        ->pluck('area.nombre')
-        ->map(fn($a) => strtolower(trim($a)))
-        ->unique()
-        ->values()
-        ->toArray();
-    }
-
-    public static function isValid(string $nombreArea, array $validAreas): bool
-    {
-        return in_array(strtolower(trim($nombreArea)), $validAreas);
+        return [
+            'area_1' => $row[15],  // Columna 16 (Área 1)
+            'area_2' => $row[16],  // Columna 17 (Área 2, puede ser null)
+            'nivel_categoria' => $row[17],  // Columna 18 (Nivel/Categoría)
+        ];
     }
 }

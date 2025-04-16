@@ -13,7 +13,7 @@ class ColegiosSeeder extends Seeder
     public function run(): void
     {
         $colegios = [
-            ['nombre_colegio' => 'Unidad Educativa Buenas Nuevas', 'provincia' =>1],
+            ['nombre_colegio' => 'Otros', 'provincia' =>1],
             ['nombre_colegio' => 'Colegio Alemán Mariscal Braun', 'provincia'=>2],
             ['nombre_colegio' => 'Colegio Don Bosco', 'provincia'=> 3],
             ['nombre_colegio' => 'Colegio La Salle', 'provincia'=> 4],

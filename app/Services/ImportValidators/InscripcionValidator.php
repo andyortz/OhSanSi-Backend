@@ -1,52 +1,39 @@
 <?php
-
 namespace App\Services\ImportValidators;
 
 use App\Services\ImportHelpers\GradoResolver;
 use App\Services\ImportHelpers\DepartamentoResolver;
 use App\Services\ImportHelpers\ProvinciaResolver;
-use App\Services\ImportValidators\AreaValidator;
 
 class InscripcionValidator
 {
-    public static function validarFila(array $row, int $index, array $areasValidas, int $idOlimpiada, int $maxAreas): ?array
+    public static function validateRow(array $row, int $index, array $validAreas, int $olympiadId, int $maxAreas): ?array
     {
-        if (!isset($row[0], $row[1], $row[2], $row[8])) {
-            logger()->warning("Row $index: Missing required fields (first name, last name, ID, grade).");
-            return null;
-        }
-
-        $idGrado = GradoResolver::resolve($row[8]);
+        // Validar el Grado
+        $grado = trim($row[8]);  // El grado está en la columna 8
+        $idGrado = GradoResolver::resolve($grado);  // Usamos el GradoResolver para resolver el grado
         if (!$idGrado) {
-            logger()->error("Row $index: Invalid grade: '{$row[8]}'.");
+            logger()->error("Fila $index: Grado inválido '$grado'.");
             return null;
         }
 
-        $idDepartamento = DepartamentoResolver::resolve($row[5]);
+        // Validar el Departamento
+        $departamento = trim($row[5]);  // El departamento está en la columna 5
+        $idDepartamento = DepartamentoResolver::resolve($departamento);  // Usamos DepartamentoResolver para resolver el departamento
         if (!$idDepartamento) {
-            logger()->error("Row $index: Invalid department: '{$row[5]}'.");
+            logger()->error("Fila $index: Departamento inválido '$departamento'.");
             return null;
         }
 
-        $idProvincia = ProvinciaResolver::resolve($row[6], $idDepartamento);
+        // Validar la Provincia
+        $provincia = trim($row[6]);  // La provincia está en la columna 6
+        $idProvincia = ProvinciaResolver::resolve($provincia, $idDepartamento);  // Usamos ProvinciaResolver para resolver la provincia
         if (!$idProvincia) {
-            logger()->error("Row $index: Province '{$row[6]}' not found and fallback to 'Other' failed.");
+            logger()->error("Fila $index: Provincia inválida '$provincia' para el departamento '$departamento'.");
             return null;
         }
 
-        $areaValidada = AreaValidator::validarAreas(
-            $row[15],         // area_1
-            $row[16] ?? null, // area_2
-            $areasValidas,
-            $maxAreas,
-            $index,
-            $idOlimpiada
-        );
-
-        if (!$areaValidada) return null;
-
-        $categoria = isset($row[17]) && trim($row[17]) !== '' ? $row[17] : null;
-
+        // Aquí puedes devolver los datos validados para continuar con el procesamiento o guardarlos
         return [
             'olimpista' => [
                 'nombres' => $row[0],
@@ -59,19 +46,7 @@ class InscripcionValidator
                 'unidad_educativa' => $row[7],
                 'id_grado' => $idGrado,
             ],
-            'tutor' => [
-                'nombres' => $row[9],
-                'apellidos' => $row[10],
-                'ci' => $row[11],
-                'celular' => $row[12],
-                'correo_electronico' => $row[13],
-                'rol_parentesco' => $row[14],
-            ],
-            'inscripcion' => [
-                'area_1' => $areaValidada['area_1'],
-                'area_2' => $areaValidada['area_2'],
-                'nivel_categoria' => $categoria, // can be null
-            ]
+            // Otros campos de los datos pueden ser añadidos si es necesario
         ];
     }
 }
