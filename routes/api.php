@@ -65,6 +65,8 @@ Route::post('/inscripciones-con-tutor', [InscripcionNivelesController::class, 's
 // inscripcion de varios olimpistas con un tutor
 Route::post('/registrar-varios-olimpistas', [InscripcionNivelesController::class, 'registrarVarios']);
 
+// inscripcion de varios olimpistas con varios tutores
+Route::post('/inscribir-multiples-olimpistas', [InscripcionNivelesController::class, 'registrarMultiplesConTutor']);
 
 // inscripciones por olimpista
 Route::get('/olimpista/{ci}/inscripciones', [VerificarInscripcionController::class, 'getInscripcionesPorCI']);
@@ -75,7 +77,7 @@ Route::post('/asociar-tutor', [ParentescoController::class, 'asociarTutor']);
 
 // Tutores
 Route::post('/tutores', [TutoresControllator::class, 'store']);
-
+Route::get('tutores/email/{email}',[TutoresControllator::class,'getByEmail']);
 Route::get('/tutores',[TutoresControllator::class,'buscarCi' ]);
 
 Route::get('tutores/cedula/{cedula}',[TutoresControllator::class,'buscarCi']);

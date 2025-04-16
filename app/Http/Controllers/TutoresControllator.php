@@ -28,7 +28,14 @@ class TutoresControllator extends Controller
             'status' => 404
         ], 404);
     }
-
+    public function getByEmail($email)
+    {
+        $tutor = Tutor::where('correo_electronico', $email)->first();
+    
+        return $tutor
+            ? response()->json($tutor)
+            : response()->json(['message' => 'No encontrado'], 404);
+    }
     public function store(Request $request)
 {
     // Verificar si el tutor ya existe por CI antes de crearlo
