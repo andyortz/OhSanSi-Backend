@@ -13,7 +13,8 @@ class ParentescoController extends Controller
     {
         $request->validate([
             'id_olimpista' => 'required|exists:olimpistas,id_olimpista',
-            'id_tutor' => 'required|exists:tutores,id_tutor'
+            'id_tutor' => 'required|exists:tutores,id_tutor',
+            'rol_parentesco' => 'required|in:Tutor Legal,Tutor Academico'
         ]);
 
         try {
@@ -34,6 +35,7 @@ class ParentescoController extends Controller
             DB::table('parentescos')->insert([
                 'id_olimpista' => $request->id_olimpista,
                 'id_tutor' => $request->id_tutor,
+                'rol_parentesco' => $request->rol_parentesco
             ]);
 
             return response()->json([
@@ -41,7 +43,8 @@ class ParentescoController extends Controller
                 'message' => 'Asociación creada exitosamente',
                 'data' => [
                     'id_olimpista' => $request->id_olimpista,
-                    'id_tutor' => $request->id_tutor
+                    'id_tutor' => $request->id_tutor,
+                    'rol_parentesco' => $request->rol_parentesco
                 ]
             ], 201);
 

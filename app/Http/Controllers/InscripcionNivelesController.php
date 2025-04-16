@@ -114,7 +114,8 @@ class InscripcionNivelesController extends Controller
 
                     $tutorRequest = new Request([
                         'id_olimpista' => $olimpista->id_olimpista,
-                        'id_tutor' => $tutor->id_tutor
+                        'id_tutor' => $tutor->id_tutor,
+                        'rol_parentesco' => 'Tutor Academico'
                     ]);
                     
                     // Llamar directamente al método que maneja la lógica
