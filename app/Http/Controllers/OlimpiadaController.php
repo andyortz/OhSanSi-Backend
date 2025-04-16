@@ -31,4 +31,30 @@ class OlimpiadaController extends Controller
             ], 404);
         }
     }
+    public function getMaxCategorias(Request $request)
+    {
+        $request->validate([
+            'fecha' => 'required|date'
+        ]);
+
+        $fecha = $request->input('fecha');
+
+        $olimpiada = Olimpiada::where('fecha_inicio', '<=', $fecha)
+            ->where('fecha_fin', '>=', $fecha)
+            ->first();
+
+        if (!$olimpiada) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se encontró una olimpiada activa en esa fecha.'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'fecha' => $fecha,
+            'id_olimpiada' => $olimpiada->id_olimpiada,
+            'max_categorias_olimpista' => $olimpiada->max_categorias_olimpista
+        ]);
+    }
 }

@@ -5,7 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Pagos;
 use App\Models\Olimpista;
 use App\Models\Inscripcion;
+use App\Models\Tutor;
+use App\Models\Parentesco;
+
+use App\Http\Controllers\ParentescoController;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -58,6 +64,85 @@ class InscripcionNivelesController extends Controller
                 'message' => 'Error interno al registrar.',
                 'error' => $e->getMessage(),
                 'line' => $e->getLine()
+            ], 500);
+        }
+    }
+    public function storeWithTutor(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            // Validación básica
+            $request->validate([
+                'ci' => 'required|exists:olimpistas,cedula_identidad',
+                'niveles' => 'required|array|min:1',
+                'ci_tutor' => 'nullable|exists:tutores,ci'
+            ]);
+    
+            // 1. Obtener olimpista
+            $olimpista = Olimpista::where('cedula_identidad', $request->ci)->first();
+            if (!$olimpista) {
+                throw new \Exception('Olimpista no encontrado');
+            }
+    
+            $inscripcionRequest = new Request([
+                'ci' => $request->ci,
+                'niveles' => $request->niveles
+            ]);
+
+            $inscripcionResponse = app(InscripcionNivelesController::class)->store($inscripcionRequest);
+            
+            if ($inscripcionResponse->getStatusCode() !== 201) {
+                $errorData = $inscripcionResponse->getData(true);
+                throw new \Exception('Error en inscripción: ' . ($errorData['message'] ?? 'Sin mensaje'));
+            }
+    
+            $responseData = [
+                'inscripciones' => $inscripcionResponse->getData(true),
+                'tutor_asociado' => false
+            ];
+    
+            // 3. Procesar tutor si existe
+            if ($request->ci_tutor) {
+                $tutor = Tutor::where('ci', $request->ci_tutor)->firstOrFail();
+                
+                // Verificar si ya está asociado
+                $yaAsociado = Parentesco::where('id_olimpista', $olimpista->id_olimpista)
+                    ->where('id_tutor', $tutor->id_tutor)
+                    ->exists();
+
+                if (!$yaAsociado) {
+
+                    $tutorRequest = new Request([
+                        'id_olimpista' => $olimpista->id_olimpista,
+                        'id_tutor' => $tutor->id_tutor,
+                        'rol_parentesco' => 'Tutor Academico'
+                    ]);
+                    
+                    // Llamar directamente al método que maneja la lógica
+                    $tutorResponse = app(ParentescoController::class)->asociarTutor($tutorRequest);
+                    
+                    if ($tutorResponse->getStatusCode() !== 201) {
+                        $errorData = $tutorResponse->getData(true);
+                        throw new \Exception('Error en asociación tutor: ' . ($errorData['message'] ?? 'Sin mensaje'));
+                    }
+                }
+                $responseData['tutor_asociado'] = true;
+            }
+
+            DB::commit();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Proceso completado',
+                'data' => $responseData
+            ]);
+    
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error en el proceso',
+                'error' => $e->getMessage()
             ], 500);
         }
     }

@@ -6,10 +6,16 @@ use App\Models\Olimpista;
 use App\Models\Parentesco;
 use App\Models\Tutor;
 use App\Http\Requests\StoreOlimpistaRequest;
+use App\Repositories\OlimpistaRepository;
 
 class OlimpistaController extends Controller
 {
-
+    protected $repo;
+    
+    public function __construct(OlimpistaRepository $repo)
+    {
+        $this->repo = $repo;
+    }
     public function getByCedula($cedula)
     {
         $olimpista = Olimpista::where('cedula_identidad', $cedula)->first();
@@ -58,6 +64,15 @@ class OlimpistaController extends Controller
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ], 500);
+        }
+    }
+    public function getAreasNivelesInscripcion($ci)
+    {
+        try {
+            $data = $this->repo->getAreasNiveles($ci);
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
         }
     }
 }
