@@ -7,7 +7,7 @@ use App\Models\Olimpista;
 use App\Models\Inscripcion;
 use App\Models\Tutor;
 use App\Models\Parentesco;
-
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\ParentescoController;
 
 use Illuminate\Http\Request;
@@ -75,7 +75,8 @@ class InscripcionNivelesController extends Controller
             $request->validate([
                 'ci' => 'required|exists:olimpistas,cedula_identidad',
                 'niveles' => 'required|array|min:1',
-                'ci_tutor' => 'nullable|exists:tutores,ci'
+                'ci_tutor' => 'nullable|exists:tutores,ci',
+                'rol' => 'nullable|in:Tutor Academico,Tutor Legal'
             ]);
     
             // 1. Obtener olimpista
@@ -109,13 +110,14 @@ class InscripcionNivelesController extends Controller
                 $yaAsociado = Parentesco::where('id_olimpista', $olimpista->id_olimpista)
                     ->where('id_tutor', $tutor->id_tutor)
                     ->exists();
-
+                
                 if (!$yaAsociado) {
-
+                    
+                    $rol = $request->input('rol', 'Tutor Academico');
                     $tutorRequest = new Request([
                         'id_olimpista' => $olimpista->id_olimpista,
                         'id_tutor' => $tutor->id_tutor,
-                        'rol_parentesco' => 'Tutor Academico'
+                        'rol_parentesco' => $rol
                     ]);
                     
                     // Llamar directamente al método que maneja la lógica
@@ -168,6 +170,7 @@ class InscripcionNivelesController extends Controller
                 $inscripcionResponse = app(InscripcionNivelesController::class)->storeWithTutor($inscripcionRequest);
                 
                 if ($inscripcionResponse->getStatusCode() !== 201) {
+
                     $errorData = $inscripcionResponse->getData(true);
                     throw new \Exception('Error en olimpista: ' . ($errorData['message'] ?? 'Sin mensaje'));
                 }
@@ -185,10 +188,65 @@ class InscripcionNivelesController extends Controller
                 'resultados' => $resultados
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            DB::rollBack();
+            return response()->json([                
                 'success' => false,
                 'message' => 'Ocurrió un error durante el proceso, no se registró ningún olimpista.',
                 'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    public function registrarMultiplesConTutor(Request $request)
+    {
+        $data = $request->validate([
+            'olimpistas' => 'required|array|min:1',
+            'olimpistas.*.ci_olimpista' => 'required|exists:olimpistas,cedula_identidad',
+            'olimpistas.*.id_niveles' => 'required|array|min:1',
+            'olimpistas.*.ci_tutor' => 'required|exists:tutores,ci',
+            'olimpistas.*.rol' => 'required|in:Tutor Academico,Tutor Legal',
+        ]);
+
+        $resultados = [];
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($data['olimpistas'] as $olimpistaData) {
+                // Obtener modelos
+                $inscripcionRequest = new Request([
+                    'ci' => $olimpistaData['ci_olimpista'],
+                    'niveles' => $olimpistaData['id_niveles'],
+                    'ci_tutor' => $olimpistaData['ci_tutor'],
+                    'rol' => $olimpistaData['rol'],
+                ]);
+                $inscripcionResponse = app(InscripcionNivelesController::class)->storeWithTutor($inscripcionRequest);
+                
+                if ($inscripcionResponse->getStatusCode() !== 201) {
+                    $errorData = $inscripcionResponse->getData(true);
+                    throw new \Exception("Error inscribiendo olimpista {$olimpistaData['ci_olimpista']}: " . ($errorData['message'] ?? 'Sin mensaje'));
+                }
+                $resultados[] = [
+                    'ci_olimpista' => $olimpistaData['ci_olimpista'],
+                    'response' => $inscripcionResponse,
+                    'status' => 'ok',
+                ];
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Todos los olimpistas fueron registrados correctamente.',
+                'data' => $resultados
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al procesar registros. Se revirtió la operación.',
+                'error' => $e->getMessage(),
+                'procesados' => $resultados
             ], 500);
         }
     }
