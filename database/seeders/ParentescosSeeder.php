@@ -9,10 +9,9 @@ class ParentescosSeeder extends Seeder
 {
     public function run(): void
     {
-        Parentesco::create([
-            'id_olimpista' => 1,
-            'id_tutor' => 1,
-            'rol_parentesco' => 'Tutor Academico',
-        ]);
+        Parentesco::create(
+            ['id_olimpista' => 1,'id_tutor' => 1,'rol_parentesco' => 'Tutor Academico'],
+            []
+        );
     }
 }
