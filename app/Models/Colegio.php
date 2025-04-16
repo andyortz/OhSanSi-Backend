@@ -6,22 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Colegio extends Model
 {
-    //
     protected $table = 'colegios';
+
     protected $primaryKey = 'id_colegio';
+
     public $timestamps = false;
 
     protected $fillable = [
         'nombre_colegio',
+        'provincia',  
     ];
 
-    public function setNombreAttribute($value)
+    public function provincia()
     {
-        $this->attributes['nombre_colegio'] = strtoupper($value);
+        return $this->belongsTo(Provincia::class, 'provincia', 'id_provincia');
     }
 
-    public function asociaciones()
-    {
-        return $this->hasMany(Olimpista::class, 'unidad_educativa');
-    }
 }
