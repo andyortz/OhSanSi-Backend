@@ -75,7 +75,7 @@ Route::post('/asociar-tutor', [ParentescoController::class, 'asociarTutor']);
 
 // Tutores
 Route::post('/tutores', [TutoresControllator::class, 'store']);
-
+Route::get('tutores/email/{email}',[TutoresControllator::class,'getByEmail']);
 Route::get('/tutores',[TutoresControllator::class,'buscarCi' ]);
 
 Route::get('tutores/cedula/{cedula}',[TutoresControllator::class,'buscarCi']);
