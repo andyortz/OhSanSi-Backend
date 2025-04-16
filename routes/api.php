@@ -65,6 +65,8 @@ Route::post('/inscripciones-con-tutor', [InscripcionNivelesController::class, 's
 // inscripcion de varios olimpistas con un tutor
 Route::post('/registrar-varios-olimpistas', [InscripcionNivelesController::class, 'registrarVarios']);
 
+// inscripcion de varios olimpistas con varios tutores
+Route::post('/inscribir-multiples-olimpistas', [InscripcionNivelesController::class, 'registrarMultiplesConTutor']);
 
 // inscripciones por olimpista
 Route::get('/olimpista/{ci}/inscripciones', [VerificarInscripcionController::class, 'getInscripcionesPorCI']);
