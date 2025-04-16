@@ -1,18 +1,16 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Third Party Services
     |--------------------------------------------------------------------------
     |
-    | This file is for storing the credentials for third party services such
-    | as Mailgun, Postmark, AWS and more. This file provides the de facto
-    | location for this type of information, allowing packages to have
-    | a conventional file to locate the various service credentials.
+    | Este archivo almacena credenciales para servicios de terceros.
+    | Se han eliminado todas las configuraciones no utilizadas.
     |
     */
+
 
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
@@ -35,4 +33,8 @@ return [
         ],
     ],
 
+    'excel_api' => [
+        'url' => env('EXCEL_API_BASE_URL'),
+    ],
 ];
+

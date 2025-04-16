@@ -22,14 +22,24 @@ use App\Http\Controllers\EstructuraOlimpiadaController;
 use App\Http\Controllers\OlimpiadaController;
 use App\Http\Controllers\VerificarInscripcionController;
 use App\Http\Controllers\InscripcionNivelesController;
+
+use App\Http\Controllers\ExcelImportController;
+use App\Http\Controllers\DatosExcelController;
+
+use App\Http\Controllers\ParentescoController;
 use App\Imports\OlimpistaImport;
 use App\Imports\TutoresImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
+
+Route::post('/olimpistas/excel', [ExcelImportController::class, 'import']);
+Route::post('/registro/excel', [DatosExcelController::class, 'cleanDates']);
 
 // Niveles
 Route::post('/niveles', [NivelCategoriaController::class, 'store']);
@@ -50,22 +60,28 @@ Route::get('/olimpiadas/{id}/max-categorias', [OlimpiadaAreaController::class, '
 Route::post('/inscripciones', [InscripcionNivelesController::class, 'store']);
 
 // inscrpcion con posible tutor
-Route::post('/inscripciones-con-tutor', [InscripcionController::class, 'storeWithTutor']);
+Route::post('/inscripciones-con-tutor', [InscripcionNivelesController::class, 'storeWithTutor']);
+
+// inscripcion de varios olimpistas con un tutor
+Route::post('/registrar-varios-olimpistas', [InscripcionNivelesController::class, 'registrarVarios']);
+
+// inscripcion de varios olimpistas con varios tutores
+Route::post('/inscribir-multiples-olimpistas', [InscripcionNivelesController::class, 'registrarMultiplesConTutor']);
+
+// inscripciones por olimpista
+Route::get('/olimpista/{ci}/inscripciones', [VerificarInscripcionController::class, 'getInscripcionesPorCI']);
+Route::get('/olimpista/{ci}/total-inscripciones', [VerificarInscripcionController::class, 'getTotalInscripciones']);
 
 //Asociar Tutor con Olimpista mediante tabla Parentesco
 Route::post('/asociar-tutor', [ParentescoController::class, 'asociarTutor']);
 
 // Tutores
 Route::post('/tutores', [TutoresControllator::class, 'store']);
+Route::get('tutores/email/{email}',[TutoresControllator::class,'getByEmail']);
 Route::get('/tutores',[TutoresControllator::class,'buscarCi' ]);
-route::post('/tutores/excel', function() {
-    try {
-        Excel::import(new TutoresImport, request()->file('file'));
-        return response()->json(['message' => 'Archivo importado con éxito'], 200);
-    } catch (\Exception $e) {
-        return response()->json(['message' => 'Error al importar el archivo', 'error' => $e->getMessage()], 400);
-    }
-});
+
+Route::get('tutores/cedula/{cedula}',[TutoresControllator::class,'buscarCi']);
+
 
 // Áreas
 Route::get('/areas', [AreasController::class, 'index']);
@@ -82,21 +98,14 @@ Route::get('/olympiad-registration', [OlympiadRegistrationController::class, 'in
 Route::get('/olympiad/{gestion}', [OlimpiadaGestionController::class, 'show']);
 
 //Olimpista Regitro
-Route::post('/student-registration', [StudentRegistrationController::class, 'store']);
-Route::get('/student-registration', [StudentRegistrationController::class, 'index']);
+//Route::post('/student-registration', [StudentRegistrationController::class, 'store']);
+//Route::get('/student-registration', [StudentRegistrationController::class, 'index']);
 
 //Olimpista
 Route::get('olimpistas/cedula/{cedula}', [OlimpistaController::class, 'getByCedula']);
 Route::get('olimpistas/email/{email}', [OlimpistaController::class, 'getByEmail']);
-Route::post('/olimpistas',[OlimpistaController::class, 'store']);
-Route::post('/olimpistas/excel', function() {
-    try {
-        Excel::import(new OlimpistaImport, request()->file('file'));
-        return response()->json(['message' => 'Archivo importado con éxito'], 200);
-    } catch (\Exception $e) {
-        return response()->json(['message' => 'Error al importar el archivo', 'error' => $e->getMessage()], 400);
-    }
-});
+Route::post('/olimpistas', [OlimpistaController::class, 'store']);
+
 
 //Departamentos
 Route::get('/departamentos', [DepartamentoController::class, 'index']);
@@ -111,5 +120,12 @@ Route::post('/vincular-olimpista-tutor', [VincularController::class, 'registrarC
 Route::get('/olimpiada/abierta', [OlimpiadaController::class, 'verificarOlimpiadaAbierta']);
 Route::get('/verificar-inscripcion', [VerificarInscripcionController::class, 'verificar']);
 
+Route::post('/registro-olimpista', [OlimpistaController::class, 'store']);
+
+
 //Areas de inscripcion para un Olimpista
 Route::get('/olimpistas/{ci}/areas-niveles', [OlimpistaController::class, 'getAreasNivelesInscripcion']);
+
+//maxima cantidad de categorias
+Route::get('/olimpiada/max-categorias', [OlimpiadaController::class, 'getMaxCategorias']);
+

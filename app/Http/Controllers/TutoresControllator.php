@@ -10,14 +10,10 @@ class TutoresControllator extends Controller
 {
     //
     // Método para verificar si un tutor existe por CI
-    public function buscarCi(Request $request)
+    public function buscarCi($request)
     {
-        // Validar que se envíe el parámetro CI
-        $request->validate([
-            'ci' => 'required|numeric'
-        ]);
 
-        $tutor = Tutor::where('ci', $request->ci)->first();
+        $tutor = Tutor::where('ci', $request)->first();
 
         if ($tutor) {
             return response()->json([
@@ -32,7 +28,14 @@ class TutoresControllator extends Controller
             'status' => 404
         ], 404);
     }
-
+    public function getByEmail($email)
+    {
+        $tutor = Tutor::where('correo_electronico', $email)->first();
+    
+        return $tutor
+            ? response()->json($tutor)
+            : response()->json(['message' => 'No encontrado'], 404);
+    }
     public function store(Request $request)
 {
     // Verificar si el tutor ya existe por CI antes de crearlo
