@@ -118,4 +118,27 @@ class VerificarInscripcionController extends Controller
             'total_inscripciones' => $total
         ]);
     }
+    public function getInscripcionesPorCI($ci)
+    {
+        // 1. Buscar al olimpista por su CI
+        $olimpista = Olimpista::where('cedula_identidad', $ci)->first();
+
+        if (!$olimpista) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Olimpista no encontrado'
+            ], 404);
+        }
+
+        // 2. Obtener las inscripciones
+        $inscripciones = Inscripcion::with('nivel.asociaciones.area')
+            ->where('id_olimpista', $olimpista->id_olimpista)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'ci_olimpista' => $ci,
+            'inscripciones' => $inscripciones
+        ]);
+    }
 }
