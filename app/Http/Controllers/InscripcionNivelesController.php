@@ -135,13 +135,59 @@ class InscripcionNivelesController extends Controller
                 'success' => true,
                 'message' => 'Proceso completado',
                 'data' => $responseData
-            ]);
+            ], 201);
     
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
                 'success' => false,
                 'message' => 'Error en el proceso',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    public function registrarVarios(Request $request)
+    {
+        $request->validate([
+            'ci_tutor' => 'required|exists:tutores,ci',
+            'olimpistas' => 'required|array|min:1',
+            'olimpistas.*.ci_olimpista' => 'required|exists:olimpistas,cedula_identidad',
+            'olimpistas.*.id_niveles' => 'required|array|min:1'
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $resultados = [];            
+            foreach ($request->olimpistas as $data) {
+                // 1. Crear inscripciones para las áreas dadas
+                $inscripcionRequest = new Request([
+                    'ci' => $data['ci_olimpista'],
+                    'niveles' => $data['id_niveles'],
+                    'ci_tutor' => $request->ci_tutor
+                ]);
+                $inscripcionResponse = app(InscripcionNivelesController::class)->storeWithTutor($inscripcionRequest);
+                
+                if ($inscripcionResponse->getStatusCode() !== 201) {
+                    $errorData = $inscripcionResponse->getData(true);
+                    throw new \Exception('Error en olimpista: ' . ($errorData['message'] ?? 'Sin mensaje'));
+                }
+                $resultados[] = [
+                    'ci_olimpista' => $data['ci_olimpista'],
+                    'response' => $inscripcionResponse,
+                    'status' => 'ok'
+                ];
+            }
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Todos los registros fueron realizados exitosamente.',
+                'resultados' => $resultados
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ocurrió un error durante el proceso, no se registró ningún olimpista.',
                 'error' => $e->getMessage()
             ], 500);
         }
