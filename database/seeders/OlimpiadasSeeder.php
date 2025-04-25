@@ -18,6 +18,7 @@ class OlimpiadasSeeder extends Seeder
                 'fecha_fin' => '2025-05-27',
                 'creado_en' => Carbon::now(),
                 'max_categorias_olimpista' => 2,
+                'nombre_olimpiada' => 'Invierno'
             ],
         ]);
     }
