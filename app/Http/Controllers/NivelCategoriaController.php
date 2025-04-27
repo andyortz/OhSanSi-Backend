@@ -88,7 +88,12 @@ class NivelCategoriaController extends Controller
 
     public function nivelesPorArea($id_area)
     {
-        $niveles = NivelCategoria::where('id_area', $id_area)->with('grados')->get();
+        $niveles = DB::table('niveles_areas_olimpiadas')
+            ->join('niveles_categoria', 'niveles_areas_olimpiadas.id_nivel', '=', 'niveles_categoria.id_nivel')
+            ->where('niveles_areas_olimpiadas.id_area', $id_area)
+            ->select('niveles_categoria.id_nivel', 'niveles_categoria.nombre')
+            ->groupBy('niveles_categoria.id_nivel', 'niveles_categoria.nombre')
+            ->get();
 
         if ($niveles->isEmpty()) {
             return response()->json([
