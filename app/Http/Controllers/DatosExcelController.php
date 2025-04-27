@@ -50,8 +50,8 @@ class DatosExcelController extends Controller
             $sanitizedData[] = $row;
         }
 
-        //$this->saveTutores($tutorsData);
-        $this->saveOlimpistas($olimpistasData);
+        $this->saveTutores($tutorsData);
+        //$this->saveOlimpistas($olimpistasData);
 
         return response()->json([
             'message' => 'Data sanitized successfully.',
