@@ -25,7 +25,7 @@ return new class extends Migration
             $table->foreign('ci_olimpista')->references('ci_persona')->on('personas')->onDelete('cascade');
             $table->foreign('id_grado')->references('id_grado')->on('grados')->onDelete('cascade');
             $table->foreign('unidad_educativa')->references('id_colegio')->on('colegios')->onDelete('cascade');
-            $table->foreign('ci_tutor_legal')->references('ci_persona')->on('personas')->onDelete('cascade');            
+            $table->foreign('ci_tutor_legal')->references('ci_persona')->on('personas')->onDelete('cascade');
         });
     }
 
@@ -34,6 +34,14 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::table('detalle_olimpistas', function (Blueprint $table) {
+            $table->dropForeign(['id_olimpiada']);
+            $table->dropForeign(['ci_olimpista']);
+            $table->dropForeign(['id_grado']);
+            $table->dropForeign(['unidad_educativa']);
+            $table->dropForeign(['ci_tutor_legal']);
+        });
+
+        Schema::dropIfExists('detalle_olimpistas');
     }
 };

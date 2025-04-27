@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('inscripciones', function (Blueprint $table) {
             $table->id('id_inscripcion');
+
             $table->unsignedBigInteger('id_olimpiada');
             $table->unsignedBigInteger('id_detalle_olimpista');
             $table->unsignedBigInteger('ci_tutor_academico')->nullable();
             $table->unsignedBigInteger('id_pago');
             $table->unsignedBigInteger('id_nivel');
+
             $table->string('estado', 50)->default('PENDIENTE');
             $table->timestamp('fecha_inscripcion', 6)->useCurrent();
 
@@ -26,7 +28,7 @@ return new class extends Migration
             $table->foreign('id_detalle_olimpista')->references('id_detalle_olimpista')->on('detalle_olimpistas')->onDelete('cascade');
             $table->foreign('id_nivel')->references('id_nivel')->on('niveles_categoria')->onDelete('cascade');
             $table->foreign('id_pago')->references('id_pago')->on('pagos')->onDelete('cascade');
-            $table->foreign('ci_tutor_academico')->references('ci_persona')->on('personas')->onDelete('restrict');
+            $table->foreign('ci_tutor_academico')->references('ci_persona')->on('personas')->onDelete('set null');
         });
     }
 
@@ -35,6 +37,14 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('inscripciones', function (Blueprint $table) {
+            $table->dropForeign(['id_olimpiada']);
+            $table->dropForeign(['id_detalle_olimpista']);
+            $table->dropForeign(['ci_tutor_academico']);
+            $table->dropForeign(['id_pago']);
+            $table->dropForeign(['id_nivel']);
+        });
+
         Schema::dropIfExists('inscripciones');
     }
 };
