@@ -22,6 +22,16 @@ class Olimpiada extends Model
 
     public function nivelesAreas()
     {
-        return $this->hasMany(NivelAreaOlimpiada::class, 'id_olimpiada');
+        return $this->hasMany(NivelAreaOlimpiada::class, 'id_olimpiada', 'id_olimpiada');
+    }
+
+    public function inscripciones()
+    {
+        return $this->hasMany(Inscripcion::class, 'id_olimpiada', 'id_olimpiada');
+    }
+
+    public function detalleOlimpistas()
+    {
+        return $this->hasMany(DetalleOlimpista::class, 'id_olimpiada', 'id_olimpiada');
     }
 }
