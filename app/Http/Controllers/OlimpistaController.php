@@ -4,11 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\Persona;
 use App\Models\DetalleOlimpista;
+use App\Repositories\OlimpistaRepository;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class OlimpistaController extends Controller
 {
+    protected $repo;
+    
+    public function __construct(OlimpistaRepository $repo)
+    {
+        $this->repo = $repo;
+    }
+    
+    public function getAreasNivelesInscripcion($ci)
+    {
+        try {
+            $data = $this->repo->getAreasNiveles($ci);
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
+        }
+    }
     public function store(Request $request)
     {
         try {

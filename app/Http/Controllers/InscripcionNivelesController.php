@@ -81,87 +81,87 @@ class InscripcionNivelesController extends Controller
             ], 500);
         }
     }
-    public function storeWithTutor(Request $request)
-    {
-        DB::beginTransaction();
-        try {
-            // Validación básica
-            $request->validate([
-                'ci' => 'required|exists:olimpistas,cedula_identidad',
-                'niveles' => 'required|array|min:1',
-                'ci_tutor' => 'nullable|exists:tutores,ci',
-                'rol' => 'nullable|in:Tutor Academico,Tutor Legal'
-            ]);
+    // public function storeWithTutor(Request $request)
+    // {
+    //     DB::beginTransaction();
+    //     try {
+    //         // Validación básica
+    //         $request->validate([
+    //             'ci' => 'required|exists:olimpistas,cedula_identidad',
+    //             'niveles' => 'required|array|min:1',
+    //             'ci_tutor' => 'nullable|exists:tutores,ci',
+    //             'rol' => 'nullable|in:Tutor Academico,Tutor Legal'
+    //         ]);
     
-            // 1. Obtener olimpista
-            $olimpista = Olimpista::where('cedula_identidad', $request->ci)->first();
-            if (!$olimpista) {
-                throw new \Exception('Olimpista no encontrado');
-            }
+    //         // 1. Obtener olimpista
+    //         $olimpista = Olimpista::where('cedula_identidad', $request->ci)->first();
+    //         if (!$olimpista) {
+    //             throw new \Exception('Olimpista no encontrado');
+    //         }
     
-            $inscripcionRequest = new Request([
-                'ci' => $request->ci,
-                'niveles' => $request->niveles
-            ]);
+    //         $inscripcionRequest = new Request([
+    //             'ci' => $request->ci,
+    //             'niveles' => $request->niveles
+    //         ]);
 
-            $inscripcionResponse = app(InscripcionNivelesController::class)->store($inscripcionRequest);
+    //         $inscripcionResponse = app(InscripcionNivelesController::class)->store($inscripcionRequest);
             
-            if ($inscripcionResponse->getStatusCode() !== 201) {
-                $errorData = $inscripcionResponse->getData(true);
-                throw new \Exception('Error en inscripción: ' . ($errorData['message'] ?? 'Sin mensaje'));
-            }
+    //         if ($inscripcionResponse->getStatusCode() !== 201) {
+    //             $errorData = $inscripcionResponse->getData(true);
+    //             throw new \Exception('Error en inscripción: ' . ($errorData['message'] ?? 'Sin mensaje'));
+    //         }
     
-            $responseData = [
-                'inscripciones' => $inscripcionResponse->getData(true),
-                'tutor_asociado' => false
-            ];
+    //         $responseData = [
+    //             'inscripciones' => $inscripcionResponse->getData(true),
+    //             'tutor_asociado' => false
+    //         ];
     
-            // 3. Procesar tutor si existe
-            if ($request->ci_tutor) {
-                $tutor = Tutor::where('ci', $request->ci_tutor)->firstOrFail();
+    //         // 3. Procesar tutor si existe
+    //         if ($request->ci_tutor) {
+    //             $tutor = Tutor::where('ci', $request->ci_tutor)->firstOrFail();
                 
-                // Verificar si ya está asociado
-                $yaAsociado = Parentesco::where('id_olimpista', $olimpista->id_olimpista)
-                    ->where('id_tutor', $tutor->id_tutor)
-                    ->exists();
+    //             // Verificar si ya está asociado
+    //             $yaAsociado = Parentesco::where('id_olimpista', $olimpista->id_olimpista)
+    //                 ->where('id_tutor', $tutor->id_tutor)
+    //                 ->exists();
                 
-                if (!$yaAsociado) {
+    //             if (!$yaAsociado) {
                     
-                    $rol = $request->input('rol', 'Tutor Academico');
-                    $tutorRequest = new Request([
-                        'id_olimpista' => $olimpista->id_olimpista,
-                        'id_tutor' => $tutor->id_tutor,
-                        'rol_parentesco' => $rol
-                    ]);
+    //                 $rol = $request->input('rol', 'Tutor Academico');
+    //                 $tutorRequest = new Request([
+    //                     'id_olimpista' => $olimpista->id_olimpista,
+    //                     'id_tutor' => $tutor->id_tutor,
+    //                     'rol_parentesco' => $rol
+    //                 ]);
                     
-                    // Llamar directamente al método que maneja la lógica
-                    $tutorResponse = app(ParentescoController::class)->asociarTutor($tutorRequest);
+    //                 // Llamar directamente al método que maneja la lógica
+    //                 $tutorResponse = app(ParentescoController::class)->asociarTutor($tutorRequest);
                     
-                    if ($tutorResponse->getStatusCode() !== 201) {
-                        $errorData = $tutorResponse->getData(true);
-                        throw new \Exception('Error en asociación tutor: ' . ($errorData['message'] ?? 'Sin mensaje'));
-                    }
-                }
-                $responseData['tutor_asociado'] = true;
-            }
+    //                 if ($tutorResponse->getStatusCode() !== 201) {
+    //                     $errorData = $tutorResponse->getData(true);
+    //                     throw new \Exception('Error en asociación tutor: ' . ($errorData['message'] ?? 'Sin mensaje'));
+    //                 }
+    //             }
+    //             $responseData['tutor_asociado'] = true;
+    //         }
 
-            DB::commit();
+    //         DB::commit();
             
-            return response()->json([
-                'success' => true,
-                'message' => 'Proceso completado',
-                'data' => $responseData
-            ], 201);
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Proceso completado',
+    //             'data' => $responseData
+    //         ], 201);
     
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Error en el proceso',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Error en el proceso',
+    //             'error' => $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
     public function registrarVarios(Request $request)
     {
         $request->validate([
