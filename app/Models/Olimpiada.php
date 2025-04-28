@@ -16,7 +16,8 @@ class Olimpiada extends Model
         'fecha_inicio',
         'fecha_fin',
         'creado_en',
-        'max_categorias_olimpista'
+        'max_categorias_olimpista',
+        'nombre_olimpiada'
     ];
 
     public function nivelesAreas()
