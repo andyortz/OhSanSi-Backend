@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pagos;
+use App\Models\Pago;
 use App\Models\Olimpista;
 use App\Models\Inscripcion;
 use App\Models\Tutor;
 use App\Models\Parentesco;
+use App\Models\DetalleOlimpista;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\ParentescoController;
 
@@ -19,44 +20,57 @@ class InscripcionNivelesController extends Controller
 {
     public function store(Request $request)
     {
+        $data = $request->validate([
+            'ci' => 'required|integer|exists:personas,ci_persona',
+            'niveles' => 'required|array|min:1',
+            'id_pago' => 'nullable|integer',
+            'estado' => 'nullable|string|max:50'
+        ]);
+
+        DB::beginTransaction();
         try {
-            $ci = $request->input('ci');
-            $niveles = $request->input('niveles'); // array de id_nivel
+            // Buscar detalle del olimpista
+            $detalleOlimpista = DetalleOlimpista::where('ci_olimpista', $data['ci'])->first();
 
-            if (!$ci || !is_array($niveles) || count($niveles) === 0) {
-                return response()->json(['message' => 'CI y niveles son requeridos.'], 400);
+            if (!$detalleOlimpista) {
+                return response()->json(['message' => 'Olimpista no encontrado en detalle_olimpistas.'], 404);
             }
 
-            $olimpista = Olimpista::where('cedula_identidad', $ci)->first();
+            $estado = $data['estado'] ?? 'PENDIENTE';
 
-            if (!$olimpista) {
-                return response()->json(['message' => 'Olimpista no encontrado.'], 404);
-            }
-
-            DB::beginTransaction();
-
-            foreach ($niveles as $nivel) {
-                // Crear pago dummy
-                $pago = Pagos::create([
+            // Si no mandaron id_pago, crear un pago dummy
+            $idPago = $data['id_pago'] ?? null;
+            if (!$idPago) {
+                $pago = Pago::create([
                     'comprobante' => 'PAGO-DUMMY-' . uniqid(),
                     'fecha_pago' => now(),
-                    'nombre_pagador' => $olimpista->nombres . ' ' . $olimpista->apellidos,
+                    'ci_responsable_inscripcion' => $data['ci'],
                     'monto_pagado' => 0,
                     'verificado' => false,
+                    'verificado_en' => now(),
+                    'verificado_por' => null
                 ]);
+                $idPago = $pago->id_pago;
+            }
 
+            // Insertar inscripciones para cada nivel
+            foreach ($data['niveles'] as $idNivel) {
                 Inscripcion::create([
-                    'id_olimpista' => $olimpista->id_olimpista,
-                    'id_nivel' => $nivel,
-                    'id_pago' => $pago->id_pago,
+                    'id_olimpiada' => $detalleOlimpista->id_olimpiada,
+                    'id_detalle_olimpista' => $detalleOlimpista->id_detalle_olimpista,
+                    'ci_tutor_academico' => null, // Si quieres agregar después
+                    'id_pago' => $idPago,
+                    'id_nivel' => $idNivel,
+                    'estado' => strtoupper($estado),
                     'fecha_inscripcion' => now(),
-                    'estado' => 'PENDIENTE',
                 ]);
             }
 
             DB::commit();
 
-            return response()->json(['message' => 'Inscripciones registradas correctamente.'], 201);
+            return response()->json([
+                'message' => 'Inscripciones registradas correctamente.'
+            ], 201);
 
         } catch (\Throwable $e) {
             DB::rollBack();
