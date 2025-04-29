@@ -52,7 +52,7 @@ class ProvinciasSeeder extends Seeder
             ['nombre_provincia' => 'Vaca Díez', 'id_departamento' => $departamentos['Beni']],
             ['nombre_provincia' => 'Yacuma', 'id_departamento' => $departamentos['Beni']],
             ['nombre_provincia' => 'Otro', 'id_departamento' => $departamentos['Beni']],
-            // LA PAZ
+            // LA PAZ 38-58
             ['nombre_provincia' => 'Abel Iturralde', 'id_departamento' => $departamentos['La Paz']],
             ['nombre_provincia' => 'Aroma', 'id_departamento' => $departamentos['La Paz']],
             ['nombre_provincia' => 'Bautista Saavedra', 'id_departamento' => $departamentos['La Paz']],
@@ -74,7 +74,7 @@ class ProvinciasSeeder extends Seeder
             ['nombre_provincia' => 'Pedro Domingo Murillo', 'id_departamento' => $departamentos['La Paz']],
             ['nombre_provincia' => 'Sud Yungas', 'id_departamento' => $departamentos['La Paz']],
             ['nombre_provincia' => 'Otro', 'id_departamento' => $departamentos['La Paz']],
-            // ORURO
+            // ORURO 59-75
             ['nombre_provincia' => 'Atahuallpa', 'id_departamento' => $departamentos['Oruro']],
             ['nombre_provincia' => 'Carangas', 'id_departamento' => $departamentos['Oruro']],
             ['nombre_provincia' => 'Cercado', 'id_departamento' => $departamentos['Oruro']],
@@ -92,14 +92,14 @@ class ProvinciasSeeder extends Seeder
             ['nombre_provincia' => 'Sud Carangas', 'id_departamento' => $departamentos['Oruro']],
             ['nombre_provincia' => 'Tomas Barrón', 'id_departamento' => $departamentos['Oruro']],
             ['nombre_provincia' => 'Otro', 'id_departamento' => $departamentos['Oruro']],
-            // PANDO
+            // PANDO 76-81
             ['nombre_provincia' => 'Abuná', 'id_departamento' => $departamentos['Pando']],
             ['nombre_provincia' => 'Federico Román', 'id_departamento' => $departamentos['Pando']],
             ['nombre_provincia' => 'Madre de Dios', 'id_departamento' => $departamentos['Pando']],
             ['nombre_provincia' => 'Manuripi', 'id_departamento' => $departamentos['Pando']],
             ['nombre_provincia' => 'Nicolás Suárez', 'id_departamento' => $departamentos['Pando']],
             ['nombre_provincia' => 'Otro', 'id_departamento' => $departamentos['Pando']],
-            // POTOSÍ
+            // POTOSÍ 82-98
             ['nombre_provincia' => 'Alonso de Ibáñez', 'id_departamento' => $departamentos['Potosí']],
             ['nombre_provincia' => 'Antonio Quijarro', 'id_departamento' => $departamentos['Potosí']],
             ['nombre_provincia' => 'Bernardino Bilbao', 'id_departamento' => $departamentos['Potosí']],
@@ -117,7 +117,7 @@ class ProvinciasSeeder extends Seeder
             ['nombre_provincia' => 'Sud Lípez', 'id_departamento' => $departamentos['Potosí']],
             ['nombre_provincia' => 'Tomás Frías', 'id_departamento' => $departamentos['Potosí']],
             ['nombre_provincia' => 'Otro', 'id_departamento' => $departamentos['Potosí']],
-            // SANTA CRUZ
+            // SANTA CRUZ 99-114
             ['nombre_provincia' => 'Andres Ibañez', 'id_departamento' => $departamentos['Santa Cruz']],
             ['nombre_provincia' => 'Ángel Sandoval', 'id_departamento' => $departamentos['Santa Cruz']],
             ['nombre_provincia' => 'Chiquitos', 'id_departamento' => $departamentos['Santa Cruz']],
@@ -134,7 +134,7 @@ class ProvinciasSeeder extends Seeder
             ['nombre_provincia' => 'Sara', 'id_departamento' => $departamentos['Santa Cruz']],
             ['nombre_provincia' => 'Vallegrande', 'id_departamento' => $departamentos['Santa Cruz']],
             ['nombre_provincia' => 'Otro', 'id_departamento' => $departamentos['Santa Cruz']],
-            // TARIJA
+            // TARIJA 115-121
             ['nombre_provincia' => 'Aniceto Arce', 'id_departamento' => $departamentos['Tarija']],
             ['nombre_provincia' => 'Burdet O’Connor', 'id_departamento' => $departamentos['Tarija']],
             ['nombre_provincia' => 'Cercado', 'id_departamento' => $departamentos['Tarija']],

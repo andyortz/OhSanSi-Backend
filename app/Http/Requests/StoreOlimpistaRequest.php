@@ -30,7 +30,7 @@ class StoreOlimpistaRequest extends FormRequest
                 'numeric',
                 Rule::unique('olimpistas')->ignore($this->student)
             ],
-            'correo_electronico' => 'required|email',
+            'correo_electronico' => 'email',
             'fecha_nacimiento' => 'required|date',
             'unidad_educativa' => 'required|string',
             'id_grado' => 'required|integer',
@@ -44,7 +44,7 @@ class StoreOlimpistaRequest extends FormRequest
             'cedula_identidad.unique' => 'Ya existe un olimpista con ese numero de carnet',
             'nombres.required' => 'El nombre es obligatorio',
             'apellidos.required' => 'El apllido es obligatorio',
-            'cedula_identidad.required' => 'La cedula de identidad es obligatoria',
+            // 'cedula_identidad.required' => 'La cedula de identidad es obligatoria',
             'correo_electronico.required' => 'El correo electronico es obligatorio',
             'unidad_educativa.required' => 'La unidad educativa es obligatoria',
             'id_grado.required' => 'El grado es obligatorio',

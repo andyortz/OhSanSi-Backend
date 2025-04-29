@@ -35,7 +35,6 @@ class NivelesSeeder extends Seeder
             ['nombre'=>'Guanaco'],
             ['nombre'=>'Bufeo'],
             ['nombre'=>'Puma'],
-            ['nombre'=>'Tilin'],
             ['nombre'=>'Primer Nivel '],
             ['nombre'=>'Segundo Nivel'],
             ['nombre'=>'Tercer Nivel'],

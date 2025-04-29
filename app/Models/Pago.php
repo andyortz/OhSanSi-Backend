@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Pagos extends Model
+class Pago extends Model
 {
     protected $table = 'pagos';
     protected $primaryKey = 'id_pago';
@@ -12,23 +12,22 @@ class Pagos extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_olimpiada',
         'comprobante',
         'fecha_pago',
-        'nombre_pagador',
+        'ci_responsable_inscripcion', 
         'monto_pagado',
         'verificado',
         'verificado_en',
         'verificado_por',
     ];
-
-    public function olimpiada()
+    
+    public function responsable()
     {
-        return $this->belongsTo(Olimpiada::class, 'id_olimpiada');
+        return $this->belongsTo(Persona::class, 'id_responsable_inscripcion', 'ci_persona');
     }
 
     public function inscripciones()
     {
-        return $this->hasMany(Inscripcion::class, 'id_pago');
+        return $this->hasMany(Inscripcion::class, 'id_pago', 'id_pago');
     }
 }

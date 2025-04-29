@@ -22,10 +22,11 @@ class DatabaseSeeder extends Seeder
             ColegiosSeeder::class,
             NivelesSeeder::class,
             GradosNivelesSeeder::class,
-            OlimpistasSeeder::class,
-            TutoresSeeder::class,
-            ParentescosSeeder::class,
+            PersonasSeeder::class,
             NivelesAreasOlimpiadasSeeder::class,
+            DetalleOlimpistaSeeder::class,
+            PagoSeeder::class,
+            InscripcionSeeder::class,
         ]);
 
         User::factory()->create([
