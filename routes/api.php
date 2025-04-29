@@ -60,7 +60,7 @@ Route::get('/olimpiadas/{id}/max-categorias', [OlimpiadaAreaController::class, '
 Route::post('/inscripciones', [InscripcionNivelesController::class, 'store']);
 
 // inscrpcion con posible tutor
-Route::post('/inscripciones-con-tutor', [InscripcionNivelesController::class, 'storeWithTutor']);
+Route::post('/inscripciones-con-tutor', [InscripcionNivelesController::class, 'store']);
 
 // inscripcion de varios olimpistas con un tutor
 Route::post('/registrar-varios-olimpistas', [InscripcionNivelesController::class, 'registrarVarios']);
@@ -80,7 +80,7 @@ Route::post('/tutores', [TutoresControllator::class, 'store']);
 Route::get('tutores/email/{email}',[TutoresControllator::class,'getByEmail']);
 Route::get('/tutores',[TutoresControllator::class,'buscarCi' ]);
 
-Route::get('tutores/cedula/{cedula}',[TutoresControllator::class,'buscarCi']);
+Route::get('tutores/cedula/{cedula}',[TutoresControllator::class,'buscarPorCi']);
 
 
 // Áreas

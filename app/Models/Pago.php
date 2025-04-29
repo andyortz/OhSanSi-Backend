@@ -14,7 +14,7 @@ class Pago extends Model
     protected $fillable = [
         'comprobante',
         'fecha_pago',
-        'id_responsable_inscripcion', 
+        'ci_responsable_inscripcion', 
         'monto_pagado',
         'verificado',
         'verificado_en',

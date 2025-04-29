@@ -8,14 +8,15 @@ use App\Models\Area;
 use App\Models\NivelAreaOlimpiada;
 use App\Models\NivelCategoria;
 use App\Models\NivelGrado;
+use App\Models\DetalleOlimpista;
 
 class OlimpistaRepository
 {
     public function getAreasNiveles($ci)
     {
         // 1. Obtener el grado del olimpista
-        $olimpista = Olimpista::select('id_grado')
-        ->where('cedula_identidad', $ci)
+        $olimpista = DetalleOlimpista::select('id_grado')
+        ->where('ci_olimpista', $ci)
         ->firstOrFail();
 
         // 2. Obtener niveles asociados al grado
