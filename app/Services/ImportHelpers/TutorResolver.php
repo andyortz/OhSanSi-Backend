@@ -18,6 +18,8 @@ class TutorResolver
             'ci' => $row[11],  // Columna 12 (CI del tutor)
             'celular' => $row[12],  // Columna 13 (Celular del tutor)
             'correo_electronico' => $row[13],  // Columna 14 (Correo electrónico del tutor)
+            'rol_parentesco' => 'Madre',
+            
         ];
     }
 }

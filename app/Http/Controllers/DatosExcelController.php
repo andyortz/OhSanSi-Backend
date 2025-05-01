@@ -61,47 +61,48 @@ class DatosExcelController extends Controller
 
         return response()->json([
             'message' => 'Data sanitized successfully.',
-            'sanitized_data' => $sanitizedData,
+            //'sanitized_data' => $sanitizedData,
             'tutors_data' => $tutorsData,
-            'olimpistas_data' => $olimpistasData,
-            'areas_data' => $areasData,
-            'profesor_data' => $profesorData,
+            //'olimpistas_data' => $olimpistasData,
+            //'areas_data' => $areasData,
+            //'profesor_data' => $profesorData,
         ], 200);
     }
 
     private function saveTutores(array $tutorsData)
-{
-    $controller = app(TutoresControllator::class);
+    {
+        $controller = app(TutoresControllator::class);
 
-    foreach ($tutorsData as $tutor) {
-        // Filtramos solo los campos que el controlador espera
-        $filteredTutor = [
-            'nombres' => $tutor['nombres'],
-            'apellidos' => $tutor['apellidos'],
-            'ci' => $tutor['ci'],
-            'celular' => $tutor['celular'],
-            'correo_electronico' => $tutor['correo_electronico']
-        ];
-
-        // Creamos el request simulado
-        $request = new \Illuminate\Http\Request($filteredTutor);
-
-        // Ejecutamos el controlador
-        $response = $controller->store($request);
-
-        // Verificamos el resultado
-        $status = $response->getStatusCode();
-
-        if ($status === 201) {
-            logger()->info("Tutor guardado correctamente", ['ci' => $tutor['ci']]);
-        } else {
-            logger()->error("Error al guardar tutor", [
+        foreach ($tutorsData as $tutor) {
+            // Filtramos solo los campos que el controlador espera
+            $filteredTutor = [
+                'nombres' => $tutor['nombres'],
+                'apellidos' => $tutor['apellidos'],
                 'ci' => $tutor['ci'],
-                'response' => $response->getContent()
-            ]);
+                'celular' => $tutor['celular'],
+                'correo_electronico' => $tutor['correo_electronico'],
+                'rol_parentesco' => $tutor['rol_parentesco'],
+            ];
+
+            // Creamos el request simulado
+            $request = new \Illuminate\Http\Request($filteredTutor);
+
+            // Ejecutamos el controlador
+            $response = $controller->store($request);
+
+            // Verificamos el resultado
+            $status = $response->getStatusCode();
+
+            if ($status === 201) {
+                logger()->info("Tutor guardado correctamente", ['ci' => $tutor['ci']]);
+            } else {
+                logger()->error("Error al guardar tutor", [
+                    'ci' => $tutor['ci'],
+                    'response' => $response->getContent()
+                ]);
+            }
         }
     }
-}
 
 
 
