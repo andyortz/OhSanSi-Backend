@@ -13,11 +13,11 @@ class ProfesorResolver
     public static function extractProfesorData(array $row): array
     {
         return [
-            'nombresProfesor' => $row[17],  
-            'apellidosProfesor' => $row[18],  
-            'cisProfesor' => $row[19],  
-            'celularsProfesor' => $row[20], 
-            'correo_electronicosProfesor' => $row[21], 
+            'nombresProfesor' => $row[16],  
+            'apellidosProfesor' => $row[17],  
+            'cisProfesor' => $row[18],  
+            'celularsProfesor' => $row[19], 
+            'correo_electronicosProfesor' => $row[20], 
         ];
     }
 }
