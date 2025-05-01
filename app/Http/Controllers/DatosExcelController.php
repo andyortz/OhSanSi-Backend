@@ -17,11 +17,12 @@ use App\Http\Controllers\TutoresControllator;
 use App\Http\Controllers\OlimpistaController;
 use App\Services\ImportHelpers\ProfesorResolver;
 
+
 class DatosExcelController extends Controller
 {
     public function cleanDates(Request $request)
     {
-        $datos = $request->input('data');
+        $datos = $request->input('raw_data');
 
         $sanitizedData = [];
         $tutorsData = [];
@@ -57,6 +58,7 @@ class DatosExcelController extends Controller
         $this->saveTutores($tutorsData);
         //$this->saveOlimpistas($olimpistasData);
 
+
         return response()->json([
             'message' => 'Data sanitized successfully.',
             'sanitized_data' => $sanitizedData,
@@ -68,17 +70,44 @@ class DatosExcelController extends Controller
     }
 
     private function saveTutores(array $tutorsData)
-    {
-        $controller = new TutoresControllator();
+{
+    $controller = app(TutoresControllator::class);
 
-        foreach ($tutorsData as $tutor) {
-            $controller->store(new Request($tutor));
+    foreach ($tutorsData as $tutor) {
+        // Filtramos solo los campos que el controlador espera
+        $filteredTutor = [
+            'nombres' => $tutor['nombres'],
+            'apellidos' => $tutor['apellidos'],
+            'ci' => $tutor['ci'],
+            'celular' => $tutor['celular'],
+            'correo_electronico' => $tutor['correo_electronico']
+        ];
+
+        // Creamos el request simulado
+        $request = new \Illuminate\Http\Request($filteredTutor);
+
+        // Ejecutamos el controlador
+        $response = $controller->store($request);
+
+        // Verificamos el resultado
+        $status = $response->getStatusCode();
+
+        if ($status === 201) {
+            logger()->info("Tutor guardado correctamente", ['ci' => $tutor['ci']]);
+        } else {
+            logger()->error("Error al guardar tutor", [
+                'ci' => $tutor['ci'],
+                'response' => $response->getContent()
+            ]);
         }
     }
+}
+
+
 
     private function saveOlimpistas(array $olimpistasData)
     {
-        $controller = new OlimpistaController();
+        $controller = app(OlimpistaController::class);
 
         foreach ($olimpistasData as $olimpista) {
             // Creamos un nuevo StoreOlimpistaRequest manualmente

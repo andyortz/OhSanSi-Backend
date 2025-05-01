@@ -6,6 +6,7 @@ use App\Models\Area;
 use App\Http\Requests\StoreAreaRequest;
 use Illuminate\Http\Request\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\NivelAreaOlimpiada;
 
 class AreasController extends Controller
 {
@@ -23,7 +24,11 @@ class AreasController extends Controller
      */
     public function areasPorOlimpiada($id_olimpiada)
     {
-        $areas = Area::where('id_olimpiada', $id_olimpiada)->get();
+        $areas = NivelAreaOlimpiada::where('id_olimpiada', $id_olimpiada)
+            ->join('areas_competencia', 'niveles_areas_olimpiadas.id_area', '=', 'areas_competencia.id_area')
+            ->select('areas_competencia.id_area', 'areas_competencia.nombre')
+            ->groupBy('areas_competencia.id_area', 'areas_competencia.nombre')
+            ->get();
 
         if ($areas->isEmpty()) {
             return response()->json([

@@ -13,74 +13,54 @@ class NivelCategoriaController extends Controller
 {
     public function store(Request $request)
     {
-        $datos = $request->all();
-
-        if (!is_array($datos) || empty($datos)) {
-            return response()->json([
-                'message' => 'Debes enviar un array de relaciones a registrar.'
-            ], 400);
-        }
-
-        $errores = [];
-        $registrosGuardados = [];
+        $data = $request->validate([
+            'nombre' => 'required|string|max:50',
+            'id_area' => 'required|integer|exists:areas_competencia,id_area',
+            'grado_min' => 'required|integer|exists:grados,id_grado',
+            'grado_max' => 'required|integer|exists:grados,id_grado',
+        ]);
 
         DB::beginTransaction();
         try {
-            foreach ($datos as $index => $registro) {
-                // Validar campos requeridos
-                $faltantes = [];
-                foreach (['id_nivel', 'id_area', 'id_olimpiada', 'grados'] as $campo) {
-                    if (!isset($registro[$campo]) || empty($registro[$campo])) {
-                        $faltantes[] = $campo;
-                    }
-                }
+            // 1. Buscar el id_nivel basado en el nombre
+            $nivel = NivelCategoria::where('nombre', $data['nombre'])->first();
 
-                if (!empty($faltantes)) {
-                    $errores[] = "Item #" . ($index + 1) . ": Faltan los campos " . implode(', ', $faltantes);
-                    continue;
-                }
+            if (!$nivel) {
+                return response()->json([
+                    'message' => 'Nivel no encontrado en el catálogo.',
+                    'nombre' => $data['nombre']
+                ], 404);
+            }
 
-                // Crear relación en niveles_areas_olimpiadas si no existe
-                $existeRelacion = DB::table('niveles_areas_olimpiadas')->where([
-                    'id_nivel' => $registro['id_nivel'],
-                    'id_area' => $registro['id_area'],
-                    'id_olimpiada' => $registro['id_olimpiada']
-                ])->exists();
+            // 2. Asociarlo al área de competencia
+            NivelAreaOlimpiada::create([
+                'id_olimpiada' => 1, // Ajustar si manejas varias olimpiadas
+                'id_area' => $data['id_area'],
+                'id_nivel' => $nivel->id_nivel,
+                'max_niveles' => 1, // O ajustar si quieres
+            ]);
 
-                if (!$existeRelacion) {
-                    DB::table('niveles_areas_olimpiadas')->insert([
-                        'id_nivel' => $registro['id_nivel'],
-                        'id_area' => $registro['id_area'],
-                        'id_olimpiada' => $registro['id_olimpiada']
-                    ]);
-                }
-
-                // Registrar grados asociados al nivel
-                foreach ($registro['grados'] as $id_grado) {
-                    DB::table('grados_niveles')->updateOrInsert([
-                        'id_nivel' => $registro['id_nivel'],
-                        'id_grado' => $id_grado
-                    ]);
-                }
-
-                $registrosGuardados[] = $registro;
+            // 3. Asociarlo a los grados
+            for ($grado = $data['grado_min']; $grado <= $data['grado_max']; $grado++) {
+                NivelGrado::create([
+                    'id_nivel' => $nivel->id_nivel,
+                    'id_grado' => $grado,
+                ]);
             }
 
             DB::commit();
 
             return response()->json([
-                'message' => empty($errores) 
-                    ? 'Relaciones registradas exitosamente.' 
-                    : 'Algunas relaciones fueron registradas, pero otras fallaron.',
-                'guardados' => $registrosGuardados,
-                'errores' => $errores
-            ], empty($errores) ? 201 : 207);
+                'message' => 'Nivel asociado correctamente a área y grados.',
+                'nivel' => $nivel
+            ], 201);
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::rollBack();
             return response()->json([
-                'message' => 'Error al registrar las relaciones.',
-                'error' => $e->getMessage()
+                'message' => 'Error interno al asociar el nivel.',
+                'error' => $e->getMessage(),
+                'line' => $e->getLine()
             ], 500);
         }
     }
@@ -88,7 +68,12 @@ class NivelCategoriaController extends Controller
 
     public function nivelesPorArea($id_area)
     {
-        $niveles = NivelCategoria::where('id_area', $id_area)->with('grados')->get();
+        $niveles = DB::table('niveles_areas_olimpiadas')
+            ->join('niveles_categoria', 'niveles_areas_olimpiadas.id_nivel', '=', 'niveles_categoria.id_nivel')
+            ->where('niveles_areas_olimpiadas.id_area', $id_area)
+            ->select('niveles_categoria.id_nivel', 'niveles_categoria.nombre')
+            ->groupBy('niveles_categoria.id_nivel', 'niveles_categoria.nombre')
+            ->get();
 
         if ($niveles->isEmpty()) {
             return response()->json([
