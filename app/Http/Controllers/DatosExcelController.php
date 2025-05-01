@@ -31,7 +31,7 @@ class DatosExcelController extends Controller
         $profesorData = [];
 
         foreach ($datos as $index => $row) {
-            $rowArray = array_slice($row, 0, 21);
+            $rowArray = array_slice($row, 0, 20);
             if (empty(array_filter($rowArray))) break;
 
             $row[8] = GradoResolver::resolve($row[8]) ?? null;
