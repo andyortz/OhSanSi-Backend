@@ -16,41 +16,29 @@ class NivelCategoriaController extends Controller
     public function asociarNivelesPorArea(Request $request)
     {
         $data = $request->validate([
+            'id_olimpiada' => 'required|integer|exists:olimpiadas,id_olimpiada',
             'id_area' => 'required|integer|exists:areas_competencia,id_area',
             'id_categorias' => 'required|array|min:1',
             'id_categorias.*' => 'required|integer|exists:niveles_categoria,id_nivel',
         ]);
-
-        // Obtener olimpiada activa según la fecha actual
-        $fechaHoy = Carbon::now()->toDateString();
-        $olimpiada = Olimpiada::where('fecha_inicio', '<=', $fechaHoy)
-            ->where('fecha_fin', '>=', $fechaHoy)
-            ->first();
-
-        if (!$olimpiada) {
-            return response()->json([
-                'message' => 'No hay ninguna olimpiada activa en este momento.'
-            ], 404);
-        }
 
         $insertadas = [];
 
         DB::beginTransaction();
         try {
             foreach ($data['id_categorias'] as $idNivel) {
-                // Validar si ya existe para evitar duplicados
                 $yaExiste = NivelAreaOlimpiada::where([
-                    'id_olimpiada' => $olimpiada->id_olimpiada,
+                    'id_olimpiada' => $data['id_olimpiada'],
                     'id_area' => $data['id_area'],
                     'id_nivel' => $idNivel
                 ])->exists();
 
                 if (!$yaExiste) {
                     NivelAreaOlimpiada::create([
-                        'id_olimpiada' => $olimpiada->id_olimpiada,
+                        'id_olimpiada' => $data['id_olimpiada'],
                         'id_area' => $data['id_area'],
                         'id_nivel' => $idNivel,
-                        'max_niveles' => 1 // Obtener el valor máximo de niveles por área
+                        'max_niveles' => 1
                     ]);
 
                     $insertadas[] = $idNivel;
@@ -60,8 +48,7 @@ class NivelCategoriaController extends Controller
             DB::commit();
 
             return response()->json([
-                'message' => 'Niveles asociados exitosamente a la olimpiada actual.',
-                'id_olimpiada' => $olimpiada->id_olimpiada,
+                'message' => 'Niveles asociados exitosamente.',
                 'niveles_asociados' => $insertadas
             ], 201);
 
