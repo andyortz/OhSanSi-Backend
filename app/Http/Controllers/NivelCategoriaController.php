@@ -216,11 +216,23 @@ class NivelCategoriaController extends Controller
 
     public function index()
     {
-        $niveles = NivelCategoria::all();
-
-        return response()->json([
-            'message' => 'Lista de niveles cargada correctamente.',
-            'niveles' => $niveles
-        ], 200);
+        // Obtener solo niveles que tienen al menos un grado relacionado
+        $niveles = NivelCategoria::whereHas('grados')->with('grados')->get();
+        
+        // Formatear la respuesta
+        $response = $niveles->map(function ($nivel) {
+            return [
+                'id_nivel' => $nivel->id_nivel,
+                'nombre_nivel' => $nivel->nombre,
+                'grados' => $nivel->grados->map(function ($grado) {
+                    return [
+                        'id_grado' => $grado->id_grado,
+                        'nombre_grado' => $grado->nombre_grado
+                    ];
+                })->unique('id_grado')->values() // Elimina duplicados si los hubiera
+            ];
+        });
+        
+        return response()->json($response);
     }
 }

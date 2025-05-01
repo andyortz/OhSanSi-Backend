@@ -50,6 +50,7 @@ Route::post('/asociar-grados-nivel', [NivelCategoriaController::class,'asociarGr
 
 // Grados
 Route::get('/grados', [GradosController::class, 'index']);
+Route::get('/grados-niveles', [NivelCategoriaController::class, 'index']);
 
 // Áreas por olimpiada
 Route::get('/olimpiada/{id}/areas', [AreasController::class, 'areasPorOlimpiada']);
