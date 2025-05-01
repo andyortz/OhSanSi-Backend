@@ -120,29 +120,48 @@ class VerificarInscripcionController extends Controller
     public function getInscripcionesPorCI($ci)
     {
         try {
+            // 1. Buscar el detalle olimpista
             $detalle = DetalleOlimpista::where('ci_olimpista', $ci)->first();
+    
             if (!$detalle) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'No se encontró el detalle del olimpista'
+                    'message' => 'No se encontró el olimpista'
                 ], 404);
             }
-            
-            // 2. Obtener solo las inscripciones (sin relaciones)
-            $inscripciones = Inscripcion::where('id_detalle_olimpista', $detalle->id_detalle_olimpista)
-                ->orderBy('fecha_inscripcion', 'desc')
-                ->get();
-
-            // 3. Formatear respuesta básica
+    
+            // 2. Obtener inscripciones con relaciones necesarias
+            $inscripciones = Inscripcion::with([
+                'nivel:id_nivel,nombre', // Solo necesitamos estos campos
+                'nivel.asociaciones.area:id_area,nombre'
+            ])
+            ->where('id_detalle_olimpista', $detalle->id_detalle_olimpista)
+            ->orderBy('fecha_inscripcion', 'desc')
+            ->get();
+    
+            // 3. Formatear la respuesta
+            $response = [
+                'ci_olimpista' => $ci,
+                'inscripciones' => $inscripciones->map(function ($inscripcion) {
+                    return [
+                        'id_inscripcion' => $inscripcion->id_inscripcion,
+                        'nivel' => $inscripcion->nivel ? [
+                            'id_nivel' => $inscripcion->nivel->id_nivel,
+                            'nombre' => $inscripcion->nivel->nombre
+                        ] : null,
+                        'area' => $inscripcion->nivel->asociaciones->first() ? [
+                            'id_area' => $inscripcion->nivel->asociaciones->first()->area->id_area,
+                            'nombre' => $inscripcion->nivel->asociaciones->first()->area->nombre
+                        ] : null
+                    ];
+                })
+            ];
+    
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'ci_olimpista' => $ci,
-                    'total_inscripciones' => $inscripciones->count(),
-                    'inscripciones' => $inscripciones
-                ]
+                'data' => $response
             ]);
-
+    
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
