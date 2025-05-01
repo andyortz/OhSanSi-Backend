@@ -76,6 +76,8 @@ class DatosExcelController extends Controller
 
         $this->saveTutores(array_values($tutorsData), $resultadoFinal);
         $this->saveOlimpistas(array_values($olimpistasData), $resultadoFinal);
+        $this->saveProfesores(array_values($profesorData), $resultadoFinal);
+
 
         return response()->json([
             'message' => 'Datos validados y convertidos correctamente.',
@@ -130,6 +132,50 @@ class DatosExcelController extends Controller
             }
         }
     }
+
+    private function saveProfesores(array $profesoresData, array &$resultado)
+    {
+        $controller = app(TutoresControllator::class);
+
+        foreach ($profesoresData as $profesor) {
+            if (\App\Models\Persona::where('ci_persona', $profesor['ci'])->exists()) {
+                $resultado['profesores_omitidos'][] = [
+                    'ci' => $profesor['ci'],
+                    'message' => 'Ya existe en la base de datos'
+                ];
+                continue;
+            }
+
+            $filteredProfesor = [
+                'nombres' => $profesor['nombres'],
+                'apellidos' => $profesor['apellidos'],
+                'ci' => $profesor['ci'],
+                'celular' => $profesor['celular'],
+                'correo_electronico' => $profesor['correo_electronico'],
+                'rol_parentesco' => $profesor['rol_parentesco'], // puede ser 'Profesor'
+            ];
+
+            try {
+                $request = new \Illuminate\Http\Request($filteredProfesor);
+                $response = $controller->store($request);
+
+                if ($response->getStatusCode() === 201) {
+                    $resultado['profesores_guardados'][] = $filteredProfesor;
+                } else {
+                    $resultado['profesores_errores'][] = [
+                        'ci' => $profesor['ci'],
+                        'error' => $response->getContent()
+                    ];
+                }
+            } catch (\Throwable $e) {
+                $resultado['profesores_errores'][] = [
+                    'ci' => $profesor['ci'],
+                    'error' => $e->getMessage()
+                ];
+            }
+        }
+    }
+
 
     private function saveOlimpistas(array $olimpistasData, array &$resultado)
     {
