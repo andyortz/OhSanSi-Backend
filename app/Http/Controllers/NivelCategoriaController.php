@@ -168,18 +168,42 @@ class NivelCategoriaController extends Controller
                           ->orderBy('id_grado')
                           ->get();
 
+            $asociacionesCreadas = 0;
+            $asociacionesExistentes = 0;
+
             // Crear las asociaciones
             foreach ($grados as $grado) {
-                NivelGrado::firstOrCreate([
+                // Verificar si la asociación ya existe
+                $existe = NivelGrado::where('id_nivel', $request->id_nivel)
+                                    ->where('id_grado', $grado->id_grado)
+                                    ->exists();
+
+                if ($existe) {
+                    $asociacionesExistentes++;
+                    continue;
+                }
+
+                // Crear nueva asociación si no existe
+                NivelGrado::create([
                     'id_nivel' => $request->id_nivel,
                     'id_grado' => $grado->id_grado
                 ]);
+                $asociacionesCreadas++;
             }
-
+                
             return response()->json([
                 'success' => true,
-                'message' => 'Asociaciones creadas correctamente',
-                'asociaciones_creadas' => $grados->count()
+                'message' => 'Proceso de asociación completado',
+                'detalle' => [
+                    'asociaciones_nuevas' => $asociacionesCreadas,
+                    'asociaciones_ya_existentes' => $asociacionesExistentes,
+                    'total_grados_procesados' => $grados->count()
+                ],
+                'nivel_id' => $request->id_nivel,
+                'rango_grados' => [
+                    'min' => $request->id_grado_min,
+                    'max' => $request->id_grado_max
+                ]
             ]);
 
         } catch (\Exception $e) {
