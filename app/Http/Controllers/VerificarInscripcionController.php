@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tutor;
-use App\Models\Olimpista;
-use App\Models\Parentesco;
+use App\Models\Persona;
 use App\Models\Olimpiada;
+use App\Models\DetalleOlimpista;
 use App\Models\Inscripcion;
 use App\Models\NivelAreaOlimpiada;
 use Illuminate\Http\Request;
@@ -120,25 +119,36 @@ class VerificarInscripcionController extends Controller
     }
     public function getInscripcionesPorCI($ci)
     {
-        // 1. Buscar al olimpista por su CI
-        $olimpista = Olimpista::where('cedula_identidad', $ci)->first();
+        try {
+            $detalle = DetalleOlimpista::where('ci_olimpista', $ci)->first();
+            if (!$detalle) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se encontró el detalle del olimpista'
+                ], 404);
+            }
+            
+            // 2. Obtener solo las inscripciones (sin relaciones)
+            $inscripciones = Inscripcion::where('id_detalle_olimpista', $detalle->id_detalle_olimpista)
+                ->orderBy('fecha_inscripcion', 'desc')
+                ->get();
 
-        if (!$olimpista) {
+            // 3. Formatear respuesta básica
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'ci_olimpista' => $ci,
+                    'total_inscripciones' => $inscripciones->count(),
+                    'inscripciones' => $inscripciones
+                ]
+            ]);
+
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Olimpista no encontrado'
-            ], 404);
+                'message' => 'Error al obtener inscripciones',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        // 2. Obtener las inscripciones
-        $inscripciones = Inscripcion::with('nivel.asociaciones.area')
-            ->where('id_olimpista', $olimpista->id_olimpista)
-            ->get();
-
-        return response()->json([
-            'success' => true,
-            'ci_olimpista' => $ci,
-            'inscripciones' => $inscripciones
-        ]);
     }
 }
