@@ -6,11 +6,61 @@ use App\Models\NivelCategoria;
 use App\Models\Grado;
 use App\Models\NivelGrado;
 use App\Models\NivelAreaOlimpiada;
+use App\Models\Olimpiada;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class NivelCategoriaController extends Controller
 {
+    public function asociarNivelesPorArea(Request $request)
+    {
+        $data = $request->validate([
+            'id_olimpiada' => 'required|integer|exists:olimpiadas,id_olimpiada',
+            'id_area' => 'required|integer|exists:areas_competencia,id_area',
+            'id_categorias' => 'required|array|min:1',
+            'id_categorias.*' => 'required|integer|exists:niveles_categoria,id_nivel',
+        ]);
+
+        $insertadas = [];
+
+        DB::beginTransaction();
+        try {
+            foreach ($data['id_categorias'] as $idNivel) {
+                $yaExiste = NivelAreaOlimpiada::where([
+                    'id_olimpiada' => $data['id_olimpiada'],
+                    'id_area' => $data['id_area'],
+                    'id_nivel' => $idNivel
+                ])->exists();
+
+                if (!$yaExiste) {
+                    NivelAreaOlimpiada::create([
+                        'id_olimpiada' => $data['id_olimpiada'],
+                        'id_area' => $data['id_area'],
+                        'id_nivel' => $idNivel,
+                        'max_niveles' => 1
+                    ]);
+
+                    $insertadas[] = $idNivel;
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Niveles asociados exitosamente.',
+                'niveles_asociados' => $insertadas
+            ], 201);
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Error al asociar niveles al área.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([
