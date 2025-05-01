@@ -87,6 +87,45 @@ class NivelCategoriaController extends Controller
             'niveles' => $niveles
         ], 200);
     }
+    public function asociarGrados(Request $request)
+    {
+        // Validar los datos de entrada
+        $request->validate([
+            'id_nivel' => 'required|integer|exists:niveles_categoria,id_nivel',
+            'id_grado_min' => 'required|integer|exists:grados,id_grado',
+            'id_grado_max' => 'required|integer|exists:grados,id_grado',
+        ]);
+
+        try {
+            // Verificar que el nivel existe
+            $nivel = NivelCategoria::findOrFail($request->id_nivel);
+            
+            // Obtener todos los grados entre el mínimo y el máximo
+            $grados = Grado::whereBetween('id_grado', [$request->id_grado_min, $request->id_grado_max])
+                          ->orderBy('id_grado')
+                          ->get();
+
+            // Crear las asociaciones
+            foreach ($grados as $grado) {
+                NivelGrado::firstOrCreate([
+                    'id_nivel' => $request->id_nivel,
+                    'id_grado' => $grado->id_grado
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Asociaciones creadas correctamente',
+                'asociaciones_creadas' => $grados->count()
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al crear las asociaciones: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 
     public function index()
     {
