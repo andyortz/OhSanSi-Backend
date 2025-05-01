@@ -21,8 +21,7 @@ class ExcelImportController extends Controller
 
         // Devolver los datos extraídos en formato JSON
         return response()->json([
-            'message' => 'Excel import completed.',
-            'raw_data' => $import->rawRows,
+            'data' => $import->rawRows,
         ], 201);
     }
 }
