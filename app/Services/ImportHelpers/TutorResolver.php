@@ -16,7 +16,7 @@ class TutorResolver
             'nombres' => $row[9],  // Columna 10 (Nombre del tutor)
             'apellidos' => $row[10],  // Columna 11 (Apellido del tutor)
             'ci' => $row[11],  // Columna 12 (CI del tutor)
-            'celular' => $row[12],  // Columna 13 (Celular del tutor)
+            'celular' => strval($row[12]), // Columna 13 (Celular del tutor)
             'correo_electronico' => $row[13],  // Columna 14 (Correo electrónico del tutor)
             'rol_parentesco' => 'Madre',
             
