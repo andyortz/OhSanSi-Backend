@@ -11,6 +11,7 @@ use App\Services\ImportHelpers\ColegioResolver;
 use App\Services\ImportHelpers\TutorResolver;
 use App\Services\ImportHelpers\OlimpistaResolver;
 use App\Services\ImportHelpers\AreaResolver;
+use App\Services\ImportHelpers\NivelResolver;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\TutoresControllator;
@@ -62,6 +63,10 @@ class DatosExcelController extends Controller
             $grado = GradoResolver::resolve($row[8]);
             if (!$grado) return $this->errorFila('Grado', $row[8], $index);
             $row[8] = $grado;
+
+            $nivel = NivelResolver::resolve($row[15]);
+            if (!$nivel) return $this->errorFila('Nivel', $row[15], $index);
+            $row[15] = $nivel;
 
             $tutor = TutorResolver::extractTutorData($row);
             $tutorsData[$tutor['ci']] = $tutor;
@@ -157,7 +162,33 @@ class DatosExcelController extends Controller
             }
         }
     }
+    private function saveInscripcion(array $sanitizedData, array &$resultado)
+    {
+        $controller = app(InscripcionNivelesController::class); 
 
+        foreach ($sanitizedData as $data) {
+            $request = new StoreOlimpistaRequest();
+            $request->merge($data);
+
+            try {
+                $response = $controller->store($request);
+                if ($response->getStatusCode() === 201) {
+                    $resultado['inscripciones_guardadas'][] = $data;
+                } else {
+                    $resultado['inscripciones_errores'][] = [
+                        'ci' => $data['cedula_identidad'],
+                        'error' => $response->getContent()
+                    ];
+                }
+            } catch (\Throwable $e) {
+                $resultado['inscripciones_errores'][] = [
+                    'ci' => $data['cedula_identidad'],
+                    'error' => $e->getMessage()
+                ];
+            }
+        }
+    }
+    
     private function errorFila($campo, $valor, $fila)
     {
         return response()->json([
