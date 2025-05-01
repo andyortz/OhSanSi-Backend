@@ -43,6 +43,7 @@ Route::post('/registro/excel', [DatosExcelController::class, 'cleanDates']);
 
 // Niveles
 Route::post('/niveles', [NivelCategoriaController::class, 'store']);
+Route::post('/areas/asociar-niveles', [NivelCategoriaController::class, 'asociarNivelesPorArea']);
 Route::get('/niveles/area/{id_area}', [NivelCategoriaController::class, 'nivelesPorArea']);
 
 // Grados
