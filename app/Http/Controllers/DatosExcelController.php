@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\TutoresControllator;
 use App\Http\Controllers\OlimpistaController;
+use App\Services\ImportHelpers\ProfesorResolver;
 
 class DatosExcelController extends Controller
 {
@@ -26,9 +27,10 @@ class DatosExcelController extends Controller
         $tutorsData = [];
         $olimpistasData = [];
         $areasData = [];
+        $profesorData = [];
 
         foreach ($datos as $index => $row) {
-            $rowArray = array_slice($row, 0, 18);
+            $rowArray = array_slice($row, 0, 21);
             if (empty(array_filter($rowArray))) break;
 
             $row[8] = GradoResolver::resolve($row[8]) ?? null;
@@ -47,6 +49,8 @@ class DatosExcelController extends Controller
 
             $areasData[] = AreaResolver::extractAreaData($row);
 
+            $profesorData[] = ProfesorResolver::extractProfesorData($row);
+
             $sanitizedData[] = $row;
         }
 
@@ -59,6 +63,7 @@ class DatosExcelController extends Controller
             'tutors_data' => $tutorsData,
             'olimpistas_data' => $olimpistasData,
             'areas_data' => $areasData,
+            'profesor_data' => $profesorData,
         ], 200);
     }
 
