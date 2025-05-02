@@ -136,4 +136,6 @@ Route::get('/olimpiada/max-categorias', [OlimpiadaController::class, 'getMaxCate
 
 Route::get('/olimpiadas/{id}/areas-niveles', [OlimpiadaController::class, 'getAreasConNiveles']);
 
+Route::get('/olimpiada-data/{id}', [OlimpiadaController::class, 'getAreasYNiveles']);
+
 
