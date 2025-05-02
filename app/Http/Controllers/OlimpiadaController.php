@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Olimpiada;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+
 
 class OlimpiadaController extends Controller
 {
@@ -57,4 +59,38 @@ class OlimpiadaController extends Controller
             'max_categorias_olimpista' => $olimpiada->max_categorias_olimpista
         ]);
     }
+    public function getAreasConNiveles($id_olimpiada)
+    {
+        $olimpiada = Olimpiada::with(['nivelesAreas.area', 'nivelesAreas.nivel'])
+            ->find($id_olimpiada);
+
+        if (!$olimpiada) {
+            return response()->json([
+                'message' => 'Olimpiada no encontrada.'
+            ], 404);
+        }
+
+        $agrupado = [];
+
+        foreach ($olimpiada->nivelesAreas as $relacion) {
+            $nombreArea = $relacion->area->nombre;
+
+            if (!isset($agrupado[$nombreArea])) {
+                $agrupado[$nombreArea] = [
+                    'nombre_area' => $nombreArea,
+                    'niveles' => []
+                ];
+            }
+
+            $agrupado[$nombreArea]['niveles'][] = [
+                'nombre_nivel' => $relacion->nivel->nombre
+            ];
+        }
+
+        return response()->json([
+            'gestion' => $olimpiada->gestion,
+            'areas' => array_values($agrupado)
+        ], 200);
+    }
+
 }

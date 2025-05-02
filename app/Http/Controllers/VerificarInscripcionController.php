@@ -162,6 +162,7 @@ class VerificarInscripcionController extends Controller
                 'data' => $response
             ]);
     
+            
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
