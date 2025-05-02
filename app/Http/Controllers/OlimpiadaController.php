@@ -61,6 +61,7 @@ class OlimpiadaController extends Controller
     }
     public function getAreasConNiveles($id_olimpiada)
     {
+        //funcoina bro ??
         $olimpiada = Olimpiada::with(['nivelesAreas.area', 'nivelesAreas.nivel'])
             ->find($id_olimpiada);
 
