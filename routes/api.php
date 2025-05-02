@@ -45,23 +45,26 @@ Route::post('/registro/excel', [DatosExcelController::class, 'cleanDates']);
 Route::post('/niveles', [NivelCategoriaController::class, 'store']);
 Route::post('/areas/asociar-niveles', [NivelCategoriaController::class, 'asociarNivelesPorArea']);
 Route::get('/niveles/area/{id_area}', [NivelCategoriaController::class, 'nivelesPorArea']);
+Route::post('/niveles', [NivelCategoriaController::class, 'store']);
+Route::post('/asociar-grados-nivel', [NivelCategoriaController::class,'asociarGrados']);
 
 // Grados
 Route::get('/grados', [GradosController::class, 'index']);
+Route::get('/grados-niveles', [NivelCategoriaController::class, 'index']);
 
 // Áreas por olimpiada
 Route::get('/olimpiada/{id}/areas', [AreasController::class, 'areasPorOlimpiada']);
 
 // Niveles por área
 Route::get('/areas/{id}/niveles', [NivelCategoriaController::class, 'nivelesPorArea']);
-Route::get('/get-niveles', [NivelCategoriaController::class, 'index']);
+Route::get('/get-niveles', [NivelCategoriaController::class, 'index2']);
 Route::get('/olimpiadas/{id}/max-categorias', [OlimpiadaAreaController::class, 'maxCategorias']);
 
 //Route::post('/inscripciones', [InscripcionAreaController::class, 'store']);
 Route::post('/inscripciones', [InscripcionNivelesController::class, 'store']);
 
 // inscrpcion con posible tutor
-Route::post('/inscripciones-con-tutor', [InscripcionNivelesController::class, 'store']);
+Route::post('/inscripciones-con-tutor', [InscripcionNivelesController::class, 'storeWithTutor']);
 
 // inscripcion de varios olimpistas con un tutor
 Route::post('/registrar-varios-olimpistas', [InscripcionNivelesController::class, 'registrarVarios']);
