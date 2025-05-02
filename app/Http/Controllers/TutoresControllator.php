@@ -44,7 +44,6 @@ class TutoresControllator extends Controller
                 'ci' => 'required|integer|unique:personas,ci_persona',
                 'celular' => 'nullable|string|max:20',
                 'correo_electronico' => 'required|email|max:100|unique:personas,correo_electronico',
-                'rol_parentesco' => 'nullable|string|max:50' 
             ]);
 
             DB::beginTransaction();

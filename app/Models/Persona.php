@@ -12,6 +12,7 @@ class Persona extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'ci_persona',
         'nombres',
         'apellidos',
         'correo_electronico',
