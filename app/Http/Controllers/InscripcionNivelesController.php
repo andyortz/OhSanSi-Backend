@@ -18,6 +18,71 @@ use Carbon\Carbon;
 
 class InscripcionNivelesController extends Controller
 {
+    public function storeOne(Request $request){
+        $data = $request->validate([
+            'ci' => 'required|integer|exists:personas,ci_persona',
+            'nivel' => 'required|integer',
+            'id_pago' => 'nullable|integer',
+            'estado' => 'nullable|string|max:50',
+            'ci_tutor_academico' => 'nullable|numeric',
+        ]);
+        $ci_tutor_academico = $data['ci_tutor_academico'] ?? null;
+        $nivel = $data['nivel'] ?? null;
+
+        DB::beginTransaction();
+        try {
+            // Buscar detalle del olimpista
+            $detalleOlimpista = DetalleOlimpista::where('ci_olimpista', $data['ci'])->first();
+
+            if (!$detalleOlimpista) {
+                return response()->json(['message' => 'Olimpista no encontrado en detalle_olimpistas.'], 404);
+            }
+
+            $estado = $data['estado'] ?? 'PENDIENTE';
+
+            // Si no mandaron id_pago, crear un pago dummy
+            $idPago = $data['id_pago'] ?? null;
+            if (!$idPago) {
+                $pago = Pago::create([
+                    'comprobante' => 'PAGO-DUMMY-' . uniqid(),
+                    'fecha_pago' => now(),
+                    'ci_responsable_inscripcion' => $data['ci'],
+                    'monto_pagado' => 0,
+                    'verificado' => false,
+                    'verificado_en' => now(),
+                    'verificado_por' => null
+                ]);
+                $idPago = $pago->id_pago;
+            }
+            // // dd($data);  
+            // dd($ci_tutor_academico);
+            Inscripcion::create([
+                'id_olimpiada' => $detalleOlimpista->id_olimpiada,
+                'id_detalle_olimpista' => $detalleOlimpista->id_detalle_olimpista,
+                'ci_tutor_academico' => $ci_tutor_academico, // <- CORRECTO
+                'id_pago' => $idPago,
+                'id_nivel' => $nivel,
+                'estado' => strtoupper($estado),
+                'fecha_inscripcion' => now(),
+            ]);
+            
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Inscripciones registradas correctamente.',
+                'data' => $data,
+            ], 201);
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Error interno al registrar.',
+                'error' => $e->getMessage(),
+                'line' => $e->getLine()
+            ], 500);
+        } 
+    }
     public function store(Request $request)
     {
         $data = $request->validate([

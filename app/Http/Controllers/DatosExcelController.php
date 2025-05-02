@@ -11,10 +11,13 @@ use App\Services\ImportHelpers\ColegioResolver;
 use App\Services\ImportHelpers\TutorResolver;
 use App\Services\ImportHelpers\OlimpistaResolver;
 use App\Services\ImportHelpers\AreaResolver;
+use App\Services\ImportHelpers\NivelResolver;
 use Illuminate\Http\Request;
-
+use App\Http\Controllers\InscripcionNivelesController;
 use App\Http\Controllers\TutoresControllator;
 use App\Http\Controllers\OlimpistaController;
+use App\Services\ImportHelpers\ProfesorResolver;
+
 
 class DatosExcelController extends Controller
 {
@@ -22,72 +25,203 @@ class DatosExcelController extends Controller
     {
         $datos = $request->input('data');
 
+        if (!is_array($datos)) {
+            return response()->json(['error' => 'El archivo no contiene datos válidos.'], 400);
+        }
+
         $sanitizedData = [];
         $tutorsData = [];
         $olimpistasData = [];
         $areasData = [];
+        $profesorData = [];
+
+        // JSON acumulador de resultados
+        $resultadoFinal = [
+            'tutores_guardados' => [],
+            'tutores_omitidos' => [],
+            'tutores_errores' => [],
+            'olimpistas_guardados' => [],
+            'olimpistas_errores' => []
+        ];
 
         foreach ($datos as $index => $row) {
-            $rowArray = array_slice($row, 0, 18);
-            if (empty(array_filter($rowArray))) break;
+            if (empty(array_filter($row))) break;
 
-            $row[8] = GradoResolver::resolve($row[8]) ?? null;
-
+            // Validaciones y resoluciones
             $departamento = Departamento::where('nombre_departamento', $row[5])->first();
-            $row[5] = $departamento?->id_departamento;
+            if (!$departamento) return $this->errorFila('Departamento', $row[5], $index);
+            $row[5] = $departamento->id_departamento;
 
-            $row[6] = ProvinciaResolver::resolve($row[6], $row[5]) ?? null;
-            $row[7] = ColegioResolver::resolve($row[5], $row[6]);
+            $provincia = ProvinciaResolver::resolve($row[6], $row[5]);
+            if (!$provincia) return $this->errorFila('Provincia', $row[6], $index);
+            $row[6] = $provincia;
+
+            $colegio = ColegioResolver::resolve($row[5], $row[6]);
+            if (!$colegio) return $this->errorFila('Unidad educativa', $row[7], $index);
+            $row[7] = $colegio;
+
+            $grado = GradoResolver::resolve($row[8]);
+            if (!$grado) return $this->errorFila('Grado', $row[8], $index);
+            $row[8] = $grado;
+
+            $nivel = NivelResolver::resolve($row[15]);
+            if (!$nivel) return $this->errorFila('Nivel', $row[15], $index);
+            $row[15] = $nivel;
 
             $tutor = TutorResolver::extractTutorData($row);
-            $tutorsData[] = $tutor;
+            $tutorsData[$tutor['ci']] = $tutor;
 
             $olimpista = OlimpistaResolver::extractOlimpistaData($row);
-            $olimpistasData[] = $olimpista;
+            $olimpistasData[$olimpista['cedula_identidad']] = $olimpista;
 
             $areasData[] = AreaResolver::extractAreaData($row);
-
+            $profesorData[] = ProfesorResolver::extractProfesorData($row);
             $sanitizedData[] = $row;
         }
 
-        // $this->saveTutores($tutorsData);
-        $this->saveOlimpistas($olimpistasData);
+        $this->saveTutores(array_values($tutorsData), $resultadoFinal);
+        $this->saveOlimpistas(array_values($olimpistasData), $resultadoFinal);
+        $this->saveProfesores(array_values($profesorData), $resultadoFinal);
+        $this->saveInscripcion(array_values($sanitizedData), $resultadoFinal);
+
 
         return response()->json([
-            'message' => 'Data sanitized successfully.',
-            'sanitized_data' => $sanitizedData,
-            'tutors_data' => $tutorsData,
-            'olimpistas_data' => $olimpistasData,
+            'message' => 'Datos validados y convertidos correctamente.',
+            'tutors_data' => array_values($tutorsData),
+            'olimpistas_data' => array_values($olimpistasData),
             'areas_data' => $areasData,
+            'profesor_data' => $profesorData,
+            'sanitized_data' => $sanitizedData,
+            'resultado' => $resultadoFinal
         ], 200);
     }
 
-    private function saveTutores(array $tutorsData)
+    private function saveTutores(array $tutorsData, array &$resultado)
     {
-        $controller = new TutoresControllator();
+        $controller = app(TutoresControllator::class);
 
         foreach ($tutorsData as $tutor) {
-            $controller->store(new Request($tutor));
+            if (\App\Models\Persona::where('ci_persona', $tutor['ci'])->exists()) {
+                $resultado['tutores_omitidos'][] = [
+                    'ci' => $tutor['ci'],
+                    'message' => 'Ya existe en la base de datos'
+                ];
+                continue;
+            }
+
+            $filteredTutor = [
+                'nombres' => $tutor['nombres'],
+                'apellidos' => $tutor['apellidos'],
+                'ci' => $tutor['ci'],
+                'celular' => $tutor['celular'],
+                'correo_electronico' => $tutor['correo_electronico'],
+                'rol_parentesco' => $tutor['rol_parentesco'],
+            ];
+
+            try {
+                $request = new \Illuminate\Http\Request($filteredTutor);
+                $response = $controller->store($request);
+
+                if ($response->getStatusCode() === 201) {
+                    $resultado['tutores_guardados'][] = $filteredTutor;
+                } else {
+                    $resultado['tutores_errores'][] = [
+                        'ci' => $tutor['ci'],
+                        'error' => $response->getContent()
+                    ];
+                }
+            } catch (\Throwable $e) {
+                $resultado['tutores_errores'][] = [
+                    'ci' => $tutor['ci'],
+                    'error' => $e->getMessage()
+                ];
+            }
         }
     }
 
-    private function saveOlimpistas(array $olimpistasData)
+    private function saveProfesores(array $profesoresData, array &$resultado)
     {
-        $controller = new OlimpistaController();
+        $controller = app(TutoresControllator::class);
 
-        foreach ($olimpistasData as $olimpista) {
-            // Creamos un nuevo StoreOlimpistaRequest manualmente
-            $request = new StoreOlimpistaRequest();
-            $request->merge($olimpista);  // Pasamos los datos al request
+        foreach ($profesoresData as $profesor) {
+            if (\App\Models\Persona::where('ci_persona', $profesor['ci'])->exists()) {
+                $resultado['profesores_omitidos'][] = [
+                    'ci' => $profesor['ci'],
+                    'message' => 'Ya existe en la base de datos'
+                ];
+                continue;
+            }
 
-            // Ahora llamamos al método store() usando el StoreOlimpistaRequest
-            $response = $controller->store($request);
+            $filteredProfesor = [
+                'nombres' => $profesor['nombres'],
+                'apellidos' => $profesor['apellidos'],
+                'ci' => $profesor['ci'],
+                'celular' => $profesor['celular'],
+                'correo_electronico' => $profesor['correo_electronico'],
+                'rol_parentesco' => $profesor['rol_parentesco'], // puede ser 'Profesor'
+            ];
 
-            if ($response->getStatusCode() === 201) {
-                logger()->info("Olimpista guardado", ['ci' => $olimpista['cedula_identidad']]);
-            } else {
-                logger()->error("Error al guardar olimpista", ['ci' => $olimpista['cedula_identidad'], 'error' => $response->getContent()]);
+            try {
+                $request = new \Illuminate\Http\Request($filteredProfesor);
+                $response = $controller->store($request);
+
+                if ($response->getStatusCode() === 201) {
+                    $resultado['profesores_guardados'][] = $filteredProfesor;
+                } else {
+                    $resultado['profesores_errores'][] = [
+                        'ci' => $profesor['ci'],
+                        'error' => $response->getContent()
+                    ];
+                }
+            } catch (\Throwable $e) {
+                $resultado['profesores_errores'][] = [
+                    'ci' => $profesor['ci'],
+                    'error' => $e->getMessage()
+                ];
             }
         }
+    }
+
+    private function saveOlimpistas(array $olimpistasData, array &$resultado)
+    {
+        $controller = app(OlimpistaController::class);
+
+        foreach ($olimpistasData as $olimpista) {
+            $request = new StoreOlimpistaRequest();
+            $request->merge($olimpista);
+
+            try {
+                $response = $controller->store($request);
+                if ($response->getStatusCode() === 201) {
+                    $resultado['olimpistas_guardados'][] = $olimpista;
+                } else {
+                    $resultado['olimpistas_errores'][] = [
+                        'ci' => $olimpista['cedula_identidad'],
+                        'error' => $response->getContent()
+                    ];
+                }
+            } catch (\Throwable $e) {
+                $resultado['olimpistas_errores'][] = [
+                    'ci' => $olimpista['cedula_identidad'],
+                    'error' => $e->getMessage()
+                ];
+            }
+        }
+    }
+    private function saveInscripcion(array $sanitizedData, array &$resultado)
+    {
+        $controller = app(InscripcionNivelesController::class);
+
+        foreach ($sanitizedData as $index => $row) {
+            
+        }
+    }
+
+    private function errorFila($campo, $valor, $fila)
+    {
+        return response()->json([
+            'error' => "$campo inválido en la fila " . ($fila + 1),
+            'value' => $valor
+        ], 422);
     }
 }

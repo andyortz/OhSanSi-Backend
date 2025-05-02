@@ -13,11 +13,10 @@ class InscripcionesImport implements ToCollection
     {
         // Eliminar la primera fila que contiene los encabezados
         $rows->shift(); // Headers
-        $rows->shift(); // Example row
 
         // Iterar sobre cada fila del Excel y extraer los datos
         foreach ($rows as $index => $row) {
-            $rowArray = array_slice($row->toArray(), 0, 18); // Solo las primeras 18 columnas
+            $rowArray = array_slice($row->toArray(), 0, 21); // Solo las primeras 18 columnas
 
             // Detener si la fila está vacía
             if (empty(array_filter($rowArray))) {

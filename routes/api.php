@@ -62,6 +62,7 @@ Route::get('/olimpiadas/{id}/max-categorias', [OlimpiadaAreaController::class, '
 
 //Route::post('/inscripciones', [InscripcionAreaController::class, 'store']);
 Route::post('/inscripciones', [InscripcionNivelesController::class, 'store']);
+Route::post('/inscripcionesOne', [InscripcionNivelesController::class, 'storeOne']);
 
 // inscrpcion con posible tutor
 Route::post('/inscripciones-con-tutor', [InscripcionNivelesController::class, 'storeWithTutor']);
@@ -134,5 +135,7 @@ Route::get('/olimpistas/{ci}/areas-niveles', [OlimpistaController::class, 'getAr
 Route::get('/olimpiada/max-categorias', [OlimpiadaController::class, 'getMaxCategorias']);
 
 Route::get('/olimpiadas/{id}/areas-niveles', [OlimpiadaController::class, 'getAreasConNiveles']);
+
+Route::get('/olimpiada-data/{id}', [OlimpiadaController::class, 'getAreasYNiveles']);
 
 
