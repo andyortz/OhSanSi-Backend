@@ -38,7 +38,7 @@ class OlimpistaController extends Controller
                 'correo_electronico' => 'required|email|max:100',
                 'unidad_educativa' => 'required|integer',
                 'id_grado' => 'required|integer',
-                'ci_tutor' => 'required|integer|exists:personas,ci_persona',
+                'ci_tutor' => 'required|integer',
             ]);
 
             // Validar que la cedula_identidad NO exista
@@ -53,9 +53,9 @@ class OlimpistaController extends Controller
                     'message' => 'El correo electrónico ya está registrado en el sistema.'
                 ], 409);
             }
-
+            //Validación del mismo tutor mismo olimpista 
+            
             DB::beginTransaction();
-
             // Crear persona
             $persona = new Persona();
             $persona->ci_persona = $data['cedula_identidad'];
