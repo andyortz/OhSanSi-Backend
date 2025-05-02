@@ -12,7 +12,7 @@ class OlimpiadasSeeder extends Seeder
     {
         DB::table('olimpiadas')->insert([
             [
-                'gestion' => 2021,
+                'gestion' => 2025,
                 'costo' => 15.00,
                 'fecha_inicio' => '2025-03-17',
                 'fecha_fin' => '2025-05-27',
