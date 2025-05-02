@@ -1,0 +1,240 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Pago;
+use App\Models\Persona;
+use App\Models\Inscripcion;
+use App\Models\Tutor;
+use App\Models\Parentesco;
+use App\Models\DetalleOlimpista;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\ParentescoController;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
+class InscripcionNivelesController extends Controller
+{
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'ci' => 'required|integer|exists:personas,ci_persona',
+            'niveles' => 'required|array|min:1',
+            'id_pago' => 'nullable|integer',
+            'estado' => 'nullable|string|max:50'
+        ]);
+
+        DB::beginTransaction();
+        try {
+            // Buscar detalle del olimpista
+            $detalleOlimpista = DetalleOlimpista::where('ci_olimpista', $data['ci'])->first();
+
+            if (!$detalleOlimpista) {
+                return response()->json(['message' => 'Olimpista no encontrado en detalle_olimpistas.'], 404);
+            }
+
+            $estado = $data['estado'] ?? 'PENDIENTE';
+
+            // Si no mandaron id_pago, crear un pago dummy
+            $idPago = $data['id_pago'] ?? null;
+            if (!$idPago) {
+                $pago = Pago::create([
+                    'comprobante' => 'PAGO-DUMMY-' . uniqid(),
+                    'fecha_pago' => now(),
+                    'ci_responsable_inscripcion' => $data['ci'],
+                    'monto_pagado' => 0,
+                    'verificado' => false,
+                    'verificado_en' => now(),
+                    'verificado_por' => null
+                ]);
+                $idPago = $pago->id_pago;
+            }
+
+            // Insertar inscripciones para cada nivel
+            foreach ($data['niveles'] as $idNivel) {
+                Inscripcion::create([
+                    'id_olimpiada' => $detalleOlimpista->id_olimpiada,
+                    'id_detalle_olimpista' => $detalleOlimpista->id_detalle_olimpista,
+                    'ci_tutor_academico' => null, // Si quieres agregar después
+                    'id_pago' => $idPago,
+                    'id_nivel' => $idNivel,
+                    'estado' => strtoupper($estado),
+                    'fecha_inscripcion' => now(),
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Inscripciones registradas correctamente.'
+            ], 201);
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Error interno al registrar.',
+                'error' => $e->getMessage(),
+                'line' => $e->getLine()
+            ], 500);
+        }
+    }
+    public function storeWithTutor(Request $request)
+    {
+        
+        // Validación básica
+        $request->validate([
+            'ci' => 'required|exists:personas,ci_persona',
+            'niveles' => 'required|array|min:1',
+            'ci_tutor' => 'nullable|exists:personas,ci_persona',
+            'niveles.*' => 'integer|exists:niveles_categoria,id_nivel',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $olimpista = DetalleOlimpista::firstOrCreate(
+                ['ci_olimpista' => $request->ci]
+            );
+            // Crear inscripciones para cada nivel
+            $pago = Pago::create([
+                'comprobante' => 'PAGO-DUMMY-' . uniqid(),
+                'fecha_pago' => now(),
+                'ci_responsable_inscripcion' => $olimpista->ci_tutor_legal,
+                'monto_pagado' => 0,
+                'verificado' => false,
+                'verificado_en' => now(),
+                'verificado_por' => null
+            ]);
+            $inscripciones = [];
+            foreach ($request->niveles as $nivel) {
+                $inscripciones[] = Inscripcion::create([
+                    'id_olimpiada' => 1, // Valor fijo
+                    'id_detalle_olimpista' => $olimpista->id_detalle_olimpista,
+                    'ci_tutor_academico' => $request->ci_tutor,
+                    'id_pago' => $pago->id_pago,
+                    'id_nivel' => $nivel,
+                    'estado' => 'PENDIENTE',
+                    'fecha_inscripcion' => now(),
+                ]);
+            }
+
+        DB::commit();
+        return response()->json([
+            'message' => 'Inscripciones registradas correctamente.',
+            'count' => count($inscripciones),
+            'data' => $inscripciones
+        ], 201);    
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Error interno al registrar.',
+                'error' => $e->getMessage(),
+                'line' => $e->getLine()
+            ], 500);
+        }
+    }
+    public function registrarVarios(Request $request)
+    {
+        $request->validate([
+            'ci_tutor' => 'required|exists:tutores,ci',
+            'olimpistas' => 'required|array|min:1',
+            'olimpistas.*.ci_olimpista' => 'required|exists:olimpistas,cedula_identidad',
+            'olimpistas.*.id_niveles' => 'required|array|min:1'
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $resultados = [];            
+            foreach ($request->olimpistas as $data) {
+                // 1. Crear inscripciones para las áreas dadas
+                $inscripcionRequest = new Request([
+                    'ci' => $data['ci_olimpista'],
+                    'niveles' => $data['id_niveles'],
+                    'ci_tutor' => $request->ci_tutor
+                ]);
+                $inscripcionResponse = app(InscripcionNivelesController::class)->storeWithTutor($inscripcionRequest);
+                
+                if ($inscripcionResponse->getStatusCode() !== 201) {
+
+                    $errorData = $inscripcionResponse->getData(true);
+                    throw new \Exception('Error en olimpista: ' . ($errorData['message'] ?? 'Sin mensaje'));
+                }
+                $resultados[] = [
+                    'ci_olimpista' => $data['ci_olimpista'],
+                    'response' => $inscripcionResponse,
+                    'status' => 'ok'
+                ];
+            }
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Todos los registros fueron realizados exitosamente.',
+                'resultados' => $resultados
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([                
+                'success' => false,
+                'message' => 'Ocurrió un error durante el proceso, no se registró ningún olimpista.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    public function registrarMultiplesConTutor(Request $request)
+    {
+        $data = $request->validate([
+            'olimpistas' => 'required|array|min:1',
+            'olimpistas.*.ci_olimpista' => 'required|exists:olimpistas,cedula_identidad',
+            'olimpistas.*.id_niveles' => 'required|array|min:1',
+            'olimpistas.*.ci_tutor' => 'required|exists:tutores,ci',
+            'olimpistas.*.rol' => 'required|in:Tutor Academico,Tutor Legal',
+        ]);
+
+        $resultados = [];
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($data['olimpistas'] as $olimpistaData) {
+                // Obtener modelos
+                $inscripcionRequest = new Request([
+                    'ci' => $olimpistaData['ci_olimpista'],
+                    'niveles' => $olimpistaData['id_niveles'],
+                    'ci_tutor' => $olimpistaData['ci_tutor'],
+                    'rol' => $olimpistaData['rol'],
+                ]);
+                $inscripcionResponse = app(InscripcionNivelesController::class)->storeWithTutor($inscripcionRequest);
+                
+                if ($inscripcionResponse->getStatusCode() !== 201) {
+                    $errorData = $inscripcionResponse->getData(true);
+                    throw new \Exception("Error inscribiendo olimpista {$olimpistaData['ci_olimpista']}: " . ($errorData['message'] ?? 'Sin mensaje'));
+                }
+                $resultados[] = [
+                    'ci_olimpista' => $olimpistaData['ci_olimpista'],
+                    'response' => $inscripcionResponse,
+                    'status' => 'ok',
+                ];
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Todos los olimpistas fueron registrados correctamente.',
+                'data' => $resultados
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al procesar registros. Se revirtió la operación.',
+                'error' => $e->getMessage(),
+                'procesados' => $resultados
+            ], 500);
+        }
+    }
+}
