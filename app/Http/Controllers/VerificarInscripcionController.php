@@ -120,25 +120,36 @@ class VerificarInscripcionController extends Controller
     }
     public function getInscripcionesPorCI($ci)
     {
-        // 1. Buscar al olimpista por su CI
-        $olimpista = Olimpista::where('cedula_identidad', $ci)->first();
+        // 1. Buscar a la persona por su CI
+        $persona = \App\Models\Persona::where('ci_persona', $ci)->first();
 
-        if (!$olimpista) {
+        if (!$persona) {
             return response()->json([
                 'success' => false,
-                'message' => 'Olimpista no encontrado'
+                'message' => 'Persona no encontrada'
             ], 404);
         }
 
-        // 2. Obtener las inscripciones
-        $inscripciones = Inscripcion::with('nivel.asociaciones.area')
-            ->where('id_olimpista', $olimpista->id_olimpista)
+        // 2. Buscar el detalle_olimpista asociado a esa persona
+        $detalle = \App\Models\DetalleOlimpista::where('ci_olimpista', $ci)->first();
+
+        if (!$detalle) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No hay inscripciones registradas para esta persona'
+            ], 404);
+        }
+
+        // 3. Buscar inscripciones por detalle_olimpista
+        $inscripciones = \App\Models\Inscripcion::with('nivel') // agrega relaciones si tienes más
+            ->where('id_detalle_olimpista', $detalle->id_detalle_olimpista)
             ->get();
 
         return response()->json([
             'success' => true,
             'ci_olimpista' => $ci,
+            'nombre' => $persona->nombres . ' ' . $persona->apellidos,
             'inscripciones' => $inscripciones
-        ]);
+        ], 200);
     }
 }
