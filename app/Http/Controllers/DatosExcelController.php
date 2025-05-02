@@ -165,7 +165,7 @@ class DatosExcelController extends Controller
 
             try {
                 $request = new \Illuminate\Http\Request($filteredProfesor);
-                $response = $controller->storeOne($request);
+                $response = $controller->store($request);
 
                 if ($response->getStatusCode() === 201) {
                     $resultado['profesores_guardados'][] = $filteredProfesor;
@@ -213,9 +213,9 @@ class DatosExcelController extends Controller
     private function selectData($sanitizedData)
     {
         return collect($sanitizedData)->map(function ($item, $index) {
-            if (empty($item[2]) || empty($item[16])) {
-                throw new \Exception("Fila $index incompleta. Faltan datos requeridos (ci o nivel).");
-            }
+            // if (empty($item[2]) || empty($item[16])) {
+            //     throw new \Exception("Fila $index incompleta. Faltan datos requeridos (ci o nivel).");
+            // }
             
         
             return [
