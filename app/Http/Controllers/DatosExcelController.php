@@ -77,13 +77,14 @@ class DatosExcelController extends Controller
             $inscripcionesData[] = InscripcionResolver::extract($row);
             $areasData[] = AreaResolver::extractAreaData($row);
             $profesorData[] = ProfesorResolver::extractProfesorData($row);
+            $sanitizedData[] = $row;
             
         }
 
         $this->saveTutores(array_values($tutorsData), $resultadoFinal);
         $this->saveOlimpistas(array_values($olimpistasData), $resultadoFinal);
         $this->saveProfesores(array_values($profesorData), $resultadoFinal);
-        $this->saveInscripcion(array_values($inscripcionesData), $resultadoFinal);
+        $this->saveInscripcion(array_values($sanitizedData), $resultadoFinal);
 
 
         return response()->json([
@@ -164,7 +165,7 @@ class DatosExcelController extends Controller
 
             try {
                 $request = new \Illuminate\Http\Request($filteredProfesor);
-                $response = $controller->store($request);
+                $response = $controller->storeOne($request);
 
                 if ($response->getStatusCode() === 201) {
                     $resultado['profesores_guardados'][] = $filteredProfesor;
@@ -209,16 +210,34 @@ class DatosExcelController extends Controller
             }
         }
     }
+    private function selectData($sanitizedData)
+    {
+        return collect($sanitizedData)->map(function ($item, $index) {
+            if (empty($item[2]) || empty($item[16])) {
+                throw new \Exception("Fila $index incompleta. Faltan datos requeridos (ci o nivel).");
+            }
+            
+        
+            return [
+                'ci' => $item[2],
+                'nivel' => $item[15],
+                'id_pago' => null,
+                'estado' => 'pendiente',
+                'ci_tutor_academico' => $item[18] ?? null
+            ];
+        })->toArray();
+        
+    }
+
     private function saveInscripcion(array $sanitizedData, array &$resultado)
     {
         $controller = app(InscripcionNivelesController::class);
+        $interesados = $this->selectData($sanitizedData);
 
-        foreach ($sanitizedData as $index => $row) {
-            $data = \App\Services\ImportHelpers\InscripcionResolver::extract($row);
-
+        foreach ($interesados as $data) {
             try {
                 $request = new \Illuminate\Http\Request($data);
-                $response = $controller->store($request);
+                $response = $controller->storeOne($request); // Asegúrate de llamar a storeOne si ese es el método correcto
 
                 if ($response->getStatusCode() === 201) {
                     $resultado['inscripciones_guardadas'][] = [
@@ -231,7 +250,6 @@ class DatosExcelController extends Controller
                         'error' => $response->getContent()
                     ];
                 }
-
             } catch (\Throwable $e) {
                 $resultado['inscripciones_errores'][] = [
                     'ci' => $data['ci'],
