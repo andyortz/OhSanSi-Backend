@@ -14,7 +14,7 @@ class Inscripcion extends Model
     protected $fillable = [
         'id_olimpiada',
         'id_detalle_olimpista',
-        'id_tutor_academico',
+        'ci_tutor_academico',
         'id_pago',
         'id_nivel',
         'estado',

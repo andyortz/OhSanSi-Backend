@@ -13,7 +13,7 @@ use App\Services\ImportHelpers\OlimpistaResolver;
 use App\Services\ImportHelpers\AreaResolver;
 use App\Services\ImportHelpers\NivelResolver;
 use Illuminate\Http\Request;
-
+use App\Http\Controllers\InscripcionNivelesController;
 use App\Http\Controllers\TutoresControllator;
 use App\Http\Controllers\OlimpistaController;
 use App\Services\ImportHelpers\ProfesorResolver;
@@ -82,6 +82,7 @@ class DatosExcelController extends Controller
         $this->saveTutores(array_values($tutorsData), $resultadoFinal);
         $this->saveOlimpistas(array_values($olimpistasData), $resultadoFinal);
         $this->saveProfesores(array_values($profesorData), $resultadoFinal);
+        $this->saveInscripcion(array_values($sanitizedData), $resultadoFinal);
 
 
         return response()->json([
@@ -181,7 +182,6 @@ class DatosExcelController extends Controller
         }
     }
 
-
     private function saveOlimpistas(array $olimpistasData, array &$resultado)
     {
         $controller = app(OlimpistaController::class);
@@ -210,31 +210,13 @@ class DatosExcelController extends Controller
     }
     private function saveInscripcion(array $sanitizedData, array &$resultado)
     {
-        $controller = app(InscripcionNivelesController::class); 
+        $controller = app(InscripcionNivelesController::class);
 
-        foreach ($sanitizedData as $data) {
-            $request = new StoreOlimpistaRequest();
-            $request->merge($data);
-
-            try {
-                $response = $controller->store($request);
-                if ($response->getStatusCode() === 201) {
-                    $resultado['inscripciones_guardadas'][] = $data;
-                } else {
-                    $resultado['inscripciones_errores'][] = [
-                        'ci' => $data['cedula_identidad'],
-                        'error' => $response->getContent()
-                    ];
-                }
-            } catch (\Throwable $e) {
-                $resultado['inscripciones_errores'][] = [
-                    'ci' => $data['cedula_identidad'],
-                    'error' => $e->getMessage()
-                ];
-            }
+        foreach ($sanitizedData as $index => $row) {
+            
         }
     }
-    
+
     private function errorFila($campo, $valor, $fila)
     {
         return response()->json([
