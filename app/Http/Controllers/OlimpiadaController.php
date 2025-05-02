@@ -7,7 +7,7 @@ use App\Models\NivelAreaOlimpiada;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Log;
 
 class OlimpiadaController extends Controller
 {
@@ -62,6 +62,7 @@ class OlimpiadaController extends Controller
     }
     public function getAreasConNiveles($idOlimpiada)
     {
+        \Log::info('Iniciando getAreasConNiveles', ['idOlimpiada' => $idOlimpiada]);
         try {
             // Obtener la olimpiada con su gestión
             $olimpiada = Olimpiada::findOrFail($idOlimpiada);
@@ -98,11 +99,11 @@ class OlimpiadaController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al obtener las áreas y niveles',
-                'error' => $e->getMessage()
-            ], 500);
+            \Log::error('Error en getAreasConNiveles', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
         }
     }
 
