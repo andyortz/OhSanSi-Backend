@@ -17,7 +17,7 @@ use App\Http\Controllers\InscripcionNivelesController;
 use App\Http\Controllers\TutoresControllator;
 use App\Http\Controllers\OlimpistaController;
 use App\Services\ImportHelpers\ProfesorResolver;
-
+use App\Services\ImportHelpers\InscripcionResolver;
 
 class DatosExcelController extends Controller
 {
@@ -74,15 +74,16 @@ class DatosExcelController extends Controller
             $olimpista = OlimpistaResolver::extractOlimpistaData($row);
             $olimpistasData[$olimpista['cedula_identidad']] = $olimpista;
 
+            $inscripcionesData[] = InscripcionResolver::extract($row);
             $areasData[] = AreaResolver::extractAreaData($row);
             $profesorData[] = ProfesorResolver::extractProfesorData($row);
-            $sanitizedData[] = $row;
+            
         }
 
         $this->saveTutores(array_values($tutorsData), $resultadoFinal);
         $this->saveOlimpistas(array_values($olimpistasData), $resultadoFinal);
         $this->saveProfesores(array_values($profesorData), $resultadoFinal);
-        $this->saveInscripcion(array_values($sanitizedData), $resultadoFinal);
+        $this->saveInscripcion(array_values($inscripcionesData), $resultadoFinal);
 
 
         return response()->json([
@@ -213,9 +214,33 @@ class DatosExcelController extends Controller
         $controller = app(InscripcionNivelesController::class);
 
         foreach ($sanitizedData as $index => $row) {
-            
+            $data = \App\Services\ImportHelpers\InscripcionResolver::extract($row);
+
+            try {
+                $request = new \Illuminate\Http\Request($data);
+                $response = $controller->store($request);
+
+                if ($response->getStatusCode() === 201) {
+                    $resultado['inscripciones_guardadas'][] = [
+                        'ci' => $data['ci'],
+                        'nivel' => $data['nivel']
+                    ];
+                } else {
+                    $resultado['inscripciones_errores'][] = [
+                        'ci' => $data['ci'],
+                        'error' => $response->getContent()
+                    ];
+                }
+
+            } catch (\Throwable $e) {
+                $resultado['inscripciones_errores'][] = [
+                    'ci' => $data['ci'],
+                    'error' => $e->getMessage()
+                ];
+            }
         }
     }
+
 
     private function errorFila($campo, $valor, $fila)
     {

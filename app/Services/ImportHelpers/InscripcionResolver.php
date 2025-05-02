@@ -8,12 +8,16 @@ class InscripcionResolver
 {
     public static function extract(array $row): array
     {
+        if (!isset($row[2], $row[15])) {
+            throw new \Exception("Fila incompleta: faltan columnas clave (CI o Nivel)");
+        }
+
         return [
-            'ci' => $row[2], // CI Olimpista (columna 3)
-            'nivel' => NivelResolver::resolve($row[15]), // ID del nivel ya resuelto
-            'id_pago' => 1, // Puedes poner un dummy temporal si no tienes pago
+            'cedula_identidad' => $row[2],
+            'nivel' => NivelResolver::resolve($row[15]),
+            'id_pago' => 1,
             'estado' => 'pendiente',
-            'ci_tutor_academico' => $row[18] 
+            'ci_tutor_academico' => $row[18] ?? null
         ];
     }
 }
