@@ -48,11 +48,11 @@ class OlimpistaController extends Controller
                 ], 409);
             }
 
-            if (Persona::where('correo_electronico', $data['correo_electronico'])->exists()) {
-                return response()->json([
-                    'message' => 'El correo electrónico ya está registrado en el sistema.'
-                ], 409);
-            }
+            // if (Persona::where('correo_electronico', $data['correo_electronico'])->exists()) {
+            //     return response()->json([
+            //         'message' => 'El correo electrónico ya está registrado en el sistema.'
+            //     ], 409);
+            // }
             //Validación del mismo tutor mismo olimpista 
             
             DB::beginTransaction();
