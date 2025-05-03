@@ -20,6 +20,7 @@ class NivelCategoriaController extends Controller
             'id_area' => 'required|integer|exists:areas_competencia,id_area',
             'id_categorias' => 'required|array|min:1',
             'id_categorias.*' => 'required|integer|exists:niveles_categoria,id_nivel',
+            'max_niveles' => 'required|integer|min:1'
         ]);
 
         $insertadas = [];
@@ -38,7 +39,7 @@ class NivelCategoriaController extends Controller
                         'id_olimpiada' => $data['id_olimpiada'],
                         'id_area' => $data['id_area'],
                         'id_nivel' => $idNivel,
-                        'max_niveles' => 1
+                        'max_niveles' => $data['max_niveles'] 
                     ]);
 
                     $insertadas[] = $idNivel;
