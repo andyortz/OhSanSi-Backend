@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('fecha_fin');
             $table->timestamp('creado_en', 6)->useCurrent();
             $table->integer('max_categorias_olimpista');
-            $table->string('nombre_olimpiada', 50); 
+            $table->string('nombre_olimpiada', 50)->nullable();
         });
     }
 

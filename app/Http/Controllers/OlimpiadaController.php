@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Olimpiada;
+use App\Models\NivelAreaOlimpiada;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Log;
 
 class OlimpiadaController extends Controller
 {
@@ -59,38 +60,51 @@ class OlimpiadaController extends Controller
             'max_categorias_olimpista' => $olimpiada->max_categorias_olimpista
         ]);
     }
-    public function getAreasConNiveles($id_olimpiada)
+    public function getAreasConNiveles($idOlimpiada)
     {
-        $olimpiada = Olimpiada::with(['nivelesAreas.area', 'nivelesAreas.nivel'])
-            ->find($id_olimpiada);
+        \Log::info('Iniciando getAreasConNiveles', ['idOlimpiada' => $idOlimpiada]);
+        try {
+            // Obtener la olimpiada con su gestión
+            $olimpiada = Olimpiada::findOrFail($idOlimpiada);
+            
+            // Obtener todas las relaciones área-nivel para esta olimpiada
+            $areasConNiveles = NivelAreaOlimpiada::with([
+                'area:id_area,nombre',
+                'nivel:id_nivel,nombre'
+            ])
+            ->where('id_olimpiada', $idOlimpiada)
+            ->get()
+            ->groupBy('id_area'); // Agrupar por área
 
-        if (!$olimpiada) {
-            return response()->json([
-                'message' => 'Olimpiada no encontrada.'
-            ], 404);
-        }
-
-        $agrupado = [];
-
-        foreach ($olimpiada->nivelesAreas as $relacion) {
-            $nombreArea = $relacion->area->nombre;
-
-            if (!isset($agrupado[$nombreArea])) {
-                $agrupado[$nombreArea] = [
-                    'nombre_area' => $nombreArea,
-                    'niveles' => []
-                ];
-            }
-
-            $agrupado[$nombreArea]['niveles'][] = [
-                'nombre_nivel' => $relacion->nivel->nombre
+            // Formatear la respuesta
+            $response = [
+                'gestion' => $olimpiada->gestion, // Asume que tienes este campo
+                'areas' => $areasConNiveles->map(function ($items, $idArea) {
+                    return [
+                        'id_area' => $idArea,
+                        'nombre_area' => $items->first()->area->nombre,
+                        'niveles' => $items->map(function ($item) {
+                            return [
+                                'id_nivel' => $item->id_nivel,
+                                'nombre_nivel' => $item->nivel->nombre
+                            ];
+                        })->unique('id_nivel')->values() // Eliminar duplicados
+                    ];
+                })->values()
             ];
-        }
 
-        return response()->json([
-            'gestion' => $olimpiada->gestion,
-            'areas' => array_values($agrupado)
-        ], 200);
+            return response()->json([
+                'success' => true,
+                'data' => $response
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Error en getAreasConNiveles', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
     }
 
     public function getAreasYNiveles($id_olimpiada)

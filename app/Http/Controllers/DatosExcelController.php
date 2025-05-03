@@ -17,7 +17,7 @@ use App\Http\Controllers\InscripcionNivelesController;
 use App\Http\Controllers\TutoresControllator;
 use App\Http\Controllers\OlimpistaController;
 use App\Services\ImportHelpers\ProfesorResolver;
-
+use App\Services\ImportHelpers\InscripcionResolver;
 
 class DatosExcelController extends Controller
 {
@@ -74,9 +74,11 @@ class DatosExcelController extends Controller
             $olimpista = OlimpistaResolver::extractOlimpistaData($row);
             $olimpistasData[$olimpista['cedula_identidad']] = $olimpista;
 
+            $inscripcionesData[] = InscripcionResolver::extract($row);
             $areasData[] = AreaResolver::extractAreaData($row);
             $profesorData[] = ProfesorResolver::extractProfesorData($row);
             $sanitizedData[] = $row;
+            
         }
 
         $this->saveTutores(array_values($tutorsData), $resultadoFinal);
@@ -208,14 +210,55 @@ class DatosExcelController extends Controller
             }
         }
     }
+    private function selectData($sanitizedData)
+    {
+        return collect($sanitizedData)->map(function ($item, $index) {
+            // if (empty($item[2]) || empty($item[16])) {
+            //     throw new \Exception("Fila $index incompleta. Faltan datos requeridos (ci o nivel).");
+            // }
+            
+        
+            return [
+                'ci' => $item[2],
+                'nivel' => $item[15],
+                'id_pago' => null,
+                'estado' => 'pendiente',
+                'ci_tutor_academico' => $item[18] ?? null
+            ];
+        })->toArray();
+        
+    }
+
     private function saveInscripcion(array $sanitizedData, array &$resultado)
     {
         $controller = app(InscripcionNivelesController::class);
+        $interesados = $this->selectData($sanitizedData);
 
-        foreach ($sanitizedData as $index => $row) {
-            
+        foreach ($interesados as $data) {
+            try {
+                $request = new \Illuminate\Http\Request($data);
+                $response = $controller->storeOne($request); // Asegúrate de llamar a storeOne si ese es el método correcto
+
+                if ($response->getStatusCode() === 201) {
+                    $resultado['inscripciones_guardadas'][] = [
+                        'ci' => $data['ci'],
+                        'nivel' => $data['nivel']
+                    ];
+                } else {
+                    $resultado['inscripciones_errores'][] = [
+                        'ci' => $data['ci'],
+                        'error' => $response->getContent()
+                    ];
+                }
+            } catch (\Throwable $e) {
+                $resultado['inscripciones_errores'][] = [
+                    'ci' => $data['ci'],
+                    'error' => $e->getMessage()
+                ];
+            }
         }
     }
+
 
     private function errorFila($campo, $valor, $fila)
     {
