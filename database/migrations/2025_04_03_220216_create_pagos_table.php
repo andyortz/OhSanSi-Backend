@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id('id_pago');
             $table->string('comprobante', 255);
             $table->date('fecha_pago');
-            $table->unsignedBigInteger('ci_responsable_inscripcion');
+            $table->unsignedBigInteger('id_lista');
             $table->decimal('monto_pagado', 10, 2);
             $table->boolean('verificado')->default(false);
             $table->timestamp('verificado_en', 6)->nullable();
             $table->string('verificado_por', 100)->nullable();
 
-            $table->foreign('ci_responsable_inscripcion')->references('ci_persona')->on('personas')->onDelete('cascade');            
+            $table->foreign('id_lista')->references('id_lista')->on('lista_inscripcion')->onDelete('cascade');            
 
         });
     }

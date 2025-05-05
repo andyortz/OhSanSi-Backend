@@ -14,20 +14,16 @@ class Pago extends Model
     protected $fillable = [
         'comprobante',
         'fecha_pago',
-        'ci_responsable_inscripcion', 
         'monto_pagado',
         'verificado',
         'verificado_en',
         'verificado_por',
+        'id_lista'
     ];
     
     public function responsable()
     {
-        return $this->belongsTo(Persona::class, 'id_responsable_inscripcion', 'ci_persona');
+        return $this->belongsTo(ListaInscripcion::class, 'id_lista', 'ci_persona');
     }
 
-    public function inscripciones()
-    {
-        return $this->hasMany(Inscripcion::class, 'id_pago', 'id_pago');
-    }
 }

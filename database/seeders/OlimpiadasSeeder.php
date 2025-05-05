@@ -12,13 +12,13 @@ class OlimpiadasSeeder extends Seeder
     {
         DB::table('olimpiadas')->insert([
             [
-                'gestion' => 2021,
+                'gestion' => 2025,
                 'costo' => 15.00,
                 'fecha_inicio' => '2025-03-17',
                 'fecha_fin' => '2025-05-27',
                 'creado_en' => Carbon::now(),
                 'max_categorias_olimpista' => 2,
-                'nombre_olimpiada' => 'Invierno'
+                'nombre_olimpiada' => 'INVIERNO'
             ],
         ]);
     }

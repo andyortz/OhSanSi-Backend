@@ -15,9 +15,8 @@ class Inscripcion extends Model
         'id_olimpiada',
         'id_detalle_olimpista',
         'ci_tutor_academico',
-        'id_pago',
         'id_nivel',
-        'estado',
+        'id_lista',
         'fecha_inscripcion',
     ];
 
@@ -36,13 +35,12 @@ class Inscripcion extends Model
         return $this->belongsTo(Persona::class, 'id_tutor_academico', 'ci_persona');
     }
 
-    public function pago()
-    {
-        return $this->belongsTo(Pago::class, 'id_pago', 'id_pago');
-    }
-
     public function nivel()
     {
         return $this->belongsTo(NivelCategoria::class, 'id_nivel', 'id_nivel');
+    }
+    public function lista()
+    {
+        return $this->belongsTo(ListaInscripcion::class, 'id_lista', 'id_lista');
     }
 }

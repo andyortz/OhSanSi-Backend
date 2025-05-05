@@ -13,7 +13,10 @@ class Grado extends Model
     protected $fillable = [
         'nombre_grado'
     ];
-
+    public function niveles()
+    {
+        return $this->belongsToMany(NivelCategoria::class, 'grados_niveles', 'id_grado', 'id_nivel');
+    }
     public function setNombreGradoAttribute($value)
     {
         $this->attributes['nombre_grado'] = strtoupper($value);

@@ -22,7 +22,7 @@ class OlympiadRegistrationController extends Controller
                 'fecha_inicio' => 'required|date',
                 'fecha_fin' => 'required|date',
                 'max_categorias_olimpista' => 'required|integer',
-                'nombre_olimpiada' => 'nullable|string|max:255', // este campo existe en la tabla
+                'nombre_olimpiada' => 'required|string|max:255', // este campo existe en la tabla
             ]);
 
             $olimpiada = Olimpiada::create($validated);

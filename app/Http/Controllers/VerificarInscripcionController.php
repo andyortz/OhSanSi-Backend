@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tutor;
-use App\Models\Olimpista;
-use App\Models\Parentesco;
+use App\Models\Persona;
 use App\Models\Olimpiada;
+use App\Models\DetalleOlimpista;
 use App\Models\Inscripcion;
 use App\Models\NivelAreaOlimpiada;
 use Illuminate\Http\Request;
@@ -120,25 +119,56 @@ class VerificarInscripcionController extends Controller
     }
     public function getInscripcionesPorCI($ci)
     {
-        // 1. Buscar al olimpista por su CI
-        $olimpista = Olimpista::where('cedula_identidad', $ci)->first();
-
-        if (!$olimpista) {
+        try {
+            // 1. Buscar el detalle olimpista
+            $detalle = DetalleOlimpista::where('ci_olimpista', $ci)->first();
+    
+            if (!$detalle) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se encontró el olimpista'
+                ], 404);
+            }
+    
+            // 2. Obtener inscripciones con relaciones necesarias
+            $inscripciones = Inscripcion::with([
+                'nivel:id_nivel,nombre', // Solo necesitamos estos campos
+                'nivel.asociaciones.area:id_area,nombre'
+            ])
+            ->where('id_detalle_olimpista', $detalle->id_detalle_olimpista)
+            ->orderBy('fecha_inscripcion', 'desc')
+            ->get();
+    
+            // 3. Formatear la respuesta
+            $response = [
+                'ci_olimpista' => $ci,
+                'inscripciones' => $inscripciones->map(function ($inscripcion) {
+                    return [
+                        'id_inscripcion' => $inscripcion->id_inscripcion,
+                        'nivel' => $inscripcion->nivel ? [
+                            'id_nivel' => $inscripcion->nivel->id_nivel,
+                            'nombre' => $inscripcion->nivel->nombre
+                        ] : null,
+                        'area' => $inscripcion->nivel->asociaciones->first() ? [
+                            'id_area' => $inscripcion->nivel->asociaciones->first()->area->id_area,
+                            'nombre' => $inscripcion->nivel->asociaciones->first()->area->nombre
+                        ] : null
+                    ];
+                })
+            ];
+    
+            return response()->json([
+                'success' => true,
+                'data' => $response
+            ]);
+    
+            
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Olimpista no encontrado'
-            ], 404);
+                'message' => 'Error al obtener inscripciones',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        // 2. Obtener las inscripciones
-        $inscripciones = Inscripcion::with('nivel.asociaciones.area')
-            ->where('id_olimpista', $olimpista->id_olimpista)
-            ->get();
-
-        return response()->json([
-            'success' => true,
-            'ci_olimpista' => $ci,
-            'inscripciones' => $inscripciones
-        ]);
     }
 }
