@@ -6,8 +6,10 @@ use App\Http\Requests\StoreOlimpistaRequest;
 use App\Models\Persona;
 use App\Repositories\OlimpistaRepository;
 use App\Services\Registers\OlimpistaService;
+use Illuminate\Http\Request;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 
 class OlimpistaController extends Controller
 {
@@ -30,22 +32,37 @@ class OlimpistaController extends Controller
         }
     }
 
-    public function store(StoreOlimpistaRequest $request): JsonResponse
+    public function store(Request $request): JsonResponse
     {
         try {
-            $persona = $this->olimpistaService->register($request->validated());
+            $validated = $request->validate([
+                'nombres' => 'required|string|max:100',
+                'apellidos' => 'required|string|max:100',
+                'cedula_identidad' => 'required|integer|unique:personas,ci_persona',
+                'correo_electronico' => 'required|email|max:100|unique:personas,correo_electronico',
+                'fecha_nacimiento' => 'required|date',
+                'unidad_educativa' => 'required|string|max:255',
+                'id_grado' => 'required|exists:grados,id_grado',
+                'ci_tutor' => 'required|exists:personas,ci_persona',
+            ]);
+
+            $persona = $this->olimpistaService->register($validated);
 
             return response()->json([
                 'message' => 'Olimpista registrado exitosamente.',
                 'persona' => $persona
             ], 201);
 
+        } catch (ValidationException $e) {
+            return response()->json([
+                'error' => $e->validator->errors()->first()
+            ], 422);
+
         } catch (\Throwable $e) {
             $statusCode = $e->getCode() === 409 ? 409 : 500;
 
             return response()->json([
-                'error' => $e->getMessage(),
-                'trace' => config('app.debug') ? $e->getTraceAsString() : null,
+                'error' => $e->getMessage()
             ], $statusCode);
         }
     }

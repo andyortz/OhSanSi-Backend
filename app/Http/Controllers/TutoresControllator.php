@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Persona;
 use App\Services\Registers\PersonaService;
 use App\Http\Requests\StorePersonaRequest;
+use Illuminate\Http\Request;
 
 class TutoresControllator extends Controller
 {
@@ -35,10 +36,18 @@ class TutoresControllator extends Controller
             : response()->json(['message' => 'No encontrado'], 404);
     }
 
-    public function store(StorePersonaRequest $request)
+    public function store(Request $request)
     {
         try {
-            $persona = PersonaService::register($request->validated());
+            $validated = $request->validate([
+                'nombres' => 'required|string|max:100',
+                'apellidos' => 'required|string|max:100',
+                'ci' => 'required|integer|unique:personas,ci_persona',
+                'celular' => 'nullable|string|max:20',
+                'correo_electronico' => 'required|email|max:100|unique:personas,correo_electronico',
+            ]);
+
+            $persona = PersonaService::register($validated);
 
             return response()->json([
                 'message' => 'Tutor registrado exitosamente',

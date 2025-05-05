@@ -46,7 +46,6 @@ class DatosExcelController extends Controller
         foreach ($datos as $index => $row) {
             if (empty(array_filter($row))) continue;
 
-            // Validaciones
             $departamento = Departamento::where('nombre_departamento', $row[5])->first();
             if (!$departamento) return $this->errorFila('Departamento', $row[5], $index);
             $row[5] = $departamento->id_departamento;
@@ -67,34 +66,45 @@ class DatosExcelController extends Controller
             if (!$nivel) return $this->errorFila('Nivel', $row[15], $index);
             $row[15] = $nivel;
 
-            // Extracción de datos
             $tutorsData[$row[11]] = TutorResolver::extractTutorData($row);
             $olimpistasData[$row[2]] = OlimpistaResolver::extractOlimpistaData($row);
             $profesorData[$row[19]] = ProfesorResolver::extractProfesorData($row);
             $areasData[] = AreaResolver::extractAreaData($row);
-            $inscripcionesData[] = InscripcionResolver::extract($row);
+            try {
+                $inscripcionesData[] = InscripcionResolver::extract($row);
+            } catch (\Throwable $e) {
+                $resultadoFinal['inscripciones_errores'][] = [
+                    'ci' => $row[2] ?? 'desconocido',
+                    'error' => $e->getMessage()
+                ];
+            }
             $sanitizedData[] = $row;
         }
-
-        TutoresProcessor::save($tutorsData, $resultadoFinal);
-            OlimpistasProcessor::save($olimpistasData, $resultadoFinal);
-            ProfesoresProcessor::save($profesorData, $resultadoFinal);
-            InscripcionesProcessor::save($sanitizedData, $resultadoFinal);
+        
 
         try {
             DB::beginTransaction();
 
+            // Guardar tutores, olimpistas e inscripciones dentro de la transacción
+            TutoresProcessor::save($tutorsData, $resultadoFinal);
+            ProfesoresProcessor::save($profesorData, $resultadoFinal);
+            OlimpistasProcessor::save($olimpistasData, $resultadoFinal);
+            InscripcionesProcessor::save($sanitizedData, $resultadoFinal);
             
+
+            // Verificar errores antes de hacer commit
+            if (
+                !empty($resultadoFinal['tutores_errores']) ||
+                !empty($resultadoFinal['olimpistas_errores']) ||
+                !empty($resultadoFinal['inscripciones_errores'])
+            ) {
+                throw new \Exception("Se encontraron errores en los datos. No se guardó nada.");
+            }
 
             DB::commit();
 
             return response()->json([
-                'message' => 'Datos validados y convertidos correctamente.',
-                'tutors_data' => array_values($tutorsData),
-                'olimpistas_data' => array_values($olimpistasData),
-                'areas_data' => $areasData,
-                'profesor_data' => array_values($profesorData),
-                'sanitized_data' => $sanitizedData,
+                'message' => 'Datos validados y guardados correctamente.',
                 'resultado' => $resultadoFinal
             ], 200);
 
@@ -108,6 +118,7 @@ class DatosExcelController extends Controller
             ], 500);
         }
     }
+
 
     private function errorFila($campo, $valor, $fila)
     {

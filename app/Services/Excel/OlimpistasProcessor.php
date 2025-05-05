@@ -12,10 +12,14 @@ class OlimpistasProcessor
         $controller = app(OlimpistaController::class);
 
         foreach ($olimpistasData as $olimpista) {
-            $request = new StoreOlimpistaRequest();
-            $request->merge($olimpista);
-
             try {
+                // Validación simple manual por si falta CI
+                if (empty($olimpista['cedula_identidad'])) {
+                    throw new \Exception("El campo 'cedula_identidad' no puede ser null");
+                }
+
+                // Crear request y simular el request
+                $request = StoreOlimpistaRequest::create('/fake-url', 'POST', $olimpista);
                 $response = $controller->store($request);
 
                 if ($response->getStatusCode() === 201) {
@@ -28,8 +32,8 @@ class OlimpistasProcessor
                 }
             } catch (\Throwable $e) {
                 $resultado['olimpistas_errores'][] = [
-                    'ci' => $olimpista['cedula_identidad'],
-                    'error' => $e->getMessage()
+                    'ci' => $olimpista['cedula_identidad'] ?? 'desconocido',
+                    'error' => json_encode(['error' => $e->getMessage()])
                 ];
             }
         }

@@ -11,11 +11,13 @@ class PersonaService
     {
         return DB::transaction(function () use ($data) {
             $persona = new Persona();
-            $persona->ci_persona = $data['ci'];
+            
             $persona->nombres = $data['nombres'];
             $persona->apellidos = $data['apellidos'];
-            $persona->correo_electronico = $data['correo_electronico'];
+            $persona->ci_persona = $data['ci'];
             $persona->celular = $data['celular'] ?? null;
+            $persona->correo_electronico = $data['correo_electronico'];
+            
             $persona->save();
 
             return $persona;

@@ -4,6 +4,7 @@ namespace App\Services\Excel;
 
 use App\Models\Persona;
 use App\Http\Controllers\TutoresControllator;
+use App\Http\Requests\StorePersonaRequest;
 use Illuminate\Http\Request;
 
 class TutoresProcessor
@@ -31,7 +32,9 @@ class TutoresProcessor
             ];
 
             try {
-                $request = new Request($filteredTutor);
+                $request = new StorePersonaRequest();
+                $request->merge($filteredTutor);
+
                 $response = $controller->store($request);
 
                 if ($response->getStatusCode() === 201) {
