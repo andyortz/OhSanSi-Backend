@@ -22,10 +22,9 @@ use App\Http\Controllers\EstructuraOlimpiadaController;
 use App\Http\Controllers\OlimpiadaController;
 use App\Http\Controllers\VerificarInscripcionController;
 use App\Http\Controllers\InscripcionNivelesController;
-
+use App\Http\Controllers\ListaInscripcionController;
 use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\DatosExcelController;
-
 use App\Http\Controllers\ParentescoController;
 use App\Imports\OlimpistaImport;
 use App\Imports\TutoresImport;
@@ -137,5 +136,11 @@ Route::get('/olimpiada/max-categorias', [OlimpiadaController::class, 'getMaxCate
 Route::get('/olimpiadas/{id}/areas-niveles', [OlimpiadaController::class, 'getAreasConNiveles']);
 
 Route::get('/olimpiada-data/{id}', [OlimpiadaController::class, 'getAreasYNiveles']);
+
+//get Inscripciones
+
+Route::get('/inscripciones/{ci}', [ListaInscripcionController::class, 'obtenerPorResponsable']);
+
+Route::get('/inscripciones', [ListaInscripcionController::class, 'index']);
 
 
