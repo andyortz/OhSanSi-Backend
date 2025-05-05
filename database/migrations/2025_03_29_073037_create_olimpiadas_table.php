@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //nao fazer
         Schema::create('olimpiadas', function (Blueprint $table) {
             $table->id('id_olimpiada');
             $table->smallInteger('gestion'); // int2
