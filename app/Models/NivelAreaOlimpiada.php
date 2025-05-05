@@ -13,7 +13,7 @@ class NivelAreaOlimpiada extends Model
         'id_nivel',
         'id_area',
         'id_olimpiada',
-        'max_niveles',
+        //'max_niveles',
     ];
 
     public $incrementing = false;
