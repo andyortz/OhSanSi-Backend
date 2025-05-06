@@ -20,7 +20,7 @@ class ListaInscripcionController extends Controller
             $item = $lista->toArray(); 
         
             // Luego: Añadir el detalle específico
-            if ($lista->cantidad == 1) {
+            if ($lista->count() == 1) {
                 $inscripcion = $lista->inscripciones->first();
 
                 if ($inscripcion) {
@@ -54,9 +54,10 @@ class ListaInscripcionController extends Controller
                     ];
                 }
             } else {
+                $inscripciones = $lista->inscripciones;
                 $item['detalle'] = [
                     'tipo' => 'grupal',
-                    'cantidad_participantes' => $lista->cantidad,
+                    'cantidad_participantes' => $inscripciones->count(),
                     'inscripciones' => $lista->inscripciones->toArray()
                 ];
             }

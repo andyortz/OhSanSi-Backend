@@ -12,13 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('lista_inscripcion', function (Blueprint $table) {
+            
+            $table->unsignedBigInteger('id_olimpiada');
             $table->id('id_lista');
             $table->string('estado', 50)->default('PENDIENTE');
             $table->unsignedBigInteger('ci_responsable_inscripcion');
             $table->timestamp('fecha_creacion_lista', 6)->useCurrent();
-            $table->unsignedBigInteger('cantidad');
-            $table->decimal('monto_total', 10, 2); // numeric(10,2)
-            $table->foreign('ci_responsable_inscripcion')->references('ci_persona')->on('personas')->onDelete('cascade');            
+           
+            $table->foreign('ci_responsable_inscripcion')->references('ci_persona')->on('personas')->onDelete('cascade');
+            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiadas')->onDelete('cascade');
         });
     }
 

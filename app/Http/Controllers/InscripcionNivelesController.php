@@ -152,31 +152,25 @@ class InscripcionNivelesController extends Controller
             'niveles.*' => 'integer|exists:niveles_categoria,id_nivel',
         ]);
 
-        DB::beginTransaction();
         try {
+            DB::beginTransaction();
             $olimpista = DetalleOlimpista::firstOrCreate(
                 ['ci_olimpista' => $request->ci]
             );
             // Crear inscripciones para cada nivel
-            $pago = Pago::create([
-                'comprobante' => 'PAGO-DUMMY-' . uniqid(),
-                'fecha_pago' => now(),
+            $lista = ListaInscripcion::create([
+                'id_olimpiada' => $olimpista -> id_olimpiada,
                 'ci_responsable_inscripcion' => $olimpista->ci_tutor_legal,
-                'monto_pagado' => 0,
-                'verificado' => false,
-                'verificado_en' => now(),
-                'verificado_por' => null
+                'estado' => 'PENDIENTE',
+                'fecha_creacion_lista' => now()
             ]);
             $inscripciones = [];
             foreach ($request->niveles as $nivel) {
                 $inscripciones[] = Inscripcion::create([
-                    'id_olimpiada' => 1, // Valor fijo
                     'id_detalle_olimpista' => $olimpista->id_detalle_olimpista,
-                    'ci_tutor_academico' => $request->ci_tutor,
-                    'id_pago' => $pago->id_pago,
+                    'ci_tutor_academico' => $request->filled('ci_tutor') ? $request->ci_tutor : null,
+                    'id_lista' => $lista->id_lista,
                     'id_nivel' => $nivel,
-                    'estado' => 'PENDIENTE',
-                    'fecha_inscripcion' => now(),
                 ]);
             }
 

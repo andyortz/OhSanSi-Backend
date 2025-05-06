@@ -13,12 +13,14 @@ class ListaInscripcion extends Model
 
     protected $fillable = [
         'estado',
+        'id_olimpiada',
         'ci_responsable_inscripcion',
         'fecha_creacion_lista',
-        'cantidad',
-        'monto_total'
     ];
-
+    public function olimpiada()
+    {
+        return $this->belongsTo(Olimpiada::class, 'id_olimpiada', 'id_olimpiada');
+    }
     public function responsable()
     {
         return $this->belongsTo(Persona::class, 'id_responsable_inscripcion', 'ci_persona');

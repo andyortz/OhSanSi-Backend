@@ -12,19 +12,11 @@ class Inscripcion extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_olimpiada',
         'id_detalle_olimpista',
         'ci_tutor_academico',
         'id_nivel',
         'id_lista',
-        'fecha_inscripcion',
     ];
-
-    public function olimpiada()
-    {
-        return $this->belongsTo(Olimpiada::class, 'id_olimpiada', 'id_olimpiada');
-    }
-
     public function detalleOlimpista()
     {
         return $this->belongsTo(DetalleOlimpista::class, 'id_detalle_olimpista', 'id_detalle_olimpista');
