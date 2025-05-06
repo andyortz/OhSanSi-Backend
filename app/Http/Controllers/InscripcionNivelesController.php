@@ -149,7 +149,7 @@ class InscripcionNivelesController extends Controller
             'ci' => 'required|exists:persona,ci_persona',
             'niveles' => 'required|array|min:1',
             'ci_tutor' => 'nullable|exists:persona,ci_persona',
-            'niveles.*' => 'integer|exists:niveles_categoria,id_nivel',
+            'niveles.*' => 'integer|exists:nivel_categoria,id_nivel',
         ]);
 
         try {

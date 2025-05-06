@@ -16,10 +16,10 @@ class NivelCategoriaController extends Controller
     public function asociarNivelesPorArea(Request $request)
     {
         $data = $request->validate([
-            'id_olimpiada' => 'required|integer|exists:olimpiadas,id_olimpiada',
-            'id_area' => 'required|integer|exists:areas_competencia,id_area',
+            'id_olimpiada' => 'required|integer|exists:olimpiada,id_olimpiada',
+            'id_area' => 'required|integer|exists:area_competencia,id_area',
             'id_categorias' => 'required|array|min:1',
-            'id_categorias.*' => 'required|integer|exists:niveles_categoria,id_nivel',
+            'id_categorias.*' => 'required|integer|exists:nivel_categoria,id_nivel',
          //   'max_niveles' => 'required|integer|min:1'
         ]);
 
@@ -142,7 +142,7 @@ class NivelCategoriaController extends Controller
     {
         // Validar los datos de entrada
         $request->validate([
-            'id_nivel' => 'required|integer|exists:niveles_categoria,id_nivel',
+            'id_nivel' => 'required|integer|exists:nivel_categoria,id_nivel',
             'id_grado_min' => 'required|integer|exists:grado,id_grado',
             'id_grado_max' => 'required|integer|exists:grado,id_grado',
         ]);

@@ -20,7 +20,7 @@ class NivelCategoria extends Model
     }
     public function grados()
     {
-        return $this->belongsToMany(Grado::class, 'grados_niveles', 'id_nivel', 'id_grado');
+        return $this->belongsToMany(Grado::class, 'grado_nivel', 'id_nivel', 'id_grado');
     }
     public function asociaciones()
     {
