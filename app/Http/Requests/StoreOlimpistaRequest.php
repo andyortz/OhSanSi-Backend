@@ -3,51 +3,25 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreOlimpistaRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return true;
+        return true; // Permitir a todos los usuarios hacer esta solicitud
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            'nombres' => 'required|string',
-            'apellidos' => 'required|string',
-            'cedula_identidad' => [
-                'required',
-                'numeric',
-                Rule::unique('olimpistas')->ignore($this->student)
-            ],
-            'correo_electronico' => 'email',
-            'fecha_nacimiento' => 'required|date',
-            'unidad_educativa' => 'required|string',
-            'id_grado' => 'required|integer',
-
-            'ci_tutor' => ['required', 'integer', 'exists:tutores,ci'],
-        ];
-    }
-    public function messages(): array
-    {
-        return [
-            'cedula_identidad.unique' => 'Ya existe un olimpista con ese numero de carnet',
-            'nombres.required' => 'El nombre es obligatorio',
-            'apellidos.required' => 'El apllido es obligatorio',
-            // 'cedula_identidad.required' => 'La cedula de identidad es obligatoria',
-            'correo_electronico.required' => 'El correo electronico es obligatorio',
-            'unidad_educativa.required' => 'La unidad educativa es obligatoria',
-            'id_grado.required' => 'El grado es obligatorio',
+            'nombres'            => 'required|string|max:100',
+            'apellidos'          => 'required|string|max:100',
+            'cedula_identidad'   => 'required|integer',
+            'fecha_nacimiento'   => 'required|date',
+            'correo_electronico' => 'required|email|max:100',
+            'unidad_educativa'   => 'required|integer',
+            'id_grado'           => 'required|integer',
+            'ci_tutor'           => 'required|integer|exists:personas,ci_persona',
         ];
     }
 }
