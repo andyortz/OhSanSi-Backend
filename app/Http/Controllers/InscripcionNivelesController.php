@@ -2,15 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pago;
+use App\Models\ListaInscripcion;
 use App\Models\Persona;
 use App\Models\Inscripcion;
-use App\Models\Tutor;
-use App\Models\Parentesco;
 use App\Models\DetalleOlimpista;
-use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\ParentescoController;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
