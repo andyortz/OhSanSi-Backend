@@ -25,7 +25,7 @@ class OlimpistaService
             $persona->apellidos = $data['apellidos'];
             $persona->correo_electronico = $data['correo_electronico'];
             $persona->fecha_nacimiento = $data['fecha_nacimiento'];
-            $persona->celular = null;
+            $persona->celular = $data['celular'] ?? null;
             $persona->save();
 
             DetalleOlimpista::create([
