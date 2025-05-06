@@ -19,8 +19,8 @@ return new class extends Migration
             $table->unsignedBigInteger('ci_responsable_inscripcion');
             $table->timestamp('fecha_creacion_lista', 6)->useCurrent();
            
-            $table->foreign('ci_responsable_inscripcion')->references('ci_persona')->on('personas')->onDelete('cascade');
-            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiadas')->onDelete('cascade');
+            $table->foreign('ci_responsable_inscripcion')->references('ci_persona')->on('persona')->onDelete('cascade');
+            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiada')->onDelete('cascade');
         });
     }
 
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('lista');
+        Schema::dropIfExists('lista_inscripcion');
     }
 };

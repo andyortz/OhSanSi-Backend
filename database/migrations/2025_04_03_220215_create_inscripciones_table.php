@@ -18,9 +18,9 @@ return new class extends Migration
             $table->unsignedBigInteger('id_nivel');
             $table->unsignedBigInteger('id_lista');
             // Foreign keys
-            $table->foreign('id_detalle_olimpista')->references('id_detalle_olimpista')->on('detalle_olimpistas')->onDelete('cascade');
-            $table->foreign('id_nivel')->references('id_nivel')->on('niveles_categoria')->onDelete('cascade');
-            $table->foreign('ci_tutor_academico')->references('ci_persona')->on('personas')->onDelete('set null');
+            $table->foreign('id_detalle_olimpista')->references('id_detalle_olimpista')->on('detalle_olimpista')->onDelete('cascade');
+            $table->foreign('id_nivel')->references('id_nivel')->on('nivel_categoria')->onDelete('cascade');
+            $table->foreign('ci_tutor_academico')->references('ci_persona')->on('persona')->onDelete('set null');
             $table->foreign('id_lista')->references('id_lista')->on('lista_inscripcion')->onDelete('set null');
         });
     }
@@ -37,6 +37,6 @@ return new class extends Migration
             $table->dropForeign(['id_lista']);
         });
 
-        Schema::dropIfExists('inscripciones');
+        Schema::dropIfExists('inscripcion');
     }
 };

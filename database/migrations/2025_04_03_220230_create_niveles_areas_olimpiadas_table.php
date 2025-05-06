@@ -16,9 +16,9 @@ return new class extends Migration
             $table->unsignedMediumInteger('id_area');//id_area
             $table->unsignedMediumInteger('id_nivel');//id_niveles_categoria
 
-            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiadas')->onDelete('cascade');
-            $table->foreign('id_area')->references('id_area')->on('areas_competencia')->onDelete('cascade');
-            $table->foreign('id_nivel')->references('id_nivel')->on('niveles_categoria')->onDelete('cascade');
+            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiada')->onDelete('cascade');
+            $table->foreign('id_area')->references('id_area')->on('area_competencia')->onDelete('cascade');
+            $table->foreign('id_nivel')->references('id_nivel')->on('nivel_categoria')->onDelete('cascade');
         });
     }
 
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('niveles_areas_olimpiadas');
+        Schema::dropIfExists('nivel_area_olimpiada');
     }
 };

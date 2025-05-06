@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Inscripcion extends Model
 {
-    protected $table = 'inscripciones';
+    protected $table = 'inscripcion';
     protected $primaryKey = 'id_inscripcion';
     protected $keyType = 'int';
     public $timestamps = false;

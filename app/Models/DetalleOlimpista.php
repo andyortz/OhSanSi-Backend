@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DetalleOlimpista extends Model
 {
-    protected $table = 'detalle_olimpistas';
+    protected $table = 'detalle_olimpista';
     protected $primaryKey = 'id_detalle_olimpista';
     protected $keyType = 'int';
     public $timestamps = false;

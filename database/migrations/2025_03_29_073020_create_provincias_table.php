@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedSmallInteger('id_departamento'); // FK a int2
 
             // Foreign key constraint
-            $table->foreign('id_departamento')->references('id_departamento')->on('departamentos')->onDelete('cascade');
+            $table->foreign('id_departamento')->references('id_departamento')->on('departamento')->onDelete('cascade');
         });
     }
 
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('provincias');
+        Schema::dropIfExists('provincia');
     }
 };

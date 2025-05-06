@@ -17,7 +17,7 @@ return new class extends Migration
             $table ->unsignedSmallInteger('provincia');
 
             // Relación a provincias
-            $table->foreign('provincia')->references('id_provincia')->on('provincias')->onDelete('restrict');
+            $table->foreign('provincia')->references('id_provincia')->on('provincia')->onDelete('restrict');
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('colegios');
+        Schema::dropIfExists('colegio');
     }
 };

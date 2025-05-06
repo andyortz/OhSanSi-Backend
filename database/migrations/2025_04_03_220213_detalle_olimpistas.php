@@ -21,11 +21,11 @@ return new class extends Migration
             $table->unsignedBigInteger('ci_tutor_legal');
 
             // Foreign keys
-            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiadas')->onDelete('cascade');
-            $table->foreign('ci_olimpista')->references('ci_persona')->on('personas')->onDelete('cascade');
-            $table->foreign('id_grado')->references('id_grado')->on('grados')->onDelete('cascade');
-            $table->foreign('unidad_educativa')->references('id_colegio')->on('colegios')->onDelete('cascade');
-            $table->foreign('ci_tutor_legal')->references('ci_persona')->on('personas')->onDelete('cascade');
+            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiada')->onDelete('cascade');
+            $table->foreign('ci_olimpista')->references('ci_persona')->on('persona')->onDelete('cascade');
+            $table->foreign('id_grado')->references('id_grado')->on('grado')->onDelete('cascade');
+            $table->foreign('unidad_educativa')->references('id_colegio')->on('colegio')->onDelete('cascade');
+            $table->foreign('ci_tutor_legal')->references('ci_persona')->on('persona')->onDelete('cascade');
         });
     }
 
@@ -42,6 +42,6 @@ return new class extends Migration
             $table->dropForeign(['ci_tutor_legal']);
         });
 
-        Schema::dropIfExists('detalle_olimpistas');
+        Schema::dropIfExists('detalle_olimpista');
     }
 };

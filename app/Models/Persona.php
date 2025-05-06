@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Persona extends Model
 {
-    protected $table = 'personas';
+    protected $table = 'persona';
     protected $primaryKey = 'ci_persona';
     protected $keyType = 'int';
     public $timestamps = false;
