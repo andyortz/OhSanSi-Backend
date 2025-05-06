@@ -21,7 +21,7 @@ class StoreOlimpistaRequest extends FormRequest
             'correo_electronico' => 'required|email|max:100',
             'unidad_educativa'   => 'required|integer',
             'id_grado'           => 'required|integer',
-            'ci_tutor'           => 'required|integer|exists:personas,ci_persona',
+            'ci_tutor'           => 'required|integer|exists:persona,ci_persona',
         ];
     }
 }

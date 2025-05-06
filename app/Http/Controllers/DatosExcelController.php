@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Departamento;
+use App\Models\Persona;
 use App\Services\ImportHelpers\ProvinciaResolver;
 use App\Services\ImportHelpers\ColegioResolver;
 use App\Services\ImportHelpers\GradoResolver;
@@ -13,7 +14,6 @@ use App\Services\ImportHelpers\TutorResolver;
 use App\Services\ImportHelpers\OlimpistaResolver;
 use App\Services\ImportHelpers\AreaResolver;
 use App\Services\ImportHelpers\ProfesorResolver;
-use App\Services\ImportHelpers\InscripcionResolver;
 use App\Services\Excel\TutoresProcessor;
 use App\Services\Excel\OlimpistasProcessor;
 use App\Services\Excel\ProfesoresProcessor;
@@ -24,9 +24,14 @@ class DatosExcelController extends Controller
     public function cleanDates(Request $request)
     {
         $datos = $request->input('data');
+        $ci_responsable = $request->input('ci_responsable_inscripcion');
 
         if (!is_array($datos)) {
             return response()->json(['error' => 'El archivo no contiene datos válidos.'], 400);
+        }
+
+        if (!$ci_responsable || !is_numeric($ci_responsable)) {
+            return response()->json(['error' => 'CI del responsable inválido.'], 422);
         }
 
         $sanitizedData = [];
@@ -34,7 +39,6 @@ class DatosExcelController extends Controller
         $olimpistasData = [];
         $profesorData = [];
         $areasData = [];
-        $inscripcionesData = [];
 
         $resultadoFinal = [
             'tutores_guardados' => [], 'tutores_omitidos' => [], 'tutores_errores' => [],
@@ -70,29 +74,26 @@ class DatosExcelController extends Controller
             $olimpistasData[$row[2]] = OlimpistaResolver::extractOlimpistaData($row);
             $profesorData[$row[19]] = ProfesorResolver::extractProfesorData($row);
             $areasData[] = AreaResolver::extractAreaData($row);
-            try {
-                $inscripcionesData[] = InscripcionResolver::extract($row);
-            } catch (\Throwable $e) {
-                $resultadoFinal['inscripciones_errores'][] = [
-                    'ci' => $row[2] ?? 'desconocido',
-                    'error' => $e->getMessage()
-                ];
-            }
+
             $sanitizedData[] = $row;
         }
-        
 
         try {
             DB::beginTransaction();
 
-            // Guardar tutores, olimpistas e inscripciones dentro de la transacción
+            // Guardar primero tutores, profesores y olimpistas
             TutoresProcessor::save($tutorsData, $resultadoFinal);
             ProfesoresProcessor::save($profesorData, $resultadoFinal);
             OlimpistasProcessor::save($olimpistasData, $resultadoFinal);
-            InscripcionesProcessor::save($sanitizedData, $resultadoFinal);
-            
 
-            // Verificar errores antes de hacer commit
+            // Validar ahora que el responsable ya esté registrado
+            if (!Persona::where('ci_persona', $ci_responsable)->exists()) {
+                throw new \Exception("El CI del responsable no existe en la base de datos.");
+            }
+
+            // Registrar inscripciones con la lista asociada
+            InscripcionesProcessor::save($sanitizedData, $ci_responsable, $resultadoFinal);
+
             if (
                 !empty($resultadoFinal['tutores_errores']) ||
                 !empty($resultadoFinal['olimpistas_errores']) ||
@@ -118,7 +119,6 @@ class DatosExcelController extends Controller
             ], 500);
         }
     }
-
 
     private function errorFila($campo, $valor, $fila)
     {

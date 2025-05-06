@@ -38,12 +38,12 @@ class OlimpistaController extends Controller
             $validated = $request->validate([
                 'nombres' => 'required|string|max:100',
                 'apellidos' => 'required|string|max:100',
-                'cedula_identidad' => 'required|integer|unique:personas,ci_persona',
-                'correo_electronico' => 'required|email|max:100|unique:personas,correo_electronico',
+                'cedula_identidad' => 'required|integer|unique:persona,ci_persona',
+                'correo_electronico' => 'required|email|max:100|unique:persona,correo_electronico',
                 'fecha_nacimiento' => 'required|date',
                 'unidad_educativa' => 'required|string|max:255',
-                'id_grado' => 'required|exists:grados,id_grado',
-                'ci_tutor' => 'required|exists:personas,ci_persona',
+                'id_grado' => 'required|exists:grado,id_grado',
+                'ci_tutor' => 'required|exists:persona,ci_persona',
             ]);
 
             $persona = $this->olimpistaService->register($validated);

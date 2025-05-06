@@ -2,32 +2,27 @@
 
 namespace App\Services\Excel;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\InscripcionNivelesController;
+use App\Services\Registers\InscripcionService;
 
 class InscripcionesProcessor
 {
-    public static function save(array $sanitizedData, array &$resultado): void
+    public static function save(array $sanitizedData, int $ci_responsable, array &$resultado): void
     {
-        $controller = app(InscripcionNivelesController::class);
+        $service = app(InscripcionService::class);
         $interesados = self::selectData($sanitizedData);
 
         foreach ($interesados as $data) {
             try {
-                $request = new Request($data);
-                $response = $controller->storeOne($request);
+                // Inyectar CI del responsable directamente
+                $data['ci_responsable_inscripcion'] = $ci_responsable;
 
-                if ($response->getStatusCode() === 201) {
-                    $resultado['inscripciones_guardadas'][] = [
-                        'ci' => $data['ci'],
-                        'nivel' => $data['nivel']
-                    ];
-                } else {
-                    $resultado['inscripciones_errores'][] = [
-                        'ci' => $data['ci'],
-                        'error' => $response->getContent()
-                    ];
-                }
+                $inscripcion = $service->register($data);
+
+                $resultado['inscripciones_guardadas'][] = [
+                    'ci' => $data['ci'],
+                    'nivel' => $data['nivel'],
+                    'id_lista' => $inscripcion->id_lista ?? null
+                ];
             } catch (\Throwable $e) {
                 $resultado['inscripciones_errores'][] = [
                     'ci' => $data['ci'],
@@ -39,11 +34,10 @@ class InscripcionesProcessor
 
     private static function selectData(array $sanitizedData): array
     {
-        return collect($sanitizedData)->map(function ($item, $index) {
+        return collect($sanitizedData)->map(function ($item) {
             return [
                 'ci' => $item[2],
                 'nivel' => $item[15],
-                'id_pago' => null,
                 'estado' => 'pendiente',
                 'ci_tutor_academico' => $item[18] ?? null
             ];
