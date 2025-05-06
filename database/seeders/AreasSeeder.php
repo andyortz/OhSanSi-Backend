@@ -21,10 +21,10 @@ class AreasSeeder extends Seeder
             ['nombre'=>'ROBÓTICA'],
             ['nombre'=>'INFORMÁTICA'],
             ['nombre'=>'QUÍMICA'],
-            // ['nombre'=>'Geografia'],
-            // ['nombre'=>'Historia'],
+            // ['nombre'=>'GEOGRAFIA'],
+            // ['nombre'=>'HISTORIA'],
         ];
 
-        DB::table('areas_competencia')->insert($areas);
+        DB::table('area_competencia')->insert($areas);
     }
 }

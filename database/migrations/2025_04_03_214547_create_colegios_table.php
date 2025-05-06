@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('colegios', function (Blueprint $table) {
+        Schema::create('colegio', function (Blueprint $table) {
             $table->smallIncrements("id_colegio");
             $table->string('nombre_colegio', 100);
             $table ->unsignedSmallInteger('provincia');

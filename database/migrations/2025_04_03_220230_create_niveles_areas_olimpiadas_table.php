@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('niveles_areas_olimpiadas', function (Blueprint $table) {
+        Schema::create('nivel_area_olimpiada', function (Blueprint $table) {
             $table->unsignedMediumInteger('id_olimpiada');//id_olimpiada
             $table->unsignedMediumInteger('id_area');//id_area
             $table->unsignedMediumInteger('id_nivel');//id_niveles_categoria
-            $table->unsignedTinyInteger('max_niveles')->nullable();
 
             $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiadas')->onDelete('cascade');
             $table->foreign('id_area')->references('id_area')->on('areas_competencia')->onDelete('cascade');

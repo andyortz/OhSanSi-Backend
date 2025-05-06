@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pagos', function (Blueprint $table) {
+        Schema::create('pago', function (Blueprint $table) {
             $table->id('id_pago');
             $table->string('comprobante', 255);
             $table->date('fecha_pago');
             $table->unsignedBigInteger('id_lista');
-            $table->decimal('monto_pagado', 10, 2);
+            $table->decimal('monto_total', 10, 2);
             $table->boolean('verificado')->default(false);
             $table->timestamp('verificado_en', 6)->nullable();
             $table->string('verificado_por', 100)->nullable();

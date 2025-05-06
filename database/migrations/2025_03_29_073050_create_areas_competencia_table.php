@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('areas_competencia', function (Blueprint $table) {
+        Schema::create('area_competencia', function (Blueprint $table) {
             $table->id('id_area');
             $table->string('nombre', 50);
         });

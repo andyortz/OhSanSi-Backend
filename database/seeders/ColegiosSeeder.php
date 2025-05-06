@@ -153,6 +153,6 @@ class ColegiosSeeder extends Seeder
             
         ];
 
-        DB::table('colegios')->insert($colegios);
+        DB::table('colegio')->insert($colegios);
     }
 }

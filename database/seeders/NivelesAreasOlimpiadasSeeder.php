@@ -9,24 +9,51 @@ class NivelesAreasOlimpiadasSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('niveles_areas_olimpiadas')->insert([
+        DB::table('nivel_area_olimpiada')->insert([
             [
                 'id_olimpiada' => 1,
-                'id_area' => 4,
-                'id_nivel' => 21,
-                'max_niveles' => 1,
+                'id_area' => 1,
+                'id_nivel' => 1,
             ],
             [
                 'id_olimpiada' => 1,
                 'id_area' => 1,
-                'id_nivel' => 6,
-                'max_niveles' => 1,
+                'id_nivel' => 2,
+            ],
+            [
+                'id_olimpiada' => 1,
+                'id_area' => 1,
+                'id_nivel' => 3,
+            ],
+            [
+                'id_olimpiada' => 1,
+                'id_area' => 2,
+                'id_nivel' => 4,
+            ],
+            [
+                'id_olimpiada' => 1,
+                'id_area' => 3,
+                'id_nivel' => 13,
+            ],
+            [
+                'id_olimpiada' => 1,
+                'id_area' => 5,
+                'id_nivel' => 14,
+            ],
+            [
+                'id_olimpiada' => 1,
+                'id_area' => 5,
+                'id_nivel' => 21,
             ],
             [
                 'id_olimpiada' => 1,
                 'id_area' => 4,
-                'id_nivel' => 20,
-                'max_niveles' => 1,
+                'id_nivel' => 28,
+            ],
+            [
+                'id_olimpiada' => 1,
+                'id_area' => 4,
+                'id_nivel' => 29,
             ],
         ]);
     }

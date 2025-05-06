@@ -47,6 +47,6 @@ class NivelesSeeder extends Seeder
             ['nombre'=>'Lego S '],
         ];
 
-        DB::table('niveles_categoria')->insert($niveles);
+        DB::table('nivel_categoria')->insert($niveles);
     }
 }

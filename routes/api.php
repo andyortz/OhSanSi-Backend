@@ -143,4 +143,6 @@ Route::get('/inscripciones/{ci}', [ListaInscripcionController::class, 'obtenerPo
 
 Route::get('/inscripciones', [ListaInscripcionController::class, 'index']);
 
+Route::get('/boleta-de-pago-individual/{id}', [ListaInscripcionController::class, 'individual']);
 
+Route::get('/boleta-de-pago-grupal/{id}', [ListaInscripcionController::class, 'grupal']);

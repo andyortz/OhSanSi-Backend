@@ -10,7 +10,7 @@ class OlimpiadasSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('olimpiadas')->insert([
+        DB::table('olimpiada')->insert([
             [
                 'gestion' => 2025,
                 'costo' => 15.00,
