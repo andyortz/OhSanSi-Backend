@@ -16,8 +16,8 @@ class StoreNivelRequest extends FormRequest
         return [
             '*.nombre' => 'required|string|max:50',
             '*.id_area' => 'required|exists:areas_competencia,id_area',
-            '*.grado_min' => 'required|integer|exists:grados,id_grado',
-            '*.grado_max' => 'required|integer|exists:grados,id_grado',
+            '*.grado_min' => 'required|integer|exists:grado,id_grado',
+            '*.grado_max' => 'required|integer|exists:grado,id_grado',
         ];
     }
 

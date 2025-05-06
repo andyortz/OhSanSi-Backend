@@ -15,7 +15,7 @@ class InscripcionNivelesController extends Controller
 {
     public function storeOne(Request $request){
         $data = $request->validate([
-            'ci' => 'required|integer|exists:personas,ci_persona',
+            'ci' => 'required|integer|exists:persona,ci_persona',
             'nivel' => 'required|integer',
             'id_pago' => 'nullable|integer',
             'estado' => 'nullable|string|max:50',
@@ -81,7 +81,7 @@ class InscripcionNivelesController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'ci' => 'required|integer|exists:personas,ci_persona',
+            'ci' => 'required|integer|exists:persona,ci_persona',
             'niveles' => 'required|array|min:1',
             'id_pago' => 'nullable|integer',
             'estado' => 'nullable|string|max:50'
@@ -146,9 +146,9 @@ class InscripcionNivelesController extends Controller
         
         // Validación básica
         $request->validate([
-            'ci' => 'required|exists:personas,ci_persona',
+            'ci' => 'required|exists:persona,ci_persona',
             'niveles' => 'required|array|min:1',
-            'ci_tutor' => 'nullable|exists:personas,ci_persona',
+            'ci_tutor' => 'nullable|exists:persona,ci_persona',
             'niveles.*' => 'integer|exists:niveles_categoria,id_nivel',
         ]);
 

@@ -67,8 +67,8 @@ class NivelCategoriaController extends Controller
         $data = $request->validate([
             'nombre' => 'required|string|max:50',
             'id_area' => 'required|integer|exists:areas_competencia,id_area',
-            'grado_min' => 'required|integer|exists:grados,id_grado',
-            'grado_max' => 'required|integer|exists:grados,id_grado',
+            'grado_min' => 'required|integer|exists:grado,id_grado',
+            'grado_max' => 'required|integer|exists:grado,id_grado',
         ]);
 
         DB::beginTransaction();
@@ -143,8 +143,8 @@ class NivelCategoriaController extends Controller
         // Validar los datos de entrada
         $request->validate([
             'id_nivel' => 'required|integer|exists:niveles_categoria,id_nivel',
-            'id_grado_min' => 'required|integer|exists:grados,id_grado',
-            'id_grado_max' => 'required|integer|exists:grados,id_grado',
+            'id_grado_min' => 'required|integer|exists:grado,id_grado',
+            'id_grado_max' => 'required|integer|exists:grado,id_grado',
         ]);
 
         try {
