@@ -136,7 +136,6 @@ class VerificarInscripcionController extends Controller
                 'nivel.asociaciones.area:id_area,nombre'
             ])
             ->where('id_detalle_olimpista', $detalle->id_detalle_olimpista)
-            ->orderBy('fecha_inscripcion', 'desc')
             ->get();
     
             // 3. Formatear la respuesta

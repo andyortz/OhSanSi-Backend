@@ -24,7 +24,7 @@ class NivelAreaOlimpiada extends Model
     } 
     public function area()
     {
-        return $this->belongsTo(area::class, 'id_area');
+        return $this->belongsTo(Area::class, 'id_area');
     }
 
     public function nivelGrado()
