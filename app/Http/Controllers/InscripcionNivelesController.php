@@ -150,8 +150,10 @@ class InscripcionNivelesController extends Controller
             'niveles' => 'required|array|min:1',
             'ci_tutor' => 'nullable|exists:persona,ci_persona',
             'niveles.*' => 'integer|exists:nivel_categoria,id_nivel',
+            'ci_responsable' => 'required|exists:persona,ci_persona',
         ]);
-
+        $responsable = Persona::where('ci_persona', $request->ci_responsable)
+        ->first(['nombres', 'apellidos', 'ci_persona']);
         try {
             DB::beginTransaction();
             $olimpista = DetalleOlimpista::firstOrCreate(
@@ -160,7 +162,7 @@ class InscripcionNivelesController extends Controller
             // Crear inscripciones para cada nivel
             $lista = ListaInscripcion::create([
                 'id_olimpiada' => $olimpista -> id_olimpiada,
-                'ci_responsable_inscripcion' => $olimpista->ci_tutor_legal,
+                'ci_responsable_inscripcion' => $request->ci_responsable,
                 'estado' => 'PENDIENTE',
                 'fecha_creacion_lista' => now()
             ]);
@@ -178,6 +180,9 @@ class InscripcionNivelesController extends Controller
         return response()->json([
             'message' => 'Inscripciones registradas correctamente.',
             'count' => count($inscripciones),
+            'ci_responsable' => $request->ci_responsable,
+            'nombres' => $responsable->nombres,
+            'apellidos' => $responsable->apellidos,
             'data' => $inscripciones
         ], 201);    
         } catch (\Throwable $e) {
