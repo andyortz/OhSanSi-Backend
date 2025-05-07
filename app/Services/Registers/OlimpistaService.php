@@ -15,9 +15,9 @@ class OlimpistaService
                 throw new \Exception('La cédula de identidad ya está registrada en el sistema.', 409);
             }
     
-            if (Persona::where('correo_electronico', $data['correo_electronico'])->exists()) {
-                throw new \Exception('El correo electrónico ya está registrado en el sistema.', 409);
-            }
+            // if (Persona::where('correo_electronico', $data['correo_electronico'])->exists()) {
+            //     throw new \Exception('El correo electrónico ya está registrado en el sistema.', 409);
+            // }
 
 
             // 1. Guardar al olimpista
