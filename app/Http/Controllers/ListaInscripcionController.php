@@ -152,7 +152,7 @@ class ListaInscripcionController extends Controller
                 'olimpiada:costo,id_olimpiada',
                 'inscripciones.detalleOlimpista.olimpista',
                 'inscripciones.nivel.asociaciones.area',
-                'responsable'
+                'responsable:nombres,apellidos,ci_persona'
             ])->findOrFail($id);
     
             // Verificar que sea individual
