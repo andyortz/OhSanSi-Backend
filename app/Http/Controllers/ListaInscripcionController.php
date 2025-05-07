@@ -80,14 +80,10 @@ class ListaInscripcionController extends Controller
                 'apellidos' => $olimpista->apellidos
             ],
             'niveles' => $inscripciones->map(function ($insc) {
-                $areaNombre = $insc->nivel->asociaciones
-                    ->firstWhere('area', '!=', null)?->area?->nombre 
-                    ?? 'Sin área';
-                
                 return [
                     'id' => $insc->nivel->id_nivel,
                     'nombre' => $insc->nivel->nombre,
-                    'area' => $areaNombre
+                    'area' => $insc->nivel->asociaciones->first()->area->nombre ?? 'Sin área'
                 ];
             })->unique('id')->values()->toArray()
         ];
@@ -105,7 +101,7 @@ class ListaInscripcionController extends Controller
     {
         $listas = ListaInscripcion::with([
             'inscripciones.detalleOlimpista.olimpista:nombres,apellidos,ci_persona',
-            'inscripciones.nivel.asociaciones.area:nombre'
+            'inscripciones.nivel.asociaciones.area:nombre,id_area'
         ])->where('ci_responsable_inscripcion', $ci)->get(['id_lista', 'estado', 'ci_responsable_inscripcion']);
 
         if ($listas->isEmpty()) {
