@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\ListaInscripcion;
 use App\Models\NivelAreaOlimpiada;
+use App\Models\Persona;
+
 use Illuminate\Http\Request\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -99,6 +101,9 @@ class ListaInscripcionController extends Controller
     }
     public function obtenerPorResponsable($ci)
     {
+        $responsable = Persona::where('ci_persona', $ci)
+            ->first(['nombres', 'apellidos', 'ci_persona']);
+
         $listas = ListaInscripcion::with([
             'inscripciones.detalleOlimpista.olimpista:nombres,apellidos,ci_persona',
             'inscripciones.nivel.asociaciones.area:nombre,id_area'
@@ -126,12 +131,18 @@ class ListaInscripcionController extends Controller
             $item = [
                 'id_lista' => $lista->id_lista,
                 'estado' => $lista->estado,
-                'ci_responsable' => $lista->ci_responsable_inscripcion,
                 'detalle' => $allSameDetalle ? $this->formatoIndividual($inscripciones) : $this->formatoGrupal($inscripciones)
             ];
             $resultado[] = $item;
         }
-        return response()->json($resultado, 200);
+        return response()->json([
+        'responsable' => [
+            'ci' => $responsable->ci_persona,
+            'nombres' => $responsable->nombres,
+            'apellidos' => $responsable->apellidos
+        ],
+        'listas' => $resultado
+       ], 200);
     }
 
     public function individual($id){
