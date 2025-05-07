@@ -152,9 +152,11 @@ class ListaInscripcionController extends Controller
                 'olimpiada:costo,id_olimpiada',
                 'inscripciones.detalleOlimpista.olimpista',
                 'inscripciones.nivel.asociaciones.area',
-                'responsable:nombres,apellidos,ci_persona'
             ])->findOrFail($id);
-    
+            
+            $responsable = Persona::where('ci_persona', $lista->ci_responsable_inscripcion)
+            ->first(['nombres', 'apellidos', 'ci_persona']);
+
             // Verificar que sea individual
             if ($lista->inscripciones->groupBy('id_detalle_olimpista')->count() > 1) {
                 throw new \Exception('Esta función es solo para listas individuales');
@@ -183,9 +185,9 @@ class ListaInscripcionController extends Controller
             });
             return response()->json([
                 'responsable' => [
-                    'ci' => $lista->ci_responsable_inscripcion,
-                    'nombres' => $lista->responsable->nombres,
-                    'apellidos' => $lista->responsable->apellidos
+                    'ci' => $responsable->ci_persona,
+                    'nombres' => $responsable->nombres,
+                    'apellidos' => $responsable->apellidos
                 ],
                 'pago' => [
                     'id' => $pago->id_pago,
