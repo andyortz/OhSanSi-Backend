@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ListaInscripcion;
 use App\Models\NivelAreaOlimpiada;
+use App\Models\Pago;
 use App\Models\Persona;
 
 use Illuminate\Http\Request\Request;
@@ -216,55 +217,53 @@ class ListaInscripcionController extends Controller
     public function grupal($id){
         try {
             $lista = ListaInscripcion::with([
-                'inscripciones.detalleOlimpista.colegio',
+                'inscripciones',
                 'responsable',
                 'olimpiada'
             ])->findOrFail($id);
-    
-            // Verificar si todas las inscripciones son del mismo colegio
-            $colegiosUnicos = $lista->inscripciones
-                ->pluck('detalleOlimpista.colegio.id')
-                ->unique()
-                ->count();
-    
-            $mismoColegio = $colegiosUnicos === 1;
-            $colegioNombre = $mismoColegio 
-                ? $lista->inscripciones->first()->detalleOlimpista->colegio->nombre_colegio
-                : 'Varios colegios';
-    
-            $precioUnitario = $lista->olimpiada->costo;
-            $cantidad = $lista->inscripciones->count();
-            $montoTotal = $precioUnitario * $cantidad;
+            $responsable = Persona::where('ci_persona', $lista->ci_responsable_inscripcion)
+            ->first(['nombres', 'apellidos', 'ci_persona']);
 
-            $pago = Pago::create([
-                'comprobante' => 'PAGO-DUMMY-' . uniqid(),
-                'fecha_pago' => now(),
-                'id_lista' => $id,
-                'monto_total' => $montoTotal,
-                'verificado' => false,
-                'verificado_en' => null,
-                'verificado_por' => null
-            ]);
+            // Cálculos básicos
+            $precioUnitario = (float)$lista->olimpiada->costo;
+            $cantidad = $lista->inscripciones->count();
+            
+            $montoTotal = round((float)$lista->olimpiada->costo * $lista->inscripciones->count(), 2);
+
+            // Verificar/crear pago
+            $pago = Pago::firstOrCreate(
+                ['id_lista' => $id],
+                [
+                    'comprobante' => 'PAGO-DUMMY-' . uniqid(),
+                    'fecha_pago' => now(),
+                    'monto_total' => $montoTotal,
+                    'estado' => 'pendiente'
+                ]
+            );
+    
             return response()->json([
-                'id_pago' => $pago->id_pago,
-                'fecha_pago' => $pago->fecha_pago,
                 'responsable' => [
                     'ci' => $lista->ci_responsable_inscripcion,
-                    'nombres' => $lista->responsable->nombres ?? 'No especificado',
-                    'apellidos' => $lista->responsable->apellidos ?? 'No especificado',
+                    'nombres' => $responsable->nombres,
+                    'apellidos' => $responsable->apellidos
                 ],
-                'nombre' => $colegioNombre,
-                'todos_iguales' => $mismoColegio,
-                'precio_unitario' => $precioUnitario,
-                'cantidad_inscripciones' => $cantidad,
-                'monto_total' => $montoTotal,
-                
-
+                'pago' => [
+                    'id' => $pago->id,
+                    'referencia' => $pago->comprobante,
+                    'monto_unitario' => $precioUnitario,
+                    'total_inscripciones' => $cantidad,
+                    'total_a_pagar' => $montoTotal,
+                    'estado' => $pago->estado,
+                    'fecha_pago' => $pago->fecha_pago
+                ],
+                'detalle_grupo' => [
+                    'participantes_unicos' => $lista->inscripciones->groupBy('id_detalle_olimpista')->count()
+                ]
             ], 200);
     
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Error al generar boleta grupal',
+                'error' => 'Error al procesar la solicitud',
                 'message' => $e->getMessage()
             ], 500);
         }

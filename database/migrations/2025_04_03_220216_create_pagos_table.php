@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pago', function (Blueprint $table) {
             $table->id('id_pago');
             $table->string('comprobante', 255);
-            $table->date('fecha_pago');
+            $table->timestamp('fecha_pago',6)->useCurrent();
             $table->unsignedBigInteger('id_lista');
             $table->decimal('monto_total', 10, 2);
             $table->boolean('verificado')->default(false);
