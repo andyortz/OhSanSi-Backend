@@ -37,7 +37,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-
+//Excel
 Route::post('/olimpistas/excel', [ExcelImportController::class, 'import']);
 Route::post('/registro/excel', [DatosExcelController::class, 'cleanDates']);
 
