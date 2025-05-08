@@ -10,18 +10,22 @@ class ExcelImportController extends Controller
 {
     public function import(Request $request)
     {
-        // Validación del archivo
         $request->validate([
             'file' => 'required|file'
         ]);
 
-        // Importar el archivo y obtener los datos
-        $import = new InscripcionesImport();
-        Excel::import($import, $request->file('file'));
+        try {
+            $import = new InscripcionesImport();
+            $import->import($request->file('file'));
 
-        // Devolver los datos extraídos en formato JSON
-        return response()->json([
-            'data' => $import->rawRows,
-        ], 201);
+            return response()->json([
+                'data' => $import->rawRows,
+            ], 201);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        } catch (\Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }
