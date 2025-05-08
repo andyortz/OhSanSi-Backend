@@ -148,8 +148,8 @@ class InscripcionNivelesController extends Controller
         $request->validate([
             'ci' => 'required|exists:persona,ci_persona',
             'niveles' => 'required|array|min:1',
-            'ci_tutor' => 'nullable|exists:persona,ci_persona',
-            'niveles.*' => 'integer|exists:nivel_categoria,id_nivel',
+            'niveles.*id_nivel' => 'integer|exists:nivel_categoria,id_nivel',
+            'niveles.*.ci_tutor_academico' => 'nullable|exists:persona,ci_persona',
             'ci_responsable' => 'required|exists:persona,ci_persona',
         ]);
         $responsable = Persona::where('ci_persona', $request->ci_responsable)
@@ -167,12 +167,12 @@ class InscripcionNivelesController extends Controller
                 'fecha_creacion_lista' => now()
             ]);
             $inscripciones = [];
-            foreach ($request->niveles as $nivel) {
+            foreach ($request->niveles as $nivelData) {
                 $inscripciones[] = Inscripcion::create([
                     'id_detalle_olimpista' => $olimpista->id_detalle_olimpista,
-                    'ci_tutor_academico' => $request->filled('ci_tutor') ? $request->ci_tutor : null,
+                    'ci_tutor_academico' => $nivelData['ci_tutor_academico'] ?? null,
                     'id_lista' => $lista->id_lista,
-                    'id_nivel' => $nivel,
+                    'id_nivel' => $nivelData['id_nivel'],
                 ]);
             }
 
