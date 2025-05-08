@@ -7,7 +7,7 @@ use App\Services\Registers\PersonaService;
 use App\Http\Requests\StorePersonaRequest;
 use Illuminate\Http\Request;
 
-class TutoresControllator extends Controller
+class ProfesorController extends Controller
 {
     public function buscarPorCi($ci)
     {
@@ -40,24 +40,24 @@ class TutoresControllator extends Controller
     {
         try {
             $validated = $request->validate([
-                'nombres' => 'required|string|max:100',
-                'apellidos' => 'required|string|max:100',
-                'ci' => 'required|integer|unique:persona,ci_persona',
+                'nombres' => 'nullable|string|max:100',
+                'apellidos' => 'nullable|string|max:100',
+                'ci' => 'nullable|integer|unique:persona,ci_persona',
                 'celular' => 'nullable|string|max:20',
-                'correo_electronico' => 'required|email|max:100',
+                'correo_electronico' => 'nullable|email|max:100',
             ]);
 
             $persona = PersonaService::register($validated);
 
             return response()->json([
-                'message' => 'Tutor registrado exitosamente',
+                'message' => 'Profesor registrado exitosamente',
                 'tutor' => $persona,
                 'status' => 201
             ], 201);
 
         } catch (\Throwable $e) {
             return response()->json([
-                'message' => 'Error al registrar tutor',
+                'message' => 'Error al registrar profesor',
                 'error' => $e->getMessage(),
                 'status' => 500
             ], 500);

@@ -2,7 +2,7 @@
 
 namespace App\Services\Excel;
 
-use App\Http\Controllers\TutoresControllator;
+use App\Http\Controllers\ProfesorController;
 use Illuminate\Http\Request;
 use App\Models\Persona;
 
@@ -10,9 +10,17 @@ class ProfesoresProcessor
 {
     public static function save(array $profesoresData, array &$resultado): void
     {
-        $controller = app(TutoresControllator::class);
+        $controller = app(ProfesorController::class);
 
         foreach ($profesoresData as $profesor) {
+            if($profesor['ci'] === null) {
+                // $resultado['profesores_errores'][] = [
+                //     'ci' => $profesor['ci'],
+                //     'error' => 'CI no puede ser nulo'
+                // ];
+                continue;
+
+            }
             if (Persona::where('ci_persona', $profesor['ci'])->exists()) {
                 $resultado['profesores_omitidos'][] = [
                     'ci' => $profesor['ci'],
@@ -20,7 +28,7 @@ class ProfesoresProcessor
                 ];
                 continue;
             }
-
+            
             $filteredProfesor = [
                 'nombres' => $profesor['nombres'],
                 'apellidos' => $profesor['apellidos'],

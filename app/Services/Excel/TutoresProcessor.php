@@ -30,7 +30,7 @@ class TutoresProcessor
                 'correo_electronico' => $tutor['correo_electronico'],
                 'rol_parentesco' => $tutor['rol_parentesco'],
             ];
-
+            
             try {
                 $request = new StorePersonaRequest();
                 $request->merge($filteredTutor);
