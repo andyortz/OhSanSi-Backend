@@ -104,7 +104,7 @@ class ListaInscripcionController extends Controller
     {
         $responsable = Persona::where('ci_persona', $ci)
             ->first(['nombres', 'apellidos', 'ci_persona']);
-        if ($estado !== 'todos') {
+        if ($estado !== 'TODOS') {
             $listas = ListaInscripcion::with([
                 'inscripciones.detalleOlimpista.olimpista:nombres,apellidos,ci_persona',
                 'inscripciones.nivel.asociaciones.area:nombre,id_area'
