@@ -100,15 +100,21 @@ class ListaInscripcionController extends Controller
             'cantidad_inscripciones' => $inscripciones->count()
         ];
     }
-    public function obtenerPorResponsable($ci)
+    public function obtenerPorResponsable($ci, $estado)
     {
         $responsable = Persona::where('ci_persona', $ci)
             ->first(['nombres', 'apellidos', 'ci_persona']);
-
-        $listas = ListaInscripcion::with([
-            'inscripciones.detalleOlimpista.olimpista:nombres,apellidos,ci_persona',
-            'inscripciones.nivel.asociaciones.area:nombre,id_area'
-        ])->where('ci_responsable_inscripcion', $ci)->get(['id_lista', 'estado', 'ci_responsable_inscripcion']);
+        if ($estado !== 'todos') {
+            $listas = ListaInscripcion::with([
+                'inscripciones.detalleOlimpista.olimpista:nombres,apellidos,ci_persona',
+                'inscripciones.nivel.asociaciones.area:nombre,id_area'
+            ])->where('ci_responsable_inscripcion', $ci)->where('estado', $estado)->get(['id_lista', 'estado', 'ci_responsable_inscripcion']);
+        } else {
+            $listas = ListaInscripcion::with([
+                'inscripciones.detalleOlimpista.olimpista:nombres,apellidos,ci_persona',
+                'inscripciones.nivel.asociaciones.area:nombre,id_area'
+            ])->where('ci_responsable_inscripcion', $ci)->get(['id_lista', 'estado', 'ci_responsable_inscripcion']);
+        }
 
         if ($listas->isEmpty()) {
             return response()->json(
