@@ -78,20 +78,21 @@ class OlimpiadaController extends Controller
 
             // Formatear la respuesta
             $response = [
-                'gestion' => $olimpiada->gestion, // Asume que tienes este campo
+                'gestion' => $olimpiada->gestion,
                 'areas' => $areasConNiveles->map(function ($items, $idArea) {
                     return [
-                        'id_area' => $idArea,
+                        'id_area' => (int) $idArea,
                         'nombre_area' => $items->first()->area->nombre,
                         'niveles' => $items->map(function ($item) {
                             return [
                                 'id_nivel' => $item->id_nivel,
-                                'nombre_nivel' => $item->nivel->nombre
+                                'nombre_nivel' => trim($item->nivel->nombre),
                             ];
-                        })->unique('id_nivel')->values() // Eliminar duplicados
+                        })->unique('id_nivel')->values()
                     ];
                 })->values()
             ];
+            
 
             return response()->json([
                 'success' => true,

@@ -10,6 +10,8 @@ use App\Models\Olimpiada;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 
 class NivelCategoriaController extends Controller
 {
@@ -138,6 +140,35 @@ class NivelCategoriaController extends Controller
             'niveles' => $niveles
         ], 200);
     }
+
+    public function newCategoria(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'nombre' => 'required|string|max:50|unique:nivel_categoria,nombre'
+            ]);
+
+            $nivel = NivelCategoria::create([
+                'nombre' => trim($validated['nombre'])
+            ]);
+
+            return response()->json([
+                'message' => 'Nivel creado correctamente.',
+                'nivel' => $nivel
+            ], 201);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'error' => $e->validator->errors()->first()
+            ], 422);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => 'Ocurrió un error inesperado.',
+                'detalle' => $e->getMessage()
+            ], 500);
+        }
+    }
+    
     public function asociarGrados(Request $request)
     {
         // Validar los datos de entrada

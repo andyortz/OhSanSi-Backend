@@ -148,70 +148,64 @@ class ListaInscripcionController extends Controller
 
     public function individual($id){
         try {
-            // Cargar todas las relaciones necesarias en una sola consulta
             $lista = ListaInscripcion::with([
-                'inscripciones.nivel.asociaciones.area',
+                'olimpiada:costo,id_olimpiada',
                 'inscripciones.detalleOlimpista.olimpista',
-                'responsable', // Asumiendo que tienes esta relación
-                'olimpiada', // Para obtener el precio
-                'inscripciones.detalleOlimpista.colegio'
+                'inscripciones.nivel.asociaciones.area',
             ])->findOrFail($id);
+            
+            $responsable = Persona::where('ci_persona', $lista->ci_responsable_inscripcion)
+            ->first(['nombres', 'apellidos', 'ci_persona']);
+
+            // Verificar que sea individual
+            if ($lista->inscripciones->groupBy('id_detalle_olimpista')->count() > 1) {
+                throw new \Exception('Esta función es solo para listas individuales');
+            }
     
-            // Obtener datos del responsable
-            $responsable = [
-                'nombre' => $lista->responsable->nombres ?? 'No especificado',
-                'apellido' => $lista->responsable->apellidos ?? 'No especificado',
-                'ci' => $lista->ci_responsable_inscripcion
-            ];
+            $precioUnitario = (float)$lista->olimpiada->costo;
+            $montoTotal = round((float)$precioUnitario * $lista->inscripciones->count(), 2);
     
-            // Obtener datos del olimpista (primera inscripción)
-            $olimpista = $lista->inscripciones->first()->detalleOlimpista->olimpista;
+            $pago = Pago::firstOrCreate(
+                ['id_lista' => $id],
+                [
+                    'comprobante' => 'PAGO-' . uniqid(),
+                    'fecha_pago' => now(),
+                    'monto_total' => $montoTotal,
+                    'estado' => 'pendiente'
+                ]
+            );
     
-            // Procesar niveles y áreas
+            // Procesar niveles
             $niveles = $lista->inscripciones->map(function ($inscripcion) {
                 return [
                     'nivel_id' => $inscripcion->nivel->id_nivel,
-                    'nivel_nombre' => $inscripcion->nivel->nombre,
-                    'area_id' => $inscripcion->nivel->asociaciones->area->id_area ?? null,
-                    'area_nombre' => $inscripcion->nivel->asociaciones->area->nombre ?? 'Sin área'
+                    'nombre_nivel' => $inscripcion->nivel->nombre,
+                    'area' => optional($inscripcion->nivel->asociaciones->first())->area->nombre ?? 'Sin área'
                 ];
             });
-
-            $precioUnitario = $lista->olimpiada->costo;
-            $montoTotal = $precioUnitario * $lista->inscripciones->count();
-            
-            $pago = Pago::firtsOrCreate(
-                ['id_lista' => $id],
-                [
-                'comprobante' => 'PAGO-DUMMY-' . uniqid(),
-                'fecha_pago' => now(),
-                'id_lista' => $id,
-                'monto_total' => $montoTotal,
-                'verificado' => false,
-                'verificado_en' => null,
-                'verificado_por' => null
-            ]);
-
             return response()->json([
-                'id_pago' => $pago->id_pago,
-                'fecha_pago' => $pago->fecha_pago,
-                'responsable' => $responsable,
-                'olimpista' => [
-                    'nombres' => $olimpista->nombres,
-                    'apellidos' => $olimpista->apellidos,
-                    'ci' => $olimpista->ci_persona
+                'responsable' => [
+                    'ci' => $responsable->ci_persona,
+                    'nombres' => $responsable->nombres,
+                    'apellidos' => $responsable->apellidos
                 ],
-                'cantidad_niveles' => $lista->inscripciones->count(),
-                'niveles_inscritos' => $niveles,
-                'precio_unitario' => $lista->olimpiada->costo,
-                'precio_total' => $montoTotal
+                'pago' => [
+                    'id' => $pago->id_pago,
+                    'referencia' => $pago->comprobante,
+                    'unitario' => $precioUnitario,
+                    'total' => $montoTotal
+                ],
+                'olimpista' => [
+                    'ci' => $lista->inscripciones->first()->detalleOlimpista->olimpista->ci_persona,
+                    'nombres' => $lista->inscripciones->first()->detalleOlimpista->olimpista->nombres,
+                    'apellidos' => $lista->inscripciones->first()->detalleOlimpista->olimpista->apellidos
+                ],
+                'niveles' => $niveles
             ], 200);
-    
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Error al generar boleta',
-                'message' => $e->getMessage()
-            ], 500);
+                'error' => $e->getMessage()
+            ], 400);
         }
     }
     public function grupal($id){
@@ -234,7 +228,7 @@ class ListaInscripcionController extends Controller
             $pago = Pago::firstOrCreate(
                 ['id_lista' => $id],
                 [
-                    'comprobante' => 'PAGO-DUMMY-' . uniqid(),
+                    'comprobante' => 'PAGO-' . uniqid(),
                     'fecha_pago' => now(),
                     'monto_total' => $montoTotal,
                     'estado' => 'pendiente'
@@ -248,7 +242,7 @@ class ListaInscripcionController extends Controller
                     'apellidos' => $responsable->apellidos
                 ],
                 'pago' => [
-                    'id' => $pago->id,
+                    'id' => $pago->id_pago,
                     'referencia' => $pago->comprobante,
                     'monto_unitario' => $precioUnitario,
                     'total_inscripciones' => $cantidad,

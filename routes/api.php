@@ -149,4 +149,8 @@ Route::get('/boleta-de-pago-individual/{id}', [ListaInscripcionController::class
 
 Route::get('/boleta-de-pago-grupal/{id}', [ListaInscripcionController::class, 'grupal']);
 
+
+Route::post('/niveles-categoria', [NivelCategoriaController::class, 'newCategoria']);
+
 Route::get('/persona/{ci}', [PersonaController::class, 'getByCi']);
+
