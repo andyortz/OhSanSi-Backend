@@ -141,7 +141,8 @@ Route::get('/olimpiada-data/{id}', [OlimpiadaController::class, 'getAreasYNivele
 
 //get Inscripciones
 
-Route::get('/inscripciones/{ci}', [ListaInscripcionController::class, 'obtenerPorResponsable']);
+Route::get('/inscripciones/{ci}/{estado}', [ListaInscripcionController::class, 'obtenerPorResponsable'])
+->where('estado', 'PENDIENTE|PAGADO|TODOS');;
 
 Route::get('/inscripciones', [ListaInscripcionController::class, 'index']);
 
