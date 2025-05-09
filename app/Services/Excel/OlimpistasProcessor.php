@@ -27,13 +27,15 @@ class OlimpistasProcessor
                 } else {
                     $resultado['olimpistas_errores'][] = [
                         'ci' => $olimpista['cedula_identidad'],
-                        'error' => $response->getContent()
+                        'error' => $response->getContent(),
+                        'fila'=> $olimpista['fila'] + 2
                     ];
                 }
             } catch (\Throwable $e) {
                 $resultado['olimpistas_errores'][] = [
                     'ci' => $olimpista['cedula_identidad'] ?? 'desconocido',
-                    'error' => json_encode(['error' => $e->getMessage()])
+                    'error' => json_encode(['error' => $e->getMessage()]),
+                    'fila'=> $olimpista['fila'] + 2
                 ];
             }
         }

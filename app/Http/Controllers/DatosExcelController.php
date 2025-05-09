@@ -73,60 +73,47 @@ class DatosExcelController extends Controller
         foreach ($datos as $index => $row) {
             if (empty(array_filter($row))) continue;
 
-            if(!is_string($row[0]) && $row[0] != null) return $this->errorFila('Nombre(s)',$row[0],$index, 0);
-            if(!is_string($row[1]) && $row[1] != null) return $this->errorFila('Apellidos(s)',$row[1],$index, 1);
-            if(!is_numeric($row[2]) && $row[2] != null) return $this->errorFila('CI Olimpista', $row[2], $index, 2);
-            if(!is_numeric($row[3]) && $row[3] != null) return $this->errorFila('Fecha de Nacimiento', $row[3], $index, 3);
-            if(!is_string($row[4])) return $this->errorFila('Correo electrónico', $row[4], $index, 4);
-
-            if($row[5] != null){
-                $departamento = Departamento::where('nombre_departamento', $row[5])->first();
-                if (!$departamento) return $this->errorFila('Departamento', $row[5], $index, 5);
-                $row[5] = $departamento->id_departamento;
-            }else{
-                return $this->errorFila('Departamento', $row[5], $index, 5);
-            }
-            if($row[6]!=null){
-                $provincia = ProvinciaResolver::resolve($row[6], $row[5]);
-                if (!$provincia) return $this->errorFila('Provincia', $row[6], $index, 6);
-                $row[6] = $provincia;
-            }else{
-                return $this->errorFila('Provincia', $row[6], $index, 6);
-            }
-            if($row[7] != null){
-                $colegio = ColegioResolver::resolve($row[5], $row[6]);
-                if (!$colegio) return $this->errorFila('Unidad educativa', $row[7], $index, 7);
-                $row[7] = $colegio;
-            }else{
-                return $this->errorFila('Unidad educativa', $row[7], $index, 7);
-            }
-            if($row[8] != null){
-                $grado = GradoResolver::resolve($row[8]);
-                if (!$grado) return $this->errorFila('Grado', $row[8], $index, 8);
-                $row[8] = $grado;
-            }else{
-                return $this->errorFila('Grado', $row[8], $index, 8);
-            }
-            //validaciones tutor legal<.
-            if(!is_string($row[9]) && $row[9] != null) return $this->errorFila('Nombre(s) tutor legal',$row[9],$index, 9);
-            if(!is_string($row[10]) && $row[10] != null) return $this->errorFila('Apellidos(s) tutor legal',$row[10],$index, 10);
-            if(!is_numeric($row[11]) && $row[11] != null) return $this->errorFila('CI tutor legal', $row[11], $index, 11);
-            if(!is_numeric($row[12]) & $row[12]!= null) return $this->errorFila('Celular', $row[12], $index, 12);
-            if(!is_string($row[13]) & $row[13]!= null) return $this->errorFila('Correo electrónico tutor legal', $row[13], $index, 13);
-            $nivel = NivelResolver::resolve($row[15]);
-            if (!$nivel) return $this->errorFila('Nivel', $row[15], $index, 15);
-            $row[15] = $nivel;
+            // //validaciones tutor legal<.
+            // if(!is_string($row[9]) && $row[9] != null) return $this->errorFila('Nombre(s) tutor legal',$row[9],$index, 9);
+            // if(!is_string($row[10]) && $row[10] != null) return $this->errorFila('Apellidos(s) tutor legal',$row[10],$index, 10);
+            // if(!is_numeric($row[11]) && $row[11] != null) return $this->errorFila('CI tutor legal', $row[11], $index, 11);
+            // if(!is_numeric($row[12]) & $row[12]!= null) return $this->errorFila('Celular', $row[12], $index, 12);
+            // if(!is_string($row[13]) & $row[13]!= null) return $this->errorFila('Correo electrónico tutor legal', $row[13], $index, 13);
+            // $nivel = NivelResolver::resolve($row[15]);
+            // if (!$nivel) return $this->errorFila('Nivel', $row[15], $index, 15);
+            // $row[15] = $nivel;
             
-            if($row[16] != null || $row[17] != null || $row[18] != null || $row[19] != null || $row[20] != null){
-                if(!is_string($row[16])) return $this->errorFila('Nombre(s) profesor',$row[16],$index, 16);
-                if(!is_string($row[17])) return $this->errorFila('Apellidos(s) profesor',$row[17],$index, 17);    
-                if(!is_numeric($row[18])) return $this->errorFila('CI profesor', $row[18], $index, 18);    
-                if(!is_numeric($row[19])) return $this->errorFila('Celular', $row[19], $index, 19);
-                if(!is_string($row[20])) return $this->errorFila('Correo electrónico profesor', $row[20], $index, 20);    
-            }
-            $tutorsData[$row[11]] = TutorResolver::extractTutorData($row);
-            $olimpistasData[$row[2]] = OlimpistaResolver::extractOlimpistaData($row);
-            $profesorData[$row[19]] = ProfesorResolver::extractProfesorData($row);
+            // if($row[16] != null || $row[17] != null || $row[18] != null || $row[19] != null || $row[20] != null){
+            //     if(!is_string($row[16])) return $this->errorFila('Nombre(s) profesor',$row[16],$index, 16);
+            //     if(!is_string($row[17])) return $this->errorFila('Apellidos(s) profesor',$row[17],$index, 17);    
+            //     if(!is_numeric($row[18])) return $this->errorFila('CI profesor', $row[18], $index, 18);    
+            //     if(!is_numeric($row[19])) return $this->errorFila('Celular', $row[19], $index, 19);
+            //     if(!is_string($row[20])) return $this->errorFila('Correo electrónico profesor', $row[20], $index, 20);    
+            // }
+
+            $departamento = Departamento::where('nombre_departamento', $row[5])->first();
+            if (!$departamento) return $this->errorFila('Departamento', $row[5], $index);
+            $row[5] = $departamento->id_departamento;
+
+            $provincia = ProvinciaResolver::resolve($row[6], $row[5]);
+            if (!$provincia) return $this->errorFila('Provincia', $row[6], $index);
+            $row[6] = $provincia;
+
+            $colegio = ColegioResolver::resolve($row[5], $row[6]);
+            if (!$colegio) return $this->errorFila('Unidad educativa', $row[7], $index);
+            $row[7] = $colegio;
+
+            $grado = GradoResolver::resolve($row[8]);
+            if (!$grado) return $this->errorFila('Grado', $row[8], $index);
+            $row[8] = $grado;
+
+            $nivel = NivelResolver::resolve($row[15]);
+            if (!$nivel) return $this->errorFila('Nivel', $row[15], $index);
+            $row[15] = $nivel;
+
+            $tutorsData[$row[11]] = TutorResolver::extractTutorData($row, $index);
+            $olimpistasData[$row[2]] = OlimpistaResolver::extractOlimpistaData($row, $index);
+            $profesorData[$row[19]] = ProfesorResolver::extractProfesorData($row, $index);
             $areasData[] = AreaResolver::extractAreaData($row);
 
             $sanitizedData[] = $row;
@@ -174,19 +161,28 @@ class DatosExcelController extends Controller
         }
     }
 
-    private function errorFila($campo, $valor, $fila, $columnaIndex = null)
-    {
-        $columnaLetra = $columnaIndex !== null ? $this->columnaLetra($columnaIndex) : 'N/A';
+    // private function errorFila($campo, $valor, $fila, $columnaIndex = null)
+    // {
+    //     $columnaLetra = $columnaIndex !== null ? $this->columnaLetra($columnaIndex) : 'N/A';
 
+    //     return response()->json([
+    //         'error' => "Error en la celda $columnaLetra" . ($fila + 2) . " - $campo inválido.",
+    //         'fila' => $fila + 2, // +2 porque la fila 0 es el encabezado
+    //         'columna' => $columnaIndex,
+    //         'columna_letra' => $columnaLetra,
+    //         'valor' => $valor
+    //     ], 422);
+
+    // }
+
+    private function errorFila($campo, $valor, $fila)
+    {
         return response()->json([
-            'error' => "Error en la celda $columnaLetra" . ($fila + 2) . " - $campo inválido.",
-            'fila' => $fila + 2, // +2 porque la fila 0 es el encabezado
-            'columna' => $columnaIndex,
-            'columna_letra' => $columnaLetra,
-            'valor' => $valor
+            'error' => "$campo inválido en la fila " . ($fila + 1),
+            'value' => $valor
         ], 422);
-        
     }
+
     private function columnaLetra($index)
     {
         $letra = '';

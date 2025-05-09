@@ -10,7 +10,7 @@ class ProfesorResolver
      * @param array $row
      * @return array
      */
-    public static function extractProfesorData(array $row): array
+    public static function extractProfesorData(array $row, $fila): array
     {
         return [
             'nombres' => $row[16],  
@@ -19,6 +19,7 @@ class ProfesorResolver
             'celular' => strval($row[19]),
             'correo_electronico' => $row[20], 
             'rol_parentesco' => 'Madre',
+            'fila' => $fila,  // Asumiendo que la fila es la primera columna
         ];
     }
 }

@@ -36,16 +36,10 @@ class TutoresControllator extends Controller
             : response()->json(['message' => 'No encontrado'], 404);
     }
 
-    public function store(Request $request)
+    public function store(StorePersonaRequest $request)
     {
         try {
-            $validated = $request->validate([
-                'nombres' => 'required|string|max:100',
-                'apellidos' => 'required|string|max:100',
-                'ci' => 'required|integer|unique:persona,ci_persona',
-                'celular' => 'nullable|string|max:20',
-                'correo_electronico' => 'required|email|max:100',
-            ]);
+            $validated = $request->validated();
 
             $persona = PersonaService::register($validated);
 
