@@ -16,12 +16,35 @@ class StoreOlimpistaRequest extends FormRequest
         return [
             'nombres'            => 'required|string|max:100',
             'apellidos'          => 'required|string|max:100',
-            'cedula_identidad'   => 'required|integer',
+            'cedula_identidad'   => 'required|integer|unique:persona,ci_persona',
             'fecha_nacimiento'   => 'required|date',
             'correo_electronico' => 'required|email|max:100',
             'unidad_educativa'   => 'required|integer',
             'id_grado'           => 'required|integer',
             'ci_tutor'           => 'required|integer|exists:persona,ci_persona',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+        'nombres.required' => 'El campo nombres es obligatorio.',
+        'apellidos.required' => 'El campo apellidos es obligatorio.',
+        'cedula_identidad.required' => 'La cédula de identidad es obligatoria.',
+        'cedula_identidad.integer' => 'La cédula de identidad debe ser un número.',
+        'cedula_identidad.unique' => 'La cédula de identidad ya está registrada.',
+        'fecha_nacimiento.required' => 'La fecha de nacimiento es obligatoria.',
+        'fecha_nacimiento.date' => 'La fecha de nacimiento no tiene un formato válido.',
+        'correo_electronico.required' => 'El correo electrónico es obligatorio.',
+        'correo_electronico.email' => 'El correo electrónico no es válido.',
+        'correo_electronico.max' => 'El correo electrónico no debe superar los 100 caracteres.',
+        'unidad_educativa.required' => 'La unidad educativa es obligatoria.',
+        'unidad_educativa.integer' => 'La unidad educativa debe ser un número.',
+        'id_grado.required' => 'El grado es obligatorio.',
+        'id_grado.integer' => 'El grado debe ser un número.',
+        'ci_tutor.required' => 'La cédula del tutor es obligatoria.',
+        'ci_tutor.integer' => 'La cédula del tutor debe ser un número.',
+        'ci_tutor.exists' => 'El tutor no se encuentra registrado en la base de datos.',
         ];
     }
 }
