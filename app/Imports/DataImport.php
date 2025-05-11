@@ -35,7 +35,7 @@ class DataImport implements ToCollection, WithHeadingRow
             'nombre_profesor' => ['nombre(s)_profesor','nombre_profesor', 'nombre_docente'],
             'apellido_profesor' => ['apellido(s)_profesor','apellido_profesor', 'apellido_docente'],
             'ci_profesor' => ['ci_profesor'],
-            'celular_profesor' => ['celular','celular_profesor', 'telefono_profesor'],
+            'celular_profesor' => ['celular_profesor', 'telefono_profesor'],
             'correo_profesor' => ['correo_electronico_profesor','correo_profesor', 'email_profesor']
         ];
         
