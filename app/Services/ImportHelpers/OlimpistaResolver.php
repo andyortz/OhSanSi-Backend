@@ -10,7 +10,7 @@ class OlimpistaResolver
      * @param array $row
      * @return array
      */
-    public static function extractOlimpistaData(array $row): array
+    public static function extractOlimpistaData(array $row, $fila): array
     {
         // Convertir la unidad educativa a string
         $unidadEducativa = (string) $row[7];  // Columna 8 (Unidad Educativa)
@@ -27,6 +27,7 @@ class OlimpistaResolver
             'unidad_educativa' => $unidadEducativa,  // Columna 8 (Unidad Educativa como string)
             'id_grado' => $row[8],  // Columna 9 (Grado)
             'ci_tutor' => $row[11],  // Columna 12 (CI del tutor)
+            'fila'=> $fila,
         ];
     }
 

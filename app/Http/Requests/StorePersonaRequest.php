@@ -27,4 +27,27 @@ class StorePersonaRequest extends FormRequest
             'correo_electronico' => 'required|email|max:100',
         ];
     }
+    public function messages(): array
+    {
+        return [
+            'nombres.required' => 'El campo "nombres" es obligatorio.',
+            'nombres.string' => 'El campo "nombres" debe ser un texto.',
+            'nombres.max' => 'El campo "nombres" no puede exceder los 100 caracteres.',
+            
+            'apellidos.required' => 'El campo "apellidos" es obligatorio.',
+            'apellidos.string' => 'El campo "apellidos" debe ser un texto.',
+            'apellidos.max' => 'El campo "apellidos" no puede exceder los 100 caracteres.',
+            
+            'ci.required' => 'El campo "CI" es obligatorio.',
+            'ci.integer' => 'El campo "CI" debe ser un número entero.',
+            'ci.unique' => 'El "CI" ya está registrado en la base de datos.',
+            
+            'celular.string' => 'El campo "celular" debe ser un texto.',
+            'celular.max' => 'El campo "celular" no puede exceder los 20 caracteres.',
+            
+            'correo_electronico.required' => 'El campo "correo electrónico" es obligatorio.',
+            'correo_electronico.email' => 'El campo "correo electrónico" debe ser una dirección de correo válida.',
+            'correo_electronico.max' => 'El campo "correo electrónico" no puede exceder los 100 caracteres.',
+        ];
+    }
 }

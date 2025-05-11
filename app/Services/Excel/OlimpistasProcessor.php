@@ -4,6 +4,8 @@ namespace App\Services\Excel;
 
 use App\Http\Controllers\OlimpistaController;
 use App\Http\Requests\StoreOlimpistaRequest;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 class OlimpistasProcessor
 {
@@ -18,8 +20,25 @@ class OlimpistasProcessor
                     throw new \Exception("El campo 'cedula_identidad' no puede ser null");
                 }
 
-                // Crear request y simular el request
-                $request = StoreOlimpistaRequest::create('/fake-url', 'POST', $olimpista);
+                // Usar reglas y mensajes personalizados del FormRequest
+                $formRequest = new StoreOlimpistaRequest();
+                $validator = Validator::make(
+                    $olimpista,
+                    $formRequest->rules(),
+                    $formRequest->messages()
+                );
+
+                if ($validator->fails()) {
+                    $resultado['olimpistas_errores'][] = [
+                        'ci' => $olimpista['cedula_identidad'] ?? 'desconocido',
+                        'error' => $validator->errors()->all(),
+                        'fila' => $olimpista['fila'] + 2
+                    ];
+                    continue;
+                }
+
+                // Si la validación pasa, proceder a llamar al controlador
+                $request = new Request($olimpista);
                 $response = $controller->store($request);
 
                 if ($response->getStatusCode() === 201) {
@@ -27,13 +46,15 @@ class OlimpistasProcessor
                 } else {
                     $resultado['olimpistas_errores'][] = [
                         'ci' => $olimpista['cedula_identidad'],
-                        'error' => $response->getContent()
+                        'error' => $response->getContent(),
+                        'fila' => $olimpista['fila'] + 2
                     ];
                 }
             } catch (\Throwable $e) {
                 $resultado['olimpistas_errores'][] = [
                     'ci' => $olimpista['cedula_identidad'] ?? 'desconocido',
-                    'error' => json_encode(['error' => $e->getMessage()])
+                    'error' => json_encode(['error' => $e->getMessage()]),
+                    'fila' => $olimpista['fila'] + 2
                 ];
             }
         }

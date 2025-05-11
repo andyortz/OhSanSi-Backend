@@ -10,7 +10,7 @@ class TutorResolver
      * @param array $row
      * @return array
      */
-    public static function extractTutorData(array $row): array
+    public static function extractTutorData(array $row, $fila): array
     {
         return [
             'nombres' => $row[9],  // Columna 10 (Nombre del tutor)
@@ -19,7 +19,7 @@ class TutorResolver
             'celular' => strval($row[12]), // Columna 13 (Celular del tutor)
             'correo_electronico' => $row[13],  // Columna 14 (Correo electrónico del tutor)
             'rol_parentesco' => 'Madre',
-            
+            'fila' => $fila,
         ];
     }
 }
