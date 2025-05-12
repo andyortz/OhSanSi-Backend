@@ -35,6 +35,10 @@ class TutoresControllator extends Controller
             ? response()->json($tutor)
             : response()->json(['message' => 'No encontrado'], 404);
     }
+    public function getUsedTutor($ci)
+    {
+        
+    }
 
     public function store(Request $request)
     {

@@ -155,3 +155,4 @@ Route::post('/niveles-categoria', [NivelCategoriaController::class, 'newCategori
 
 Route::get('/persona/{ci}', [PersonaController::class, 'getByCi']);
 
+Route::get('/tutor-academico/{ci}', [TutoresControllator::class, 'getUsedTutor']);
