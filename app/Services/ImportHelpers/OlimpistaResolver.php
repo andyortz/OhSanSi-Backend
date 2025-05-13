@@ -2,36 +2,68 @@
 
 namespace App\Services\ImportHelpers;
 
+use Carbon\Carbon;
+
 class OlimpistaResolver
 {
     /**
      * Extraer los datos del olimpista desde la fila del Excel.
      * 
      * @param array $row
+     * @param int $fila
      * @return array
      */
     public static function extractOlimpistaData(array $row, $fila): array
     {
         // Convertir la unidad educativa a string
-        $unidadEducativa = (string) $row[7];  // Columna 8 (Unidad Educativa)
-        
-        // Normalizar fecha de nacimiento a formato YYYY-MM-DD
-        $fechaNacimiento = null;
-        if (!empty($row[3])) {
-            $fechaNacimiento = \Carbon\Carbon::parse($row[3])->format('Y-m-d');
-        }
+        $unidadEducativa = (string) $row[7];
+
+        // Procesar la fecha de nacimiento
+        $fechaNacimiento = self::normalizarFecha($row[3]);
 
         return [
-            'nombres' => $row[0],  // Columna 1 (Nombre del olimpista)
-            'apellidos' => $row[1],  // Columna 2 (Apellido del olimpista)
-            'cedula_identidad' => $row[2],  // Columna 3 (CI del olimpista)
-            'fecha_nacimiento' => $fechaNacimiento,  // Fecha convertida
-            'correo_electronico' => $row[4],  // Columna 5 (Correo electrónico del olimpista)
-            'unidad_educativa' => $unidadEducativa,  // Columna 8 (Unidad Educativa como string)
-            'id_grado' => $row[8],  // Columna 9 (Grado)
-            'ci_tutor' => $row[11],  // Columna 12 (CI del tutor)
-            'fila'=> $fila,
+            'nombres' => $row[0],
+            'apellidos' => $row[1],
+            'cedula_identidad' => $row[2],
+            'fecha_nacimiento' => $fechaNacimiento,
+            'correo_electronico' => $row[4],
+            'unidad_educativa' => $unidadEducativa,
+            'id_grado' => $row[8],
+            'ci_tutor' => $row[11],
+            'fila' => $fila,
         ];
     }
 
+    /**
+     * Normalizar una fecha que puede venir como serial de Excel o string
+     *
+     * @param mixed $valor
+     * @return string
+     */
+    private static function normalizarFecha($valor): string
+    {
+        if (is_numeric($valor)) {
+            return self::excelDateToDateString((int) $valor);
+        }
+
+        // Si es string y parece formato válido, devolverlo tal cual
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $valor)) {
+            return $valor;
+        }
+
+        // Si falla, lanzar error
+        throw new \Exception("Formato de fecha no reconocido: '$valor'");
+    }
+
+    /**
+     * Convertir un número serial de Excel a YYYY-MM-DD
+     *
+     * @param int $excelDate
+     * @return string
+     */
+    private static function excelDateToDateString(int $excelDate): string
+    {
+        $carbonDate = Carbon::createFromFormat('Y-m-d', '1900-01-01')->addDays($excelDate - 2);
+        return $carbonDate->format('Y-m-d');
+    }
 }
