@@ -15,8 +15,11 @@ class OlimpistaResolver
         // Convertir la unidad educativa a string
         $unidadEducativa = (string) $row[7];  // Columna 8 (Unidad Educativa)
         
-        // Convertir la fecha de nacimiento a formato YYYY-MM-DD
-        $fechaNacimiento = self::excelDateToDateString($row[3]);  // Columna 4 (Fecha de nacimiento)
+        // Normalizar fecha de nacimiento a formato YYYY-MM-DD
+        $fechaNacimiento = null;
+        if (!empty($row[3])) {
+            $fechaNacimiento = \Carbon\Carbon::parse($row[3])->format('Y-m-d');
+        }
 
         return [
             'nombres' => $row[0],  // Columna 1 (Nombre del olimpista)
@@ -31,18 +34,4 @@ class OlimpistaResolver
         ];
     }
 
-    /**
-     * Convertir un número de fecha de Excel a un formato YYYY-MM-DD
-     *
-     * @param int $excelDate
-     * @return string
-     */
-    private static function excelDateToDateString(int $excelDate): string
-    {
-        // Excel usa un sistema de fechas basado en números, donde 1 es el 1 de enero de 1900.
-        // Para convertirlo a formato de fecha en PHP, usamos Carbon para manipular las fechas.
-        $carbonDate = \Carbon\Carbon::createFromFormat('Y-m-d', '1900-01-01')->addDays($excelDate - 2);  // -2 para ajustar al formato de Excel.
-        
-        return $carbonDate->format('Y-m-d');  // Devolver la fecha en formato 'YYYY-MM-DD'
-    }
 }
