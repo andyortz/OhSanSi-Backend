@@ -3,7 +3,7 @@
 namespace App\Services\Excel;
 
 use App\Models\Persona;
-use App\Http\Requests\StorePersonaRequest;
+use App\Http\Requests\StoreTutorRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Services\Registers\PersonaService;
 
@@ -31,7 +31,7 @@ class TutoresProcessor
                 ];
 
                 // Validación manual utilizando las reglas y mensajes del FormRequest
-                $formRequest = new StorePersonaRequest();
+                $formRequest = new StoreTutorRequest();
                 $validator = Validator::make(
                     $filteredTutor,
                     $formRequest->rules(),
@@ -40,7 +40,7 @@ class TutoresProcessor
 
                 if ($validator->fails()) {
                     $resultado['tutores_errores'][] = [
-                        'ci' => $tutor['ci'],
+                        'ci' => $tutor['ci'] ?? 'Desconocido',
                         'error' => $validator->errors()->first(),
                         'fila' => $tutor['fila'] + 2
                     ];
