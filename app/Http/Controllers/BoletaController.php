@@ -5,49 +5,53 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Services\Ocr\OcrService;
+use App\Services\Ocr\OcrImagePreprocessorService;
 use Symfony\Component\HttpFoundation\Response;
 
 class BoletaController extends Controller
 {
-    /** @var OcrService */
     protected $ocrService;
+    protected $preprocessorService;
 
-    public function __construct(OcrService $ocrService)
+    public function __construct(OcrService $ocrService, OcrImagePreprocessorService $preprocessorService)
     {
         $this->ocrService = $ocrService;
+        $this->preprocessorService = $preprocessorService;
     }
 
-    /**
-     * Endpoint POST /boletas/ocr
-     * Recibe la imagen de un recibo de caja y devuelve los datos OCR.
-     */
     public function procesar(Request $request): Response
     {
-        // 1. Validar la solicitud
         $request->validate([
             'boleta' => 'required|image|mimes:jpg,jpeg,png|max:5120',
         ]);
 
-        // 2. Almacenar temporalmente la imagen en disk "public"
         $relativePath = $request->file('boleta')->store('boletas', 'public');
         $absolutePath = storage_path('app/public/' . $relativePath);
 
+        // Preparar la ruta para la imagen optimizada
+        $processedPath = storage_path('app/public/boletas/processed_' . basename($relativePath));
+
         try {
-            // 3. Delegar al servicio OCR
-            $resultado = $this->ocrService->analizarReciboCaja($absolutePath);
+            // 1. Pre-procesar la imagen antes del OCR
+            $this->preprocessorService->procesarImagen($absolutePath, $processedPath);
+
+            // 2. Ejecutar OCR sobre la imagen procesada
+            $resultado = $this->ocrService->analizarReciboCaja($processedPath);
         } catch (\Throwable $e) {
-            // Limpieza del archivo y respuesta de error
+            // Limpieza de archivos
             Storage::disk('public')->delete($relativePath);
+            Storage::disk('public')->delete('boletas/processed_' . basename($relativePath));
+
             return response()->json([
-                'message' => 'Error durante el OCR',
+                'message' => 'Error durante el procesamiento OCR',
                 'error'   => $e->getMessage(),
             ], 422);
         }
 
-        // 4. (Opcional) eliminar la imagen una vez procesada
+        // Limpiar imágenes temporales
         Storage::disk('public')->delete($relativePath);
+        Storage::disk('public')->delete('boletas/processed_' . basename($relativePath));
 
-        // 5. Responder con los datos extraídos
         return response()->json([
             'data' => $resultado['fields'],
             'raw'  => $resultado['raw_text'],
