@@ -170,7 +170,8 @@ class ListaInscripcionController extends Controller
     
             $precioUnitario = (float)$lista->olimpiada->costo;
             $montoTotal = round((float)$precioUnitario * $lista->inscripciones->count(), 2);
-    
+            $cantidad = $lista->inscripciones->count();
+            
             $pago = Pago::firstOrCreate(
                 ['id_lista' => $id],
                 [
