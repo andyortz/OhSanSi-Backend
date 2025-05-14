@@ -198,8 +198,11 @@ class ListaInscripcionController extends Controller
                 'pago' => [
                     'id' => $pago->id_pago,
                     'referencia' => $pago->comprobante,
-                    'unitario' => $precioUnitario,
-                    'total' => $montoTotal
+                    'monto_unitario' => $precioUnitario,
+                    'total_inscripciones' => $cantidad,
+                    'total_a_pagar' => $montoTotal,
+                    'estado' => $pago->estado,
+                    'fecha_pago' => $pago->now()
                 ],
                 'olimpista' => [
                     'ci' => $lista->inscripciones->first()->detalleOlimpista->olimpista->ci_persona,
@@ -254,7 +257,7 @@ class ListaInscripcionController extends Controller
                     'total_inscripciones' => $cantidad,
                     'total_a_pagar' => $montoTotal,
                     'estado' => $pago->estado,
-                    'fecha_pago' => $pago->fecha_pago
+                    'fecha_pago' => $pago->now()
                 ],
                 'detalle_grupo' => [
                     'participantes_unicos' => $lista->inscripciones->groupBy('id_detalle_olimpista')->count()
