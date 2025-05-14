@@ -41,7 +41,7 @@ class TutoresProcessor
                 if ($validator->fails()) {
                     $resultado['tutores_errores'][] = [
                         'ci' => $tutor['ci'] ?? 'Desconocido',
-                        'error' => $validator->errors()->first(),
+                        'error' => $validator->errors()->all(),
                         'fila' => $tutor['fila'] + 2
                     ];
                     continue;

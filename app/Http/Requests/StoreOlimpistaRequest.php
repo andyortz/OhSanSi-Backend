@@ -29,6 +29,10 @@ class StoreOlimpistaRequest extends FormRequest
     {
         return [
         'nombres.required' => 'El campo nombres es obligatorio.',
+        'nombres.string' => 'El campo nombres debe ser un texto.',
+        'nombres.max' => 'El campo nombres no debe superar los 100 caracteres.',
+        'apellidos.string' => 'El campo apellidos debe ser un texto.',
+        'apellidos.max' => 'El campo apellidos no debe superar los 100 caracteres.',
         'apellidos.required' => 'El campo apellidos es obligatorio.',
         'cedula_identidad.required' => 'La cédula de identidad es obligatoria.',
         'cedula_identidad.integer' => 'La cédula de identidad debe ser un número.',

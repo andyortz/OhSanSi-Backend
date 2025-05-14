@@ -62,7 +62,7 @@ class ProfesoresProcessor
                     if ($validator->fails()) {
                         $resultado['profesores_errores'][] = [
                             'ci' => $profesor['ci'],
-                            'error' => $validator->errors()->first(),
+                            'error' => $validator->errors()->all(),
                             'fila' => $profesor['fila'] + 2
                         ];
                         continue;

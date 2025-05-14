@@ -34,24 +34,24 @@ class StoreTutorRequest extends FormRequest
     public function messages()
     {
         return [
-            'nombres.required' => 'El campo "nombres de tutor" es obligatorio.',
-            'nombres.string' => 'El campo "nombres de tutor" debe ser un texto.',
-            'nombres.max' => 'El campo "nombres de tutor" no puede exceder los 100 caracteres.',
+            'nombres.required' => 'El campo nombres de tutor es obligatorio.',
+            'nombres.string' => 'El campo nombres de tutor debe ser un texto.',
+            'nombres.max' => 'El campo nombres de tutor no puede exceder los 100 caracteres.',
             
-            'apellidos.required' => 'El campo "apellidos de tutor" es obligatorio.',
-            'apellidos.string' => 'El campo "apellidos de tutor" debe ser un texto.',
-            'apellidos.max' => 'El campo "apellidos de tutor" no puede exceder los 100 caracteres.',
+            'apellidos.required' => 'El campo apellidos de tutor es obligatorio.',
+            'apellidos.string' => 'El campo apellidos de tutor debe ser un texto.',
+            'apellidos.max' => 'El campo apellidos de tutor no puede exceder los 100 caracteres.',
             
-            'ci.required' => 'El campo "CI de tutor" es obligatorio.',
-            'ci.integer' => 'El campo "CI de tutor" debe ser un número entero.',
-            'ci.unique' => 'El "CI de tutor" ya está registrado en la base de datos.',
+            'ci.required' => 'El campo CI de tutor es obligatorio.',
+            'ci.integer' => 'El campo CI de tutor debe ser un número entero.',
+            'ci.unique' => 'El CI de tutor ya está registrado en la base de datos.',
             
-            'celular.string' => 'El campo "celular de tutor" debe ser un texto.',
-            'celular.max' => 'El campo "celular de tutor" no puede exceder los 20 caracteres.',
+            'celular.string' => 'El campo celular de tutor debe ser un texto.',
+            'celular.max' => 'El campo celular de tutor no puede exceder los 20 caracteres.',
             
-            'correo_electronico.required' => 'El campo "correo electrónico de tutor" es obligatorio.',
-            'correo_electronico.email' => 'El campo "correo electrónico de tutor" debe ser una dirección de correo válida.',
-            'correo_electronico.max' => 'El campo "correo electrónico de tutor" no puede exceder los 100 caracteres.',
+            'correo_electronico.required' => 'El campo correo electrónico de tutor es obligatorio.',
+            'correo_electronico.email' => 'El campo correo electrónico de tutor debe ser una dirección de correo válida.',
+            'correo_electronico.max' => 'El campo correo electrónico de tutor no puede exceder los 100 caracteres.',
         ];
     }
 }
