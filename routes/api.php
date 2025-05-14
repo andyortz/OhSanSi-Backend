@@ -26,6 +26,8 @@ use App\Http\Controllers\ListaInscripcionController;
 use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\DatosExcelController;
 use App\Http\Controllers\PersonaController;
+use App\Http\Controllers\BoletaController;
+
 
 use App\Imports\OlimpistaImport;
 use App\Imports\TutoresImport;
@@ -79,7 +81,7 @@ Route::get('/olimpista/{ci}/inscripciones', [VerificarInscripcionController::cla
 Route::get('/olimpista/{ci}/total-inscripciones', [VerificarInscripcionController::class, 'getTotalInscripciones']);
 
 //Asociar Tutor con Olimpista mediante tabla Parentesco
-Route::post('/asociar-tutor', [ParentescoController::class, 'asociarTutor']);
+//Route::post('/asociar-tutor', [ParentescoController::class, 'asociarTutor']);
 
 // Tutores
 Route::post('/tutores', [TutoresControllator::class, 'store']);
@@ -154,4 +156,6 @@ Route::get('/boleta-de-pago-grupal/{id}', [ListaInscripcionController::class, 'g
 Route::post('/niveles-categoria', [NivelCategoriaController::class, 'newCategoria']);
 
 Route::get('/persona/{ci}', [PersonaController::class, 'getByCi']);
+
+Route::post('/prueba-ocr', [BoletaController::class, 'procesar']);
 
