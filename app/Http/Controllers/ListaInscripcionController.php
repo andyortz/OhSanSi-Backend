@@ -171,7 +171,7 @@ class ListaInscripcionController extends Controller
             $precioUnitario = (float)$lista->olimpiada->costo;
             $montoTotal = round((float)$precioUnitario * $lista->inscripciones->count(), 2);
             $cantidad = $lista->inscripciones->count();
-            
+
             $pago = Pago::firstOrCreate(
                 ['id_lista' => $id],
                 [
@@ -203,7 +203,7 @@ class ListaInscripcionController extends Controller
                     'total_inscripciones' => $cantidad,
                     'total_a_pagar' => $montoTotal,
                     'estado' => $pago->estado,
-                    'fecha_pago' => $pago->now()
+                    'fecha_pago' => now()
                 ],
                 'olimpista' => [
                     'ci' => $lista->inscripciones->first()->detalleOlimpista->olimpista->ci_persona,
@@ -258,7 +258,7 @@ class ListaInscripcionController extends Controller
                     'total_inscripciones' => $cantidad,
                     'total_a_pagar' => $montoTotal,
                     'estado' => $pago->estado,
-                    'fecha_pago' => $pago->now()
+                    'fecha_pago' => now()
                 ],
                 'detalle_grupo' => [
                     'participantes_unicos' => $lista->inscripciones->groupBy('id_detalle_olimpista')->count()
