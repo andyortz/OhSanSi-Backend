@@ -27,6 +27,7 @@ use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\DatosExcelController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\BoletaController;
+use App\Http\Controllers\TestPreprocessorController;
 
 
 use App\Imports\OlimpistaImport;
@@ -159,3 +160,5 @@ Route::get('/persona/{ci}', [PersonaController::class, 'getByCi']);
 
 Route::post('/prueba-ocr', [BoletaController::class, 'procesar']);
 
+
+Route::post('/test-preprocessor', [TestPreprocessorController::class, 'test']);
