@@ -11,15 +11,13 @@ class OlimpistaService
     public function register(array $data): Persona
     {
         return DB::transaction(function () use ($data) {
-            if (Persona::where('ci_persona', $data['cedula_identidad'])->exists()) {
-                throw new \Exception('La cédula de identidad ya está registrada en el sistema.', 409);
-            }
-            if(DetalleOlimpista::where('ci_olimpista',$data['ci_tutor'])->exists()){
-                throw new \Exception('Cédula de identidad no válido, otro olimpista no puede ser tutor legal', 409);
-            }
-            // if (Persona::where('correo_electronico', $data['correo_electronico'])->exists()) {
-            //     throw new \Exception('El correo electrónico ya está registrado en el sistema.', 409);
+            // if (Persona::where('ci_persona', $data['cedula_identidad'])->exists()) {
+            //     throw new \Exception('La cédula de identidad ya está registrada en el sistema.', 409);
             // }
+            // if(DetalleOlimpista::where('ci_olimpista',$data['ci_tutor'])->exists()){
+            //     throw new \Exception('Cédula de identidad no válido, otro olimpista no puede ser tutor legal', 409);
+            // }
+            
 
 
             // 1. Guardar al olimpista
@@ -35,7 +33,7 @@ class OlimpistaService
             $ciTutor = $data['ci_tutor'];
             // $ciPersona = (string) $data['cedula_identidad'];
             if (!$persona->save()) {
-                throw new \Exception('No se pudo guardar la persona.', 500);
+                throw new \Exception('No se pudo guardar al Olimpista.', 500);
             }
 
             DetalleOlimpista::create([
