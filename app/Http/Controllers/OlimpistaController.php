@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreOlimpistaRequest;
+
 use App\Models\Persona;
 use App\Repositories\OlimpistaRepository;
 use App\Services\Registers\OlimpistaService;

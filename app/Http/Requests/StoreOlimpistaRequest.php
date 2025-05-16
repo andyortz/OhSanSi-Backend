@@ -16,7 +16,7 @@ class StoreOlimpistaRequest extends FormRequest
         return [
             'nombres'            => 'required|string|max:100',
             'apellidos'          => 'required|string|max:100',
-            'cedula_identidad'   => 'required|integer|unique:persona,ci_persona',
+            'cedula_identidad'   => 'required|integer',
             'fecha_nacimiento'   => 'required|date',
             'correo_electronico' => 'required|email|max:100',
             'unidad_educativa'   => 'required|integer',
@@ -29,10 +29,14 @@ class StoreOlimpistaRequest extends FormRequest
     {
         return [
         'nombres.required' => 'El campo nombres es obligatorio.',
+        'nombres.string' => 'El campo nombres debe ser un texto.',
+        'nombres.max' => 'El campo nombres no debe superar los 100 caracteres.',
+        'apellidos.string' => 'El campo apellidos debe ser un texto.',
+        'apellidos.max' => 'El campo apellidos no debe superar los 100 caracteres.',
         'apellidos.required' => 'El campo apellidos es obligatorio.',
         'cedula_identidad.required' => 'La cédula de identidad es obligatoria.',
         'cedula_identidad.integer' => 'La cédula de identidad debe ser un número.',
-        'cedula_identidad.unique' => 'La cédula de identidad ya está registrada.',
+        // 'cedula_identidad.unique' => 'La cédula de identidad ya está registrada.',
         'fecha_nacimiento.required' => 'La fecha de nacimiento es obligatoria.',
         'fecha_nacimiento.date' => 'La fecha de nacimiento no tiene un formato válido.',
         'correo_electronico.required' => 'El correo electrónico es obligatorio.',
