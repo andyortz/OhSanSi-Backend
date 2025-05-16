@@ -3,6 +3,7 @@
 namespace App\Services\Excel;
 
 use App\Services\Registers\InscripcionService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 
 class InscripcionesProcessor
@@ -12,23 +13,43 @@ class InscripcionesProcessor
         $service = app(InscripcionService::class);
         $interesados = self::selectData($sanitizedData);
         $hoy = Carbon::now();
-        //obtenemos el limite permitido para la olimpiada
-        $limite = DB::table('olimpiada')
-            ->where('fecha_inicio','<=', $hoy)
-            ->where('fecha_fin','>=',$hoy)
-            ->pluck('max_categorias_olimpista')
-            ->first();
-        //en aqui verificamos a cuantas areas va inscrito el olimpista
+        
         foreach ($interesados as $data) {
             try {
+                //obtenemos el limite permitido para la olimpiada
+                $limite = DB::table('olimpiada')
+                    ->where('fecha_inicio','<=', $hoy)
+                    ->where('fecha_fin','>=',$hoy)
+                    ->pluck('max_categorias_olimpista')
+                    ->first();
+                
+                //en aqui verificamos a cuantas areas va inscrito el olimpista
+                $areasinscrito = DB::table('inscripcion')
+                    ->join('detalle_olimpista', 'inscripcion.id_detalle_olimpista', 'detalle_olimpista.id_detalle_olimpista')
+                    ->join('nivel_area_olimpiada', 'inscripcion.id_nivel', 'nivel_area_olimpiada.id_nivel')
+                    ->where('detalle_olimpista.ci_olimpista', $data['ci'])
+                    ->select('nivel_area_olimpiada.id_area')
+                    ->distinct()
+                    ->count();
+
+                //verificar si la cantidad de inscripciones no supere el limite de la olimpiada.
+                if($areasinscrito >= $limite){
+                    $resultado['inscripciones_errores'][] = [
+                        'ci' => $data['ci'],
+                        'error' => 'El olimpista ya alcanzó el limite de inscripciones alcanzado'
+                    ];
+                    continue;
+                }
                 // Inyectar CI del responsable directamente
                 $data['ci_responsable_inscripcion'] = $ci_responsable;
 
                 $inscripcion = $service->register($data);
-
+                
                 $resultado['inscripciones_guardadas'][] = [
                     'ci' => $data['ci'],
                     'nivel' => $data['nivel'],
+                    'limite'=> $limite,
+                    'areas_inscrito' => $areasinscrito,
                     'id_lista' => $inscripcion->id_lista ?? null
                 ];
             } catch (\Throwable $e) {
