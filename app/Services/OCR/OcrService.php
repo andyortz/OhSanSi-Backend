@@ -50,6 +50,7 @@ class OcrService
             'importe_literal' => $this->firstMatch('/La\s+suma\s+de\s*[:]?\s*([A-ZÁÉÍÓÚÑ ]+)/i', $normalizado),
             'importe_total'   => $this->firstMatch('/Total\s*[:]?\s*Bs\.?\s*(\d+[\.,]?\d{0,2})/i', $normalizado),
             'documento'       => $this->firstMatch('/Documento\s*[:]?\s*(\d{5,})/i', $normalizado),
+            'aclaracion' => $this->firstMatch('/Aclaraci[oó]n\s*[:\.]?\s*(.+)/i', $normalizado),
             'codigo'          => $this->firstMatch('/Codig[oo]\s*[:]?\s*(\d{5,})/i', $normalizado),
         ];
 
