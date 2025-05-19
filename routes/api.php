@@ -26,12 +26,9 @@ use App\Http\Controllers\ListaInscripcionController;
 use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\DatosExcelController;
 use App\Http\Controllers\PersonaController;
-
 use App\Imports\OlimpistaImport;
 use App\Imports\TutoresImport;
 use Maatwebsite\Excel\Facades\Excel;
-
-
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -77,9 +74,6 @@ Route::post('/inscribir-multiples-olimpistas', [InscripcionNivelesController::cl
 // inscripciones por olimpista
 Route::get('/olimpista/{ci}/inscripciones', [VerificarInscripcionController::class, 'getInscripcionesPorCI']);
 Route::get('/olimpista/{ci}/total-inscripciones', [VerificarInscripcionController::class, 'getTotalInscripciones']);
-
-//Asociar Tutor con Olimpista mediante tabla Parentesco
-Route::post('/asociar-tutor', [ParentescoController::class, 'asociarTutor']);
 
 // Tutores
 Route::post('/tutores', [TutoresControllator::class, 'store']);
