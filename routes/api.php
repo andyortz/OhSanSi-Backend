@@ -28,6 +28,7 @@ use App\Http\Controllers\DatosExcelController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\BoletaController;
 use App\Http\Controllers\TestPreprocessorController;
+use App\Http\Controllers\PagoValidacionController;
 
 
 use App\Imports\OlimpistaImport;
@@ -40,6 +41,8 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+
+Route::post('/pago/verificar', [PagoValidacionController::class, 'verificar']);
 //Excel
 Route::post('/olimpistas/excel', [ExcelImportController::class, 'import']);
 Route::post('/registro/excel', [DatosExcelController::class, 'cleanDates']);

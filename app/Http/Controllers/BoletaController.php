@@ -5,15 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Services\Ocr\OcrService;
+use App\Services\OCR\VerificacionPagoService;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Log;
 
 class BoletaController extends Controller
 {
     protected $ocrService;
+    protected $validador;
 
-    public function __construct(OcrService $ocrService)
+    public function __construct(OcrService $ocrService, VerificacionPagoService $validador)
     {
         $this->ocrService = $ocrService;
+        $this->validador = $validador;
     }
 
     public function procesar(Request $request): Response
@@ -26,8 +30,18 @@ class BoletaController extends Controller
         $absolutePath = storage_path('app/public/' . $relativePath);
 
         try {
-            // Ejecutar OCR directamente sobre la imagen recibida
             $resultado = $this->ocrService->analizarReciboCaja($absolutePath);
+            $fields = $resultado['fields'];
+
+            // Verificar pago si tenemos documento y total
+            $verificacion = null;
+            if (!empty($fields['documento']) && !empty($fields['importe_total'])) {
+                $verificacion = $this->validador->verificarPagoOCR([
+                    'documento' => $fields['documento'],
+                    'importe_total' => $fields['importe_total']
+                ]);
+            }
+
         } catch (\Throwable $e) {
             Storage::disk('public')->delete($relativePath);
 
@@ -37,12 +51,12 @@ class BoletaController extends Controller
             ], 422);
         }
 
-        // Eliminar la imagen después del procesamiento
         Storage::disk('public')->delete($relativePath);
 
         return response()->json([
-            'data' => $resultado['fields'],
-            'raw'  => $resultado['raw_text'],
+            'data' => $fields,
+            'verificacion_pago' => $verificacion,
+            'raw' => $resultado['raw_text'],
         ]);
     }
 }
