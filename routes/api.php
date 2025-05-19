@@ -26,6 +26,10 @@ use App\Http\Controllers\ListaInscripcionController;
 use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\DatosExcelController;
 use App\Http\Controllers\PersonaController;
+use App\Http\Controllers\BoletaController;
+use App\Http\Controllers\TestPreprocessorController;
+use App\Http\Controllers\PagoValidacionController;
+
 
 use App\Imports\OlimpistaImport;
 use App\Imports\TutoresImport;
@@ -37,6 +41,8 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+
+Route::post('/pago/verificar', [PagoValidacionController::class, 'verificar']);
 //Excel
 Route::post('/olimpistas/excel', [ExcelImportController::class, 'import']);
 Route::post('/registro/excel', [DatosExcelController::class, 'cleanDates']);
@@ -79,7 +85,7 @@ Route::get('/olimpista/{ci}/inscripciones', [VerificarInscripcionController::cla
 Route::get('/olimpista/{ci}/total-inscripciones', [VerificarInscripcionController::class, 'getTotalInscripciones']);
 
 //Asociar Tutor con Olimpista mediante tabla Parentesco
-Route::post('/asociar-tutor', [ParentescoController::class, 'asociarTutor']);
+//Route::post('/asociar-tutor', [ParentescoController::class, 'asociarTutor']);
 
 // Tutores
 Route::post('/tutores', [TutoresControllator::class, 'store']);
@@ -155,3 +161,7 @@ Route::post('/niveles-categoria', [NivelCategoriaController::class, 'newCategori
 
 Route::get('/persona/{ci}', [PersonaController::class, 'getByCi']);
 
+Route::post('/prueba-ocr', [BoletaController::class, 'procesar']);
+
+
+Route::post('/test-preprocessor', [TestPreprocessorController::class, 'test']);
