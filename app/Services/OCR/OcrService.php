@@ -29,7 +29,8 @@ class OcrService
         // --- 1. Ejecutar OCR ---
         $texto = (new TesseractOCR($imagePath))
             ->lang('spa')         // español
-            ->psm(6)              // Assume a single uniform block of text
+            ->psm(6) // Assume a single uniform block of text
+            ->oem(1) // LSTM OCR Engine
             ->run();
 
         if (Str::of($texto)->trim()->isEmpty()) {
