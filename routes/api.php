@@ -26,6 +26,11 @@ use App\Http\Controllers\ListaInscripcionController;
 use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\DatosExcelController;
 use App\Http\Controllers\PersonaController;
+use App\Http\Controllers\BoletaController;
+use App\Http\Controllers\TestPreprocessorController;
+use App\Http\Controllers\PagoValidacionController;
+
+
 use App\Imports\OlimpistaImport;
 use App\Imports\TutoresImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -35,6 +40,8 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
+Route::post('/pago/verificar', [PagoValidacionController::class, 'verificar']);
+//Excel
 Route::post('/olimpistas/excel', [ExcelImportController::class, 'import']);
 Route::post('/registro/excel', [DatosExcelController::class, 'cleanDates']);
 
@@ -149,3 +156,7 @@ Route::post('/niveles-categoria', [NivelCategoriaController::class, 'newCategori
 
 Route::get('/persona/{ci}', [PersonaController::class, 'getByCi']);
 
+Route::post('/prueba-ocr', [BoletaController::class, 'procesar']);
+
+
+Route::post('/test-preprocessor', [TestPreprocessorController::class, 'test']);

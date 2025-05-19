@@ -3,28 +3,36 @@
 namespace App\Imports;
 
 use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\Importable;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
-class InscripcionesImport implements ToCollection
+class InscripcionesImport
 {
-    public array $rawRows = [];  // Aquí almacenaremos las filas del Excel
+    use Importable;
 
-    public function collection(Collection $rows)
+    public array $rawRows = [];
+
+    public function import($file): void
     {
-        // Eliminar la primera fila que contiene los encabezados
-        $rows->shift(); // Headers
+        $dataImport = new DataImport();
+        Excel::import($dataImport, $file);
 
-        // Iterar sobre cada fila del Excel y extraer los datos
+        $rows = $dataImport->rows;
+
         foreach ($rows as $index => $row) {
-            $rowArray = array_slice($row->toArray(), 0, 21); // Solo las primeras 18 columnas
+            $rowArray = array_values(array_slice($row->toArray(), 0, 21));
 
-            // Detener si la fila está vacía
             if (empty(array_filter($rowArray))) {
                 logger()->info("Row $index is empty. Stopping the import.");
-                break; // Detener el ciclo cuando encuentre una fila vacía
+                continue;
             }
 
-            // Guardar la fila cruda
+            // Convertir fecha si viene como número serial
+            if (isset($rowArray[3]) && is_numeric($rowArray[3])) {
+                $rowArray[3] = Date::excelToDateTimeObject($rowArray[3])->format('Y-m-d');
+            }
+
             $this->rawRows[] = $rowArray;
         }
     }

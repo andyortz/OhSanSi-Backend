@@ -25,7 +25,30 @@ class DatosExcelController extends Controller
     {
         $datos = $request->input('data');
         $ci_responsable = $request->input('ci_responsable_inscripcion');
-
+        $columnMap = [
+            0 => 'Nombre estudiante',
+            1 => 'Apellido estudiante',
+            2 => 'CI estudiante',
+            3 => 'RU',
+            4 => 'Correo estudiante',
+            5 => 'Departamento',
+            6 => 'Provincia',
+            7 => 'Unidad Educativa',
+            8 => 'Grado',
+            9 => 'Nombre tutor',
+            10 => 'Apellido tutor',
+            11 => 'Celular tutor',
+            12 => 'CI tutor',
+            13 => 'Correo tutor',
+            14 => 'Área',
+            15 => 'Nivel',
+            16 => 'Nombre profesor',
+            17 => 'Apellido profesor',
+            18 => 'Celular profesor',
+            19 => 'CI profesor',
+            20 => 'Correo profesor',
+        ];
+        
         if (!is_array($datos)) {
             return response()->json(['error' => 'El archivo no contiene datos válidos.'], 400);
         }
@@ -44,35 +67,38 @@ class DatosExcelController extends Controller
             'tutores_guardados' => [], 'tutores_omitidos' => [], 'tutores_errores' => [],
             'olimpistas_guardados' => [], 'olimpistas_errores' => [],
             'profesores_guardados' => [], 'profesores_errores' => [],
-            'inscripciones_guardadas' => [], 'inscripciones_errores' => []
+            'inscripciones_guardadas' => [], 'inscripciones_errores' => [],
+            'Departamento_errores' => [], 'Provincia_errores' => [],
+            'Colegio_errores' => [], 'Grado_errores' => [], 'Nivel_errores' => [],
         ];
 
         foreach ($datos as $index => $row) {
             if (empty(array_filter($row))) continue;
 
+
             $departamento = Departamento::where('nombre_departamento', $row[5])->first();
-            if (!$departamento) return $this->errorFila('Departamento', $row[5], $index);
+            if (!$departamento){$this->errorFila('Departamento', $row[5], $index, $resultadoFinal); continue;}
             $row[5] = $departamento->id_departamento;
 
             $provincia = ProvinciaResolver::resolve($row[6], $row[5]);
-            if (!$provincia) return $this->errorFila('Provincia', $row[6], $index);
+            if (!$provincia){$this->errorFila('Provincia', $row[6], $index, $resultadoFinal); continue;}
             $row[6] = $provincia;
 
             $colegio = ColegioResolver::resolve($row[5], $row[6]);
-            if (!$colegio) return $this->errorFila('Unidad educativa', $row[7], $index);
+            if (!$colegio){$this->errorFila('Unidad educativa', $row[7], $index, $resultadoFinal); continue;}
             $row[7] = $colegio;
 
             $grado = GradoResolver::resolve($row[8]);
-            if (!$grado) return $this->errorFila('Grado', $row[8], $index);
+            if (!$grado){$this->errorFila('Grado', $row[8], $index, $resultadoFinal); continue;}
             $row[8] = $grado;
 
             $nivel = NivelResolver::resolve($row[15]);
-            if (!$nivel) return $this->errorFila('Nivel', $row[15], $index);
+            if (!$nivel){$this->errorFila('Nivel', $row[15], $index, $resultadoFinal); continue;}
             $row[15] = $nivel;
 
-            $tutorsData[$row[11]] = TutorResolver::extractTutorData($row);
-            $olimpistasData[$row[2]] = OlimpistaResolver::extractOlimpistaData($row);
-            $profesorData[$row[19]] = ProfesorResolver::extractProfesorData($row);
+            $tutorsData[$row[11]] = TutorResolver::extractTutorData($row, $index);
+            $olimpistasData[$row[2]] = OlimpistaResolver::extractOlimpistaData($row, $index);
+            $profesorData[$row[19]] = ProfesorResolver::extractProfesorData($row, $index);
             $areasData[] = AreaResolver::extractAreaData($row);
 
             $sanitizedData[] = $row;
@@ -120,11 +146,27 @@ class DatosExcelController extends Controller
         }
     }
 
-    private function errorFila($campo, $valor, $fila)
+    private function errorFila($campo, $valor, $fila, &$resultado)
     {
-        return response()->json([
+        // return response()->json([
+            // 'error' => "$campo inválido en la fila " . ($fila + 1),
+        //     'value' => $valor
+        // ], 422);
+        $resultado[$campo."_errores"][] = [
+            // 'ci' => $tutor['ci'] ?? 'Desconocido',
             'error' => "$campo inválido en la fila " . ($fila + 1),
-            'value' => $valor
-        ], 422);
+            'fila' => $fila + 1
+        ];
     }
+
+    private function columnaLetra($index)
+    {
+        $letra = '';
+        while ($index >= 0) {
+            $letra = chr($index % 26 + 65) . $letra;
+            $index = intdiv($index, 26) - 1;
+        }
+        return $letra;
+    }
+
 }

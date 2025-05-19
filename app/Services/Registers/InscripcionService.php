@@ -26,7 +26,7 @@ class InscripcionService
 
             // Validar tutor académico (opcional)
             $ci_tutor_academico = $data['ci_tutor_academico'] ?? null;
-            if ($ci_tutor_academico && !Persona::where('ci_persona', $ci_tutor_academico)->exists()) {
+            if ($ci_tutor_academico && !Persona::where('ci_persona', $ci_tutor_academico)->exists()){
                 $ci_tutor_academico = null;
             }
 
