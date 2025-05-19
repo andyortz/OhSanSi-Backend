@@ -25,7 +25,7 @@ class InscripcionesImport
 
             if (empty(array_filter($rowArray))) {
                 logger()->info("Row $index is empty. Stopping the import.");
-                break;
+                continue;
             }
 
             // Convertir fecha si viene como número serial
