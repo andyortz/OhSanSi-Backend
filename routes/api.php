@@ -158,5 +158,6 @@ Route::get('/persona/{ci}', [PersonaController::class, 'getByCi']);
 
 Route::post('/prueba-ocr', [BoletaController::class, 'procesar']);
 
-
 Route::post('/test-preprocessor', [TestPreprocessorController::class, 'test']);
+
+Route::get('/olimpistas-inscritos/{id}',[ListaInscripcionController::class, 'getById']);

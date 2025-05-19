@@ -6,6 +6,7 @@ use App\Models\ListaInscripcion;
 use App\Models\NivelAreaOlimpiada;
 use App\Models\Pago;
 use App\Models\Persona;
+use App\Models\Inscripcion;
 
 use Illuminate\Http\Request\Request;
 use Illuminate\Support\Facades\DB;
@@ -272,5 +273,45 @@ class ListaInscripcionController extends Controller
             ], 500);
         }
     
+    }
+    public function getById($id){
+        $listas = ListaInscripcion::with('inscripciones.detalleOlimpista.olimpista')
+                           ->where('estado', 'PAGADO')
+                           ->where('id_olimpiada', $id)
+                           ->get();
+        $data = [];
+        foreach ($listas as $lista) {
+            // Acceder al olimpista relacionado (asumiendo que hay una relación definida en el modelo)
+            $inscripcion = $lista->inscripciones;
+            $olimpista = $inscripcion -> dealleOlimpista;
+            $persona = $olimpista -> olimpista;
+            $grado = $olimpista -> grado;
+            $colegio = $olimpista->unidad_educativa;
+            $provincia = $colegio -> provincia;
+            $departamento = $provincia -> departamento;
+            $nivel = $inscripcion -> nivel;
+            $nivelArea = $nivel -> asociaciones;
+            $area = $nivelArea -> area;
+
+            $data[] = [
+                'apellidos' => $persona->apellidos,
+                'nombres' => $persona->nombres,
+                'ci' => $persona -> ci_persona,
+                'colegio' => $colegio->nombre_colegio,
+                'grado' => $grado -> nombre_grado,
+                'departamento' => $departamento->nombre_departamento,
+                'provincia' => $provincia->nombre_provincia,
+                'area' => $area->nombre,
+                'nivel' => $nivel->nombre,
+                // Agregar más campos si es necesario
+            ];
+        }
+
+        // 3. Devolver la respuesta en JSON
+        return response()->json([
+            'success' => true,
+            'data' => $data,
+        ]);
+
     }
 }
