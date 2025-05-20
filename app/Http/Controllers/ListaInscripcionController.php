@@ -278,7 +278,7 @@ class ListaInscripcionController extends Controller
         $listas = ListaInscripcion::with(
             'inscripciones.detalleOlimpista.olimpista',
             'inscripciones.detalleOlimpista.grado',
-            'inscripciones.detalleOlimpista.unidad_educativa.provincia.departamento',
+            'inscripciones.detalleOlimpista.colegio.provincia.departamento',
             'inscripciones.nivel.asociaciones.area')
                            ->where('estado', 'PAGADO')
                            ->where('id_olimpiada', $id)
@@ -291,7 +291,7 @@ class ListaInscripcionController extends Controller
                 $olimpista = $inscripcion -> dealleOlimpista;
                 $persona = $olimpista -> olimpista;
                 $grado = $olimpista -> grado;
-                $colegio = $olimpista->unidad_educativa;
+                $colegio = $olimpista->colegio;
                 $provincia = $colegio -> provincia;
                 $departamento = $provincia -> departamento;
                 $nivel = $inscripcion -> nivel;
