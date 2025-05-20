@@ -73,7 +73,7 @@ class InscripcionAreaController extends Controller
                 'id_olimpista' => $request->id_olimpista,
                 'id_pago' => $pago->id_pago,
                 'id_nivel' => $id_nivel,
-                'estado' => $request->estado ?? 'pendiente',
+                'estado' => $request->estado ?? 'PENDIENTE',
                 'fecha_inscripcion' => now(),
             ]);
         }

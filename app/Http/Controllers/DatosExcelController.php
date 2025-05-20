@@ -73,7 +73,7 @@ class DatosExcelController extends Controller
         ];
 
         foreach ($datos as $index => $row) {
-            if (empty(array_filter($row))) continue;
+            if (empty(array_filter($row, fn($value) => trim($value) !== ''))) continue;
 
 
             $departamento = Departamento::where('nombre_departamento', $row[5])->first();

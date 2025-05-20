@@ -21,7 +21,7 @@ class InscripcionService
         return DB::transaction(function () use ($data) {
             $detalle = DetalleOlimpista::where('ci_olimpista', $data['ci'])->first();
             if (!$detalle) {
-                throw new \Exception('Olimpista no encontrado en detalle_olimpista.', 404);
+                throw new \Exception('El Olimpista no se encuentra registrado.', 404);
             }
 
             // Validar tutor académico (opcional)

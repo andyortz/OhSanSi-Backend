@@ -74,6 +74,7 @@ class ProfesoresProcessor
                 }
             }catch (\Throwable $e) {
                 $resultado['profesores_errores'][] = [
+                    'profesor' => $profesor['ci'] ?? 'Desconocido',
                     'fila' => $profesor['fila'] + 2,
                     'error' => $e->getMessage()
                 ];
