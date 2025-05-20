@@ -275,36 +275,42 @@ class ListaInscripcionController extends Controller
     
     }
     public function getById($id){
-        $listas = ListaInscripcion::with('inscripciones.detalleOlimpista.olimpista')
+        $listas = ListaInscripcion::with(
+            'inscripciones.detalleOlimpista.olimpista.persona',
+            'inscripciones.detalleOlimpista.grado',
+            'inscripciones.detalleOlimpista.unidad_educativa.provincia.departamento',
+            'inscripciones.nivel.asociaciones.area')
                            ->where('estado', 'PAGADO')
                            ->where('id_olimpiada', $id)
                            ->get();
         $data = [];
         foreach ($listas as $lista) {
             // Acceder al olimpista relacionado (asumiendo que hay una relación definida en el modelo)
-            $inscripcion = $lista->inscripciones;
-            $olimpista = $inscripcion -> dealleOlimpista;
-            $persona = $olimpista -> olimpista;
-            $grado = $olimpista -> grado;
-            $colegio = $olimpista->unidad_educativa;
-            $provincia = $colegio -> provincia;
-            $departamento = $provincia -> departamento;
-            $nivel = $inscripcion -> nivel;
-            $nivelArea = $nivel -> asociaciones;
-            $area = $nivelArea -> area;
-
-            $data[] = [
-                'apellidos' => $persona->apellidos,
-                'nombres' => $persona->nombres,
-                'ci' => $persona -> ci_persona,
-                'colegio' => $colegio->nombre_colegio,
-                'grado' => $grado -> nombre_grado,
-                'departamento' => $departamento->nombre_departamento,
-                'provincia' => $provincia->nombre_provincia,
-                'area' => $area->nombre,
-                'nivel' => $nivel->nombre,
-                // Agregar más campos si es necesario
-            ];
+            $inscripciones = $lista->inscripciones;
+            foreach ($inscripciones as $inscripcion) {
+                $olimpista = $inscripcion -> dealleOlimpista;
+                $persona = $olimpista -> olimpista;
+                $grado = $olimpista -> grado;
+                $colegio = $olimpista->unidad_educativa;
+                $provincia = $colegio -> provincia;
+                $departamento = $provincia -> departamento;
+                $nivel = $inscripcion -> nivel;
+                $nivelArea = $nivel -> asociaciones;
+                $area = $nivelArea -> area;
+    
+                $data[] = [
+                    'apellidos' => $persona->apellidos,
+                    'nombres' => $persona->nombres,
+                    'ci' => $persona -> ci_persona,
+                    'colegio' => $colegio->nombre_colegio,
+                    'grado' => $grado -> nombre_grado,
+                    'departamento' => $departamento->nombre_departamento,
+                    'provincia' => $provincia->nombre_provincia,
+                    'area' => $area->nombre,
+                    'nivel' => $nivel->nombre,
+                    // Agregar más campos si es necesario
+                ];
+            }
         }
 
         // 3. Devolver la respuesta en JSON
