@@ -276,7 +276,7 @@ class ListaInscripcionController extends Controller
     }
     public function getById($id){
         $listas = ListaInscripcion::with(
-            'inscripciones.detalleOlimpista.olimpista.persona',
+            'inscripciones.detalleOlimpista.olimpista',
             'inscripciones.detalleOlimpista.grado',
             'inscripciones.detalleOlimpista.unidad_educativa.provincia.departamento',
             'inscripciones.nivel.asociaciones.area')
