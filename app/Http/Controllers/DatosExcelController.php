@@ -93,7 +93,7 @@ class DatosExcelController extends Controller
             $row[8] = $grado;
 
             $nivel = NivelResolver::resolve($row[15]);
-            if (!$nivel){$this->errorFila('Nivel', $row[15], $index, $resultadoFinal); continue;}
+            if (!$nivel){$this->errorFila('Nivel', $row[15], $index, $resultadoFinal); }
             $row[15] = $nivel;
 
             $tutorsData[$row[11]] = TutorResolver::extractTutorData($row, $index);
