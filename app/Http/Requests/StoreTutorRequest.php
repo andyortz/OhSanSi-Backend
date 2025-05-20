@@ -26,7 +26,7 @@ class StoreTutorRequest extends FormRequest
             'apellidos' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
             'ci' => 'required|integer|unique:persona,ci_persona',
             'celular' => 'nullable|string|max:20',
-            'correo_electronico' => 'required|email|max:100',
+            'correo_electronico' => 'required|email:rfc,dns|max:100',
         ];
     }
     public function messages()

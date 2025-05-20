@@ -24,7 +24,7 @@ class StorePersonaRequest extends FormRequest
             'apellidos' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
             'ci' => 'required|integer|unique:persona,ci_persona',
             'celular' => 'nullable|string|max:20',
-            'correo_electronico' => 'required|email|max:100',
+            'correo_electronico' => 'required|email:rfc,dns|max:100',
         ];
     }
     public function messages(): array
@@ -50,6 +50,7 @@ class StorePersonaRequest extends FormRequest
             'correo_electronico.required' => 'El campo "correo electrónico" es obligatorio.',
             'correo_electronico.email' => 'El campo "correo electrónico" debe ser una dirección de correo válida.',
             'correo_electronico.max' => 'El campo "correo electrónico" no puede exceder los 100 caracteres.',
+            'correo_electronico.regex' => 'El campo "correo electrónico" no tiene un formato válido.',
         ];
     }
 }
