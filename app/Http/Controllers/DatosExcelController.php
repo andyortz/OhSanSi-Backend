@@ -123,7 +123,13 @@ class DatosExcelController extends Controller
             if (
                 !empty($resultadoFinal['tutores_errores']) ||
                 !empty($resultadoFinal['olimpistas_errores']) ||
-                !empty($resultadoFinal['inscripciones_errores'])
+                !empty($resultadoFinal['inscripciones_errores']) ||
+                !empty($resultadoFinal['profesores_errores']) ||
+                !empty($resultadoFinal['Departamento_errores']) ||
+                !empty($resultadoFinal['Provincia_errores']) || 
+                !empty($resultadoFinal['Colegio_errores']) ||
+                !empty($resultadoFinal['Grado_errores']) ||
+                !empty($resultadoFinal['Nivel_errores'])
             ) {
                 throw new \Exception("Se encontraron errores en los datos. No se guardó nada.");
             }
