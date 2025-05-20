@@ -280,23 +280,22 @@ class ListaInscripcionController extends Controller
             'inscripciones.detalleOlimpista.grado',
             'inscripciones.detalleOlimpista.colegio.provincia.departamento',
             'inscripciones.nivel.asociaciones.area')
-                           ->where('estado', 'PAGADO')
-                           ->where('id_olimpiada', $id)
-                           ->get();
+                ->where('estado', 'PAGADO')
+                ->where('id_olimpiada', $id)
+                ->get();
         $data = [];
         foreach ($listas as $lista) {
             // Acceder al olimpista relacionado (asumiendo que hay una relación definida en el modelo)
             $inscripciones = $lista->inscripciones;
             foreach ($inscripciones as $inscripcion) {
-                $olimpista = $inscripcion -> dealleOlimpista;
+                $olimpista = $inscripcion -> detalleOlimpista;
                 $persona = $olimpista -> olimpista;
                 $grado = $olimpista -> grado;
-                $colegio = $olimpista->colegio;
+                $colegio = $olimpista-> colegio;
                 $provincia = $colegio -> provincia;
-                $departamento = $provincia -> departamento;
+                $departamento = $provincia -> departamento ?? null;
                 $nivel = $inscripcion -> nivel;
-                $nivelArea = $nivel -> asociaciones;
-                $area = $nivelArea -> area;
+                $area = $nivel -> asociaciones -> first() -> area;
     
                 $data[] = [
                     'apellidos' => $persona->apellidos,
@@ -305,10 +304,9 @@ class ListaInscripcionController extends Controller
                     'colegio' => $colegio->nombre_colegio,
                     'grado' => $grado -> nombre_grado,
                     'departamento' => $departamento->nombre_departamento,
-                    'provincia' => $provincia->nombre_provincia,
+                    'provincia' => $provincia-> nombre_provincia,
                     'area' => $area->nombre,
                     'nivel' => $nivel->nombre,
-                    // Agregar más campos si es necesario
                 ];
             }
         }
