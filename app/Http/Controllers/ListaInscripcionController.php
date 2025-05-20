@@ -179,7 +179,7 @@ class ListaInscripcionController extends Controller
                     'comprobante' => 'PAGO-' . uniqid(),
                     'fecha_pago' => now(),
                     'monto_total' => $montoTotal,
-                    'estado' => 'pendiente'
+                    'estado' => 'PENDIENTE'
                 ]
             );
     
@@ -242,7 +242,7 @@ class ListaInscripcionController extends Controller
                     'comprobante' => 'PAGO-' . uniqid(),
                     'fecha_pago' => now(),
                     'monto_total' => $montoTotal,
-                    'estado' => 'pendiente'
+                    'estado' => 'PENDIENTE'
                 ]
             );
     

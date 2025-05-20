@@ -16,7 +16,7 @@ class InscripcionResolver
             'cedula_identidad' => $row[2],
             'nivel' => NivelResolver::resolve($row[15]),
             'id_pago' => 1,
-            'estado' => 'pendiente',
+            'estado' => 'PENDIENTE',
             'ci_tutor_academico' => $row[18] ?? null
         ];
     }
