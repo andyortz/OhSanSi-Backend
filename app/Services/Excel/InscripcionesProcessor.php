@@ -4,6 +4,7 @@ namespace App\Services\Excel;
 
 use App\Services\Registers\InscripcionService;
 use Illuminate\Support\Facades\DB;
+use App\Models\DetalleOlimpista;
 use Illuminate\Support\Carbon;
 
 class InscripcionesProcessor
@@ -16,6 +17,27 @@ class InscripcionesProcessor
         
         foreach ($interesados as $data) {
             try {
+                //Verificamos si el olimpista ya se encuentra registrado para realizar la inscripcion
+                if(is_numeric($data['ci'])){
+                    $detalle = DetalleOlimpista::where('ci_olimpista', $data['ci'])->first();
+                    if (!$detalle) {
+                        // throw new \Exception('El Olimpista no se encuentra registrado.', 404);
+                        $resultado['inscripciones_errores'][] = [
+                            'ci' => $data['ci'] ?? 'Desconocido',
+                            'error' => $e->getMessage(),
+                            // 'fila'=> $fila + 1
+                        ];
+                        continue;
+                    }
+                }else{
+                    $resultado['inscripciones_errores'][] = [
+                        'ci' => $data['ci'] ?? 'Desconocido',
+                        'error' => 'El CI: "'.$data['ci'].'" del olimpista no es válido',
+                        // 'fila'=> $fila + 1
+                    ];
+                    continue;
+                }
+                
                 //obtenemos el limite permitido para la olimpiada
                 $limite = DB::table('olimpiada')
                     ->where('fecha_inicio','<=', $hoy)
@@ -36,6 +58,7 @@ class InscripcionesProcessor
                 if($areasinscrito >= $limite){
                     $resultado['inscripciones_errores'][] = [
                         'ci' => $data['ci'],
+                        // 'fila'=> $fila + 2,
                         'error' => 'El olimpista ya alcanzó el limite de inscripciones alcanzado'
                     ];
                     continue;
@@ -54,7 +77,8 @@ class InscripcionesProcessor
                 ];
             } catch (\Throwable $e) {
                 $resultado['inscripciones_errores'][] = [
-                    'ci' => $data['ci'],
+                    'ci' => $data['ci'] ?? 'Desconocido',
+                    // 'fila'=> $fila + 2,
                     'error' => $e->getMessage()
                 ];
             }
