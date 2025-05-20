@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreTutorRequest extends FormRequest
 {
@@ -26,7 +27,7 @@ class StoreTutorRequest extends FormRequest
             'apellidos' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
             'ci' => 'required|integer|unique:persona,ci_persona',
             'celular' => 'nullable|string|max:20',
-            'correo_electronico' => 'required|email:rfc,dns|max:100',
+            'correo_electronico' => 'required|email:rfc,dns|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|max:100',
         ];
     }
     public function messages()
@@ -50,8 +51,8 @@ class StoreTutorRequest extends FormRequest
             'celular.max' => 'El campo celular de tutor no puede exceder los 20 caracteres.',
             
             'correo_electronico.required' => 'El campo correo electrónico de tutor es obligatorio.',
-            'correo_electronico.email' => 'El campo correo electrónico de tutor debe ser una dirección de correo válida.',
             'correo_electronico.max' => 'El campo correo electrónico de tutor no puede exceder los 100 caracteres.',
+            'correo_electronico.regex' => 'El campo correo electrónico de tutor no tiene un formato válido.',
         ];
     }
 }

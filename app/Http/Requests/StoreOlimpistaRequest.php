@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreOlimpistaRequest extends FormRequest
 {
@@ -18,7 +19,7 @@ class StoreOlimpistaRequest extends FormRequest
             'apellidos'          => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
             'cedula_identidad'   => 'required|integer',
             'fecha_nacimiento'   => 'required|date',
-            'correo_electronico' => 'required|email:rfc,dns|max:100',
+            'correo_electronico' => 'required|email:rfc,dns|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|max:100',
             'unidad_educativa'   => 'required|integer',
             'id_grado'           => 'required|integer',
             'ci_tutor'           => 'required|integer|exists:persona,ci_persona',
@@ -43,10 +44,10 @@ class StoreOlimpistaRequest extends FormRequest
         'fecha_nacimiento.required' => 'La fecha de nacimiento es obligatoria.',
         'fecha_nacimiento.date' => 'La fecha de nacimiento no tiene un formato válido.',
         
+        'correo_electronico.email' => 'El correo electrónico no tiene un formato válido.',
         'correo_electronico.required' => 'El correo electrónico es obligatorio.',
-        'correo_electronico.email' => 'El correo electrónico no es válido.',
         'correo_electronico.max' => 'El correo electrónico no debe superar los 100 caracteres.',
-        'correo_electronico.regex' => 'El correo electrónico no tiene un formato válido.',
+        'correo_electronico.regex' => 'El correo electrónico contiene caracteres no válidos.',
 
         'unidad_educativa.string' => 'La unidad educativa debe ser un texto.',
         'unidad_educativa.required' => 'La unidad educativa es obligatoria.',

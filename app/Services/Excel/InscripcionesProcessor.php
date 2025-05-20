@@ -21,11 +21,9 @@ class InscripcionesProcessor
                 if(is_numeric($data['ci'])){
                     $detalle = DetalleOlimpista::where('ci_olimpista', $data['ci'])->first();
                     if (!$detalle) {
-                        // throw new \Exception('El Olimpista no se encuentra registrado.', 404);
                         $resultado['inscripciones_errores'][] = [
                             'ci' => $data['ci'] ?? 'Desconocido',
-                            'error' => $e->getMessage(),
-                            // 'fila'=> $fila + 1
+                            'error' => 'El Olimpista no se encuentra registrado.',
                         ];
                         continue;
                     }
