@@ -22,13 +22,11 @@ class StoreTutorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
-            'nombres' => 'required|string|max:100',
-            'apellidos' => 'required|string|max:100',
+            'nombres' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
+            'apellidos' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
             'ci' => 'required|integer|unique:persona,ci_persona',
             'celular' => 'nullable|string|max:20',
             'correo_electronico' => 'required|email|max:100',
-            // 'rol_parentesco' => 'required|in:padre,madre,tutor,apoderado'
         ];
     }
     public function messages()
@@ -37,10 +35,12 @@ class StoreTutorRequest extends FormRequest
             'nombres.required' => 'El campo nombres de tutor es obligatorio.',
             'nombres.string' => 'El campo nombres de tutor debe ser un texto.',
             'nombres.max' => 'El campo nombres de tutor no puede exceder los 100 caracteres.',
+            'nombres.regex' => 'El campo nombres de tutor solo puede contener letras y espacios.',
             
             'apellidos.required' => 'El campo apellidos de tutor es obligatorio.',
             'apellidos.string' => 'El campo apellidos de tutor debe ser un texto.',
             'apellidos.max' => 'El campo apellidos de tutor no puede exceder los 100 caracteres.',
+            'apellidos.regex' => 'El campo apellidos de tutor solo pued contener letras y espacios.',
             
             'ci.required' => 'El campo CI de tutor es obligatorio.',
             'ci.integer' => 'El campo CI de tutor debe ser un número entero.',

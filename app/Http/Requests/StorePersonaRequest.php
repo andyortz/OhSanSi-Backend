@@ -20,8 +20,8 @@ class StorePersonaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombres' => 'required|string|max:100',
-            'apellidos' => 'required|string|max:100',
+            'nombres' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
+            'apellidos' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
             'ci' => 'required|integer|unique:persona,ci_persona',
             'celular' => 'nullable|string|max:20',
             'correo_electronico' => 'required|email|max:100',
@@ -33,10 +33,12 @@ class StorePersonaRequest extends FormRequest
             'nombres.required' => 'El campo "nombres" es obligatorio.',
             'nombres.string' => 'El campo "nombres" debe ser un texto.',
             'nombres.max' => 'El campo "nombres" no puede exceder los 100 caracteres.',
+            'nombres.regex' => 'El campo "nombres" solo puede contener letras y espacios.',
             
             'apellidos.required' => 'El campo "apellidos" es obligatorio.',
             'apellidos.string' => 'El campo "apellidos" debe ser un texto.',
             'apellidos.max' => 'El campo "apellidos" no puede exceder los 100 caracteres.',
+            'apellidos.regex' => 'El campo "apellidos" solo puede contener letras y espacios.',
             
             'ci.required' => 'El campo "CI" es obligatorio.',
             'ci.integer' => 'El campo "CI" debe ser un número entero.',
