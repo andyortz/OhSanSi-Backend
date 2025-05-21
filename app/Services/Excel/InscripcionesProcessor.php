@@ -61,6 +61,7 @@ class InscripcionesProcessor
                     ];
                     continue;
                 }
+
                 //obtenemos el limite permitido para la olimpiada
                 $limite = DB::table('olimpiada')
                     ->where('fecha_inicio', '<=', $hoy)
@@ -83,7 +84,19 @@ class InscripcionesProcessor
                     ];
                     continue;
                 }
-
+                //Verificamos que no se inscriba a una mismo nivel
+                $nivelExistente = DB::table('inscripcion')
+                    ->join('detalle_olimpista', 'inscripcion.id_detalle_olimpista', 'detalle_olimpista.id_detalle_olimpista')
+                    ->where('detalle_olimpista.ci_olimpista', $data['ci'])
+                    ->where('inscripcion.id_nivel', $data['nivel'])
+                    ->first();
+                if ($nivelExistente) {
+                    $resultado['inscripciones_errores'][] = [
+                        'ci' => $data['ci'],
+                        'error' => 'El olimpista ya está inscrito en el nivel seleccionado',
+                    ];
+                    continue;
+                }
                 $data['ci_responsable_inscripcion'] = $ci_responsable;
                 $data['id_lista'] = $idLista;
 
