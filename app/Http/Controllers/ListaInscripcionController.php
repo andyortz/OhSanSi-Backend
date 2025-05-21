@@ -7,6 +7,7 @@ use App\Models\NivelAreaOlimpiada;
 use App\Models\Pago;
 use App\Models\Persona;
 use App\Models\Inscripcion;
+use App\Models\Olimpiada;
 
 use Illuminate\Http\Request\Request;
 use Illuminate\Support\Facades\DB;
@@ -105,6 +106,19 @@ class ListaInscripcionController extends Controller
     {
         $responsable = Persona::where('ci_persona', $ci)
             ->first(['nombres', 'apellidos', 'ci_persona']);
+        $olimpiada = Olimpiada::whereDate('fecha_inicio', '<=', now())
+            ->whereDate('fecha_fin', '>=', now())
+            ->first(['id_olimpiada']);
+        
+        if (!$olimpiada) {
+            return response()->json(
+                [
+                    'message' => 'No hay una olimpiada activa en este momento.',
+                    'ci_buscado' => $ci
+                ],
+                404 // Not Found
+            );
+        }
         if ($estado !== 'TODOS') {
             $listas = ListaInscripcion::with([
                 'inscripciones.detalleOlimpista.olimpista:nombres,apellidos,ci_persona',
