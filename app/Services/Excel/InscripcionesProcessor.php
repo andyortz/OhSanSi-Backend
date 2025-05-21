@@ -47,11 +47,21 @@ class InscripcionesProcessor
                 if (!$detalle) {
                     $resultado['inscripciones_errores'][] = [
                         'ci' => $data['ci'] ?? 'Desconocido',
-                        'error' => 'El Olimpista no se encuentra registrado.',
+                        'error' => 'El CI: "'.$data['ci'].'" del olimpista no es válido',
+                        // 'fila'=> $fila + 1
                     ];
                     continue;
                 }
-
+                //Verificamos que tenga un nivel asociado.
+                if($data['nivel'] == null){
+                    $resultado['inscripciones_errores'][] = [
+                        'ci' => $data['ci'] ?? 'Desconocido',
+                        'error' => 'Ha ocurrido un error al intentar obtener el nivel del olimpista',
+                        // 'fila'=> $fila + 2
+                    ];
+                    continue;
+                }
+                //obtenemos el limite permitido para la olimpiada
                 $limite = DB::table('olimpiada')
                     ->where('fecha_inicio', '<=', $hoy)
                     ->where('fecha_fin', '>=', $hoy)
