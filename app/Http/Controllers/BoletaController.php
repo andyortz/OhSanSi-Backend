@@ -7,17 +7,20 @@ use Illuminate\Support\Facades\Storage;
 use App\Services\Ocr\OcrService;
 use App\Services\OCR\VerificacionPagoService;
 use Symfony\Component\HttpFoundation\Response;
+use App\Services\Ocr\OcrTextoParser;
 use Illuminate\Support\Facades\Log;
 
 class BoletaController extends Controller
 {
     protected $ocrService;
     protected $validador;
+    protected $parser;
 
-    public function __construct(OcrService $ocrService, VerificacionPagoService $validador)
+    public function __construct(OcrService $ocrService, VerificacionPagoService $validador, OcrTextoParser $parser)
     {
         $this->ocrService = $ocrService;
         $this->validador = $validador;
+        $this->parser = $parser;
     }
 
     public function procesar(Request $request): Response
@@ -30,8 +33,8 @@ class BoletaController extends Controller
         $absolutePath = storage_path('app/public/' . $relativePath);
 
         try {
-            $resultado = $this->ocrService->analizarReciboCaja($absolutePath);
-            $fields = $resultado['fields'];
+            $rawText = $this->ocrService->extraerTexto($absolutePath);
+            $fields = $this->parser->parse($rawText);
 
             // Verificar pago si tenemos documento y total
             $verificacion = null;
@@ -56,7 +59,7 @@ class BoletaController extends Controller
         return response()->json([
             'data' => $fields,
             'verificacion_pago' => $verificacion,
-            'raw' => $resultado['raw_text'],
+            'raw' => $rawText,
         ]);
     }
 }
