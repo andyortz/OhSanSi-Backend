@@ -29,25 +29,25 @@ class StoreOlimpistaRequest extends FormRequest
     public function messages(): array
     {
         return [
-        'nombres.required' => 'El campo nombres es obligatorio.',
-        'nombres.string' => 'El campo nombres debe ser un texto.',
-        'nombres.max' => 'El campo nombres no debe superar los 100 caracteres.',
-        'nombres.regex' => 'El campo nombres solo puede contener letras y espacios.',
+        'nombres.required' => 'El campo nombres del olimpista es obligatorio.',
+        'nombres.string' => 'El campo nombres del olimpista debe ser un texto.',
+        'nombres.max' => 'El campo nombres del olimpista no debe superar los 100 caracteres.',
+        'nombres.regex' => 'El campo nombres del olimpista solo puede contener letras y espacios.',
 
-        'apellidos.string' => 'El campo apellidos debe ser un texto.',
-        'apellidos.max' => 'El campo apellidos no debe superar los 100 caracteres.',
-        'apellidos.required' => 'El campo apellidos es obligatorio.',
-        'apellidos.regex' => 'El campo apellidos solo puede contener letras y espacios.',
+        'apellidos.string' => 'El campo apellidos del olimpista debe ser un texto.',
+        'apellidos.max' => 'El campo apellidos del olimpista no debe superar los 100 caracteres.',
+        'apellidos.required' => 'El campo apellidos del olimpista es obligatorio.',
+        'apellidos.regex' => 'El campo apellidos del olimpista solo puede contener letras y espacios.',
 
-        'cedula_identidad.required' => 'La cédula de identidad es obligatoria.',
-        'cedula_identidad.integer' => 'La cédula de identidad debe ser un número.',
-        'fecha_nacimiento.required' => 'La fecha de nacimiento es obligatoria.',
-        'fecha_nacimiento.date' => 'La fecha de nacimiento no tiene un formato válido.',
+        'cedula_identidad.required' => 'La cédula de identidad del olimpista es obligatoria.',
+        'cedula_identidad.integer' => 'La cédula de identidad del olimpista debe ser un número.',
+        'fecha_nacimiento.required' => 'La fecha de nacimiento del olimpista es obligatoria.',
+        'fecha_nacimiento.date' => 'La fecha de nacimiento del olimpista no tiene un formato válido.',
         
-        'correo_electronico.email' => 'El correo electrónico no tiene un formato válido.',
-        'correo_electronico.required' => 'El correo electrónico es obligatorio.',
-        'correo_electronico.max' => 'El correo electrónico no debe superar los 100 caracteres.',
-        'correo_electronico.regex' => 'El correo electrónico contiene caracteres no válidos.',
+        'correo_electronico.email' => 'El correo electrónico del olimpista no tiene un formato válido.',
+        'correo_electronico.required' => 'El correo electrónico del olimpista es obligatorio.',
+        'correo_electronico.max' => 'El correo electrónico del olimpista no debe superar los 100 caracteres.',
+        'correo_electronico.regex' => 'El correo electrónico del olimpista contiene caracteres no válidos.',
 
         'unidad_educativa.string' => 'La unidad educativa debe ser un texto.',
         'unidad_educativa.required' => 'La unidad educativa es obligatoria.',

@@ -20,12 +20,33 @@ class OlimpistasProcessor
                 // if (empty($olimpista['cedula_identidad'])) {
                 //     throw new \Exception("El campo 'cedula_identidad' no puede ser null");
                 // }
-                if (is_numeric($olimpista['cedula_identidad']) && Persona::where('ci_persona', $olimpista['cedula_identidad'])->exists()) {
-                    $resultado['olimpistas_guardados'][] = [
+                if (!is_numeric($olimpista['cedula_identidad'])) {
+                    $resultado['olimpistas_errores'][] = [
                         'ci' => $olimpista['cedula_identidad'],
-                        'message' => 'Ya se encuentra registrado en el sistema',
+                        'message' => 'La cédula de identidad del olimpista debe ser un número entero',
                         'fila'=>$olimpista['fila']+2
                     ];
+                    continue;
+                }
+                if(Persona::where('ci_persona', $olimpista['cedula_identidad'])->exists()){
+                    $resultado['olimpistas_guardados'][] = [
+                            'ci' => $olimpista['cedula_identidad'],
+                            'message' => 'El olimpista ya se encuentra registrado en el sistema',
+                            'fila'=>$olimpista['fila']+2
+                        ];
+                    // $olimpistaenBase = Persona::where('ci_persona', $olimpista['cedula_identidad'])->first();
+                    // if($olimpista['nombres'] !== $olimpistaenBase->nombres || 
+                    //     $olimpista['apellidos'] !== $olimpistaenBase->apellidos ||
+                    //     $olimpista['correo_electronico'] !== $olimpistaenBase->correo_electronico ||
+                    //     $olimpista['fecha_nacimiento'] !== $olimpistaenBase->fecha_nacimiento ||
+                    //     $olimpista['unidad_educativa'] !== $olimpistaenBase->unidad_educativa ||
+                    //     $olimpista['id_grado'] !== $olimpistaenBase->id_grado){
+                    //     $resultado['olimpistas_errores'][] = [
+                    //         'ci' => $olimpista['cedula_identidad'],
+                    //         'message' => 'Hay inconsistencia en los datos del olimpista, por favor verifique los nombres y apellidos',
+                    //         'fila'=>$olimpista['fila']+2
+                    //     ];
+                    // }
                     continue;
                 }
                 // Usar reglas y mensajes personalizados del FormRequest
