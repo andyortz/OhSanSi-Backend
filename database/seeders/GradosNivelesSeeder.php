@@ -29,8 +29,8 @@ class GradosNivelesSeeder extends Seeder
             ['id_nivel' => 28, 'id_grado' => 4],
             ['id_nivel' => 28, 'id_grado' => 5],
             ['id_nivel' => 28, 'id_grado' => 6],
-            ['id_nivel' => 29, 'id_grado' => 7],
-            ['id_nivel' => 29, 'id_grado' => 8],
+            ['id_nivel' => 27, 'id_grado' => 7],
+            ['id_nivel' => 27, 'id_grado' => 8],
         ]);
     }
 }

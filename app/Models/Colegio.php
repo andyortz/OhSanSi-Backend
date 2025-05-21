@@ -14,12 +14,12 @@ class Colegio extends Model
 
     protected $fillable = [
         'nombre_colegio',
-        'provincia',  
+        'id_provincia',
     ];
 
     public function provincia()
     {
-        return $this->belongsTo(Provincia::class, 'provincia', 'id_provincia');
+        return $this->belongsTo(Provincia::class, 'id_provincia');
     }
 
 }

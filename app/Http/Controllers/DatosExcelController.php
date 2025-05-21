@@ -94,7 +94,7 @@ class DatosExcelController extends Controller
             $row[8] = $grado;
 
             $nivel = NivelResolver::resolve($row[15]);
-            if (!$nivel){$this->errorFila('Nivel', $row[15], $index, $resultadoFinal); continue;}
+            if (!$nivel){$this->errorFila('Nivel', $row[15], $index, $resultadoFinal);continue;}
             $row[15] = $nivel;
 
             $tutorsData[$row[11]] = TutorResolver::extractTutorData($row, $index);
@@ -124,7 +124,13 @@ class DatosExcelController extends Controller
             if (
                 !empty($resultadoFinal['tutores_errores']) ||
                 !empty($resultadoFinal['olimpistas_errores']) ||
-                !empty($resultadoFinal['inscripciones_errores'])
+                !empty($resultadoFinal['inscripciones_errores']) ||
+                !empty($resultadoFinal['profesores_errores']) ||
+                !empty($resultadoFinal['Departamento_errores']) ||
+                !empty($resultadoFinal['Provincia_errores']) || 
+                !empty($resultadoFinal['Colegio_errores']) ||
+                !empty($resultadoFinal['Grado_errores']) ||
+                !empty($resultadoFinal['Nivel_errores'])
             ) {
                 throw new \Exception("Se encontraron errores en los datos. No se guardó nada.");
             }

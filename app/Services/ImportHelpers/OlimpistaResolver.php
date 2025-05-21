@@ -34,12 +34,6 @@ class OlimpistaResolver
         ];
     }
 
-    /**
-     * Normalizar una fecha que puede venir como serial de Excel o string
-     *
-     * @param mixed $valor
-     * @return string
-     */
     private static function normalizarFecha($valor): string
     {
         if (is_numeric($valor)) {
@@ -55,12 +49,7 @@ class OlimpistaResolver
         throw new \Exception("Formato de fecha no reconocido: '$valor'");
     }
 
-    /**
-     * Convertir un número serial de Excel a YYYY-MM-DD
-     *
-     * @param int $excelDate
-     * @return string
-     */
+
     private static function excelDateToDateString(int $excelDate): string
     {
         $carbonDate = Carbon::createFromFormat('Y-m-d', '1900-01-01')->addDays($excelDate - 2);

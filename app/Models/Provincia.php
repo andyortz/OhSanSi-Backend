@@ -29,6 +29,6 @@ class Provincia extends Model
 
     public function asociaciones()
     {
-        return $this->hasMany(Colegio::class, 'provincia');
+        return $this->hasMany(Colegio::class, 'id_provincia');
     }
 }
