@@ -103,7 +103,7 @@ class DatosExcelController extends Controller
 
             $sanitizedData[] = $row;
         }
-
+        
         try {
             DB::beginTransaction();
 
@@ -140,7 +140,7 @@ class DatosExcelController extends Controller
                 'message' => 'Datos validados y guardados correctamente.',
                 'resultado' => $resultadoFinal
             ], 200);
-
+            
         } catch (\Throwable $e) {
             DB::rollBack();
 
@@ -154,10 +154,6 @@ class DatosExcelController extends Controller
 
     private function errorFila($campo, $valor, $fila, &$resultado)
     {
-        // return response()->json([
-            // 'error' => "$campo inválido en la fila " . ($fila + 1),
-        //     'value' => $valor
-        // ], 422);
         $resultado[$campo."_errores"][] = [
             // 'ci' => $tutor['ci'] ?? 'Desconocido',
             'error' => "$campo inválido en la fila " . ($fila + 1),
