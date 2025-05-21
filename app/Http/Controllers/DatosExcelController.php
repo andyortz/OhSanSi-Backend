@@ -94,7 +94,7 @@ class DatosExcelController extends Controller
             $row[8] = $grado;
 
             $nivel = NivelResolver::resolve($row[15]);
-            if (!$nivel){$this->errorFila('Nivel', $row[15], $index, $resultadoFinal);continue;}
+            if (!$nivel){$this->errorFila('Nivel', $row[15], $index, $resultadoFinal);}
             $row[15] = $nivel;
 
             $tutorsData[$row[11]] = TutorResolver::extractTutorData($row, $index);
@@ -104,7 +104,7 @@ class DatosExcelController extends Controller
 
             $sanitizedData[] = $row;
         }
-
+        
         try {
             DB::beginTransaction();
 
@@ -141,7 +141,7 @@ class DatosExcelController extends Controller
                 'message' => 'Datos validados y guardados correctamente.',
                 'resultado' => $resultadoFinal
             ], 200);
-
+            
         } catch (\Throwable $e) {
             DB::rollBack();
 
@@ -155,14 +155,10 @@ class DatosExcelController extends Controller
 
     private function errorFila($campo, $valor, $fila, &$resultado)
     {
-        // return response()->json([
-            // 'error' => "$campo inválido en la fila " . ($fila + 1),
-        //     'value' => $valor
-        // ], 422);
         $resultado[$campo."_errores"][] = [
             // 'ci' => $tutor['ci'] ?? 'Desconocido',
-            'error' => "$campo inválido en la fila " . ($fila + 1),
-            'fila' => $fila + 1
+            'error' => "$campo inválido o no encontrado: '$valor'",
+            'fila' => $fila + 2
         ];
     }
 
