@@ -16,7 +16,8 @@ class TutoresProcessor
                 if (Persona::where('ci_persona', $tutor['ci'])->exists()) {
                     $resultado['tutores_omitidos'][] = [
                         'ci' => $tutor['ci'],
-                        'message' => 'Ya existe en la base de datos'
+                        'message' => 'El tutor ya se encuentra registrado en el sistema',
+                        'fila'=>$tutor['fila']+2
                     ];
                     continue;
                 }

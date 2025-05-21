@@ -38,7 +38,8 @@ class ProfesoresProcessor
                     if (is_numeric($profesor['ci']) && Persona::where('ci_persona', $profesor['ci'])->exists()) {
                         $resultado['profesores_omitidos'][] = [
                             'ci' => $profesor['ci'],
-                            'message' => 'Ya existe en la base de datos'
+                            'message' => 'El profesor ya se encuentra registrado en el sistema',
+                            'fila'=>$profesor['fila']+2
                         ];
                         continue;
                     }
