@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Carbon\Carbon;
 
 return new class extends Migration
 {
@@ -17,7 +18,7 @@ return new class extends Migration
             $table->decimal('costo', 10, 2); // numeric(10,2)
             $table->date('fecha_inicio');
             $table->date('fecha_fin');
-            $table->timestamp('creado_en', 6)->useCurrent();
+            $table->timestamp('creado_en', 6)->default(Carbon::now('America/La_Paz')->format('Y-m-d H:i:s.u'));
             $table->integer('max_categorias_olimpista');
             $table->string('nombre_olimpiada', 50);
         });
