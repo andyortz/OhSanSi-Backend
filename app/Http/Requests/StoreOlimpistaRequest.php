@@ -58,7 +58,7 @@ class StoreOlimpistaRequest extends FormRequest
         
         'ci_tutor.required' => 'La cédula del tutor es obligatoria.',
         'ci_tutor.integer' => 'La cédula del tutor debe ser un número.',
-        'ci_tutor.exists' => 'El tutor no se encuentra registrado en la base de datos.',
+        'ci_tutor.exists' => 'El tutor no se ha registrado en el sistema.',
         ];
     }
 }
