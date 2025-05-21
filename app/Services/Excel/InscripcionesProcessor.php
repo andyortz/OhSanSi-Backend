@@ -14,9 +14,11 @@ class InscripcionesProcessor
         $service = app(InscripcionService::class);
         $interesados = self::selectData($sanitizedData);
         $hoy = Carbon::now();
+        $fila = 0;
         
         foreach ($interesados as $data) {
             try {
+                $fila++;
                 //Verificamos si el olimpista ya se encuentra registrado para realizar la inscripcion
                 if(is_numeric($data['ci'])){
                     $detalle = DetalleOlimpista::where('ci_olimpista', $data['ci'])->first();
@@ -31,11 +33,19 @@ class InscripcionesProcessor
                     $resultado['inscripciones_errores'][] = [
                         'ci' => $data['ci'] ?? 'Desconocido',
                         'error' => 'El CI: "'.$data['ci'].'" del olimpista no es válido',
-                        // 'fila'=> $fila + 1
+                        'fila'=> $fila + 2
                     ];
                     continue;
                 }
-                
+                //Verificamos que tenga un nivel asociado.
+                if($data['nivel'] == null){
+                    $resultado['inscripciones_errores'][] = [
+                        'ci' => $data['ci'] ?? 'Desconocido',
+                        'error' => 'Ha ocurrido un error al intentar obtener el nivel del olimpista',
+                        // 'fila'=> $fila + 2
+                    ];
+                    continue;
+                }
                 //obtenemos el limite permitido para la olimpiada
                 $limite = DB::table('olimpiada')
                     ->where('fecha_inicio','<=', $hoy)
@@ -56,7 +66,7 @@ class InscripcionesProcessor
                 if($areasinscrito >= $limite){
                     $resultado['inscripciones_errores'][] = [
                         'ci' => $data['ci'],
-                        // 'fila'=> $fila + 2,
+                        'fila'=> $fila + 2,
                         'error' => 'El olimpista ya alcanzó el limite de inscripciones alcanzado'
                     ];
                     continue;
