@@ -39,7 +39,7 @@ class InscripcionesProcessor
                     $resultado['inscripciones_errores'][] = [
                         'ci' => $data['ci'] ?? 'Desconocido',
                         'error' => 'El CI del olimpista no es válido',
-
+                        'fila'=> $data['fila'] + 2
                     ];
                     continue;
                 }
