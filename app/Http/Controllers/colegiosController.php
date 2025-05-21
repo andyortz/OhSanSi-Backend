@@ -16,7 +16,7 @@ class colegiosController extends Controller
     }
     public function porProvincia($id)
     {
-        $colegios = Colegio::where('provincia', $id)->get();
+        $colegios = Colegio::where('id_provincia', $id)->get();
         if($colegios->isEmpty()){
             return response()->kson([
                 'message' =>'No se encontraron colegios para esta provincia.',

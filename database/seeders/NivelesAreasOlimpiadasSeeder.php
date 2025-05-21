@@ -53,7 +53,7 @@ class NivelesAreasOlimpiadasSeeder extends Seeder
             [
                 'id_olimpiada' => 1,
                 'id_area' => 4,
-                'id_nivel' => 29,
+                'id_nivel' => 27,
             ],
         ]);
     }

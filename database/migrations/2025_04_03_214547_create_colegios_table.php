@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('colegio', function (Blueprint $table) {
             $table->smallIncrements("id_colegio");
             $table->string('nombre_colegio', 100);
-            $table ->unsignedSmallInteger('provincia');
+            $table ->unsignedSmallInteger('id_provincia');
 
             // Relación a provincias
-            $table->foreign('provincia')->references('id_provincia')->on('provincia')->onDelete('restrict');
+            $table->foreign('id_provincia')->references('id_provincia')->on('provincia')->onDelete('restrict');
         });
     }
 

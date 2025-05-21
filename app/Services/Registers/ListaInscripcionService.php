@@ -11,12 +11,13 @@ class ListaInscripcionService
     {
         return DB::transaction(function () use ($ci_responsable_inscripcion, $id_olimpiada) {
             // Buscar si ya existe una lista con el mismo responsable y olimpiada
-            return ListaInscripcion::create([
-                'ci_responsable_inscripcion' => $ci_responsable_inscripcion,
-                'id_olimpiada'               => $id_olimpiada,
-                'estado'                     => 'pendiente',
-                'fecha_creacion_lista'       => now(),
-            ]);
+            $listaExistente = ListaInscripcion::where('ci_responsable_inscripcion', $ci_responsable_inscripcion)
+                ->where('id_olimpiada', $id_olimpiada)
+                ->first();
+
+            if ($listaExistente) {
+                return $listaExistente;
+            }
 
             // Crear una nueva lista
             return ListaInscripcion::create([

@@ -6,6 +6,7 @@ use App\Models\ListaInscripcion;
 use App\Models\NivelAreaOlimpiada;
 use App\Models\Pago;
 use App\Models\Persona;
+use App\Models\Inscripcion;
 
 use Illuminate\Http\Request\Request;
 use Illuminate\Support\Facades\DB;
@@ -170,7 +171,8 @@ class ListaInscripcionController extends Controller
     
             $precioUnitario = (float)$lista->olimpiada->costo;
             $montoTotal = round((float)$precioUnitario * $lista->inscripciones->count(), 2);
-    
+            $cantidad = $lista->inscripciones->count();
+
             $pago = Pago::firstOrCreate(
                 ['id_lista' => $id],
                 [
@@ -198,8 +200,11 @@ class ListaInscripcionController extends Controller
                 'pago' => [
                     'id' => $pago->id_pago,
                     'referencia' => $pago->comprobante,
-                    'unitario' => $precioUnitario,
-                    'total' => $montoTotal
+                    'monto_unitario' => $precioUnitario,
+                    'total_inscripciones' => $cantidad,
+                    'total_a_pagar' => $montoTotal,
+                    'estado' => $pago->estado,
+                    'fecha_pago' => now()
                 ],
                 'olimpista' => [
                     'ci' => $lista->inscripciones->first()->detalleOlimpista->olimpista->ci_persona,
@@ -254,7 +259,7 @@ class ListaInscripcionController extends Controller
                     'total_inscripciones' => $cantidad,
                     'total_a_pagar' => $montoTotal,
                     'estado' => $pago->estado,
-                    'fecha_pago' => $pago->fecha_pago
+                    'fecha_pago' => now()
                 ],
                 'detalle_grupo' => [
                     'participantes_unicos' => $lista->inscripciones->groupBy('id_detalle_olimpista')->count()
@@ -268,5 +273,49 @@ class ListaInscripcionController extends Controller
             ], 500);
         }
     
+    }
+    public function getById($id){
+        $listas = ListaInscripcion::with(
+            'inscripciones.detalleOlimpista.olimpista',
+            'inscripciones.detalleOlimpista.grado',
+            'inscripciones.detalleOlimpista.colegio.provincia.departamento',
+            'inscripciones.nivel.asociaciones.area')
+                ->where('estado', 'PAGADO')
+                ->where('id_olimpiada', $id)
+                ->get();
+        $data = [];
+        foreach ($listas as $lista) {
+            // Acceder al olimpista relacionado (asumiendo que hay una relación definida en el modelo)
+            $inscripciones = $lista->inscripciones;
+            foreach ($inscripciones as $inscripcion) {
+                $olimpista = $inscripcion -> detalleOlimpista;
+                $persona = $olimpista -> olimpista;
+                $grado = $olimpista -> grado;
+                $colegio = $olimpista-> colegio;
+                $provincia = $colegio -> provincia;
+                $departamento = $provincia -> departamento ?? null;
+                $nivel = $inscripcion -> nivel;
+                $area = $nivel -> asociaciones -> first() -> area;
+    
+                $data[] = [
+                    'apellidos' => $persona->apellidos,
+                    'nombres' => $persona->nombres,
+                    'ci' => $persona -> ci_persona,
+                    'colegio' => $colegio->nombre_colegio,
+                    'grado' => $grado -> nombre_grado,
+                    'departamento' => $departamento->nombre_departamento,
+                    'provincia' => $provincia-> nombre_provincia,
+                    'area' => $area->nombre,
+                    'nivel' => $nivel->nombre,
+                ];
+            }
+        }
+
+        // 3. Devolver la respuesta en JSON
+        return response()->json([
+            'success' => true,
+            'data' => $data,
+        ]);
+
     }
 }
