@@ -102,6 +102,7 @@ class DatosExcelController extends Controller
             $profesorData[$row[19]] = ProfesorResolver::extractProfesorData($row, $index);
             $areasData[] = AreaResolver::extractAreaData($row);
 
+            $row['fila'] = $index;
             $sanitizedData[] = $row;
         }
         

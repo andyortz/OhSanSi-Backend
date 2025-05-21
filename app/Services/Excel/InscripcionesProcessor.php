@@ -39,6 +39,7 @@ class InscripcionesProcessor
                     $resultado['inscripciones_errores'][] = [
                         'ci' => $data['ci'] ?? 'Desconocido',
                         'error' => 'El CI del olimpista no es válido',
+
                     ];
                     continue;
                 }
@@ -48,7 +49,7 @@ class InscripcionesProcessor
                     $resultado['inscripciones_errores'][] = [
                         'ci' => $data['ci'] ?? 'Desconocido',
                         'error' => 'El CI: "'.$data['ci'].'" del olimpista no es válido',
-                        // 'fila'=> $fila + 1
+                        'fila'=> $data['fila'] + 2
                     ];
                     continue;
                 }
@@ -57,7 +58,7 @@ class InscripcionesProcessor
                     $resultado['inscripciones_errores'][] = [
                         'ci' => $data['ci'] ?? 'Desconocido',
                         'error' => 'Ha ocurrido un error al intentar obtener el nivel del olimpista',
-                        // 'fila'=> $fila + 2
+                        'fila'=> $data['fila'] + 2
                     ];
                     continue;
                 }
@@ -81,6 +82,7 @@ class InscripcionesProcessor
                     $resultado['inscripciones_errores'][] = [
                         'ci' => $data['ci'],
                         'error' => 'El olimpista ya alcanzó el límite de inscripciones',
+                        'fila'=> $data['fila'] + 2
                     ];
                     continue;
                 }
@@ -89,11 +91,14 @@ class InscripcionesProcessor
                     ->join('detalle_olimpista', 'inscripcion.id_detalle_olimpista', 'detalle_olimpista.id_detalle_olimpista')
                     ->where('detalle_olimpista.ci_olimpista', $data['ci'])
                     ->where('inscripcion.id_nivel', $data['nivel'])
+                    ->pluck('inscripcion.id_nivel')
                     ->first();
-                if ($nivelExistente) {
+
+                if ($nivelExistente == $data['nivel']) {
                     $resultado['inscripciones_errores'][] = [
                         'ci' => $data['ci'],
-                        'error' => 'El olimpista ya está inscrito en el nivel seleccionado',
+                        'error' => 'El olimpista ya está inscrito en el nivel seleccionado ',
+                        'fila'=> $data['fila'] + 2
                     ];
                     continue;
                 }
@@ -112,7 +117,8 @@ class InscripcionesProcessor
             } catch (\Throwable $e) {
                 $resultado['inscripciones_errores'][] = [
                     'ci' => $data['ci'] ?? 'Desconocido',
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
+                    'fila'=> $data['fila'] + 2
                 ];
             }
         }
@@ -126,7 +132,8 @@ class InscripcionesProcessor
                 'ci' => $item[2],
                 'nivel' => $item[15],
                 'estado' => 'PENDIENTE',
-                'ci_tutor_academico' => $item[18] ?? null
+                'ci_tutor_academico' => $item[18] ?? null,
+                'fila' => $item['fila'] ?? null,
             ];
         })->toArray();
     }
