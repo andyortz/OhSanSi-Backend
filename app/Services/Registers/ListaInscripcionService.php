@@ -14,7 +14,7 @@ class ListaInscripcionService
             return ListaInscripcion::create([
                 'ci_responsable_inscripcion' => $ci_responsable_inscripcion,
                 'id_olimpiada'               => $id_olimpiada,
-                'estado'                     => 'pendiente',
+                'estado'                     => 'PENDIENTE',
                 'fecha_creacion_lista'       => now(),
             ]);
 
@@ -22,7 +22,7 @@ class ListaInscripcionService
             return ListaInscripcion::create([
                 'ci_responsable_inscripcion' => $ci_responsable_inscripcion,
                 'id_olimpiada'               => $id_olimpiada,
-                'estado'                     => 'pendiente',
+                'estado'                     => 'PENDIENTE',
                 'fecha_creacion_lista'       => now(),
             ]);
         });

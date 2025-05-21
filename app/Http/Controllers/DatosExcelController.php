@@ -18,6 +18,7 @@ use App\Services\Excel\TutoresProcessor;
 use App\Services\Excel\OlimpistasProcessor;
 use App\Services\Excel\ProfesoresProcessor;
 use App\Services\Excel\InscripcionesProcessor;
+use App\Services\Registers\ListaInscripcionService;
 
 class DatosExcelController extends Controller
 {
