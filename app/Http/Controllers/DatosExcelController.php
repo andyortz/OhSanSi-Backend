@@ -76,7 +76,6 @@ class DatosExcelController extends Controller
         foreach ($datos as $index => $row) {
             if (empty(array_filter($row, fn($value) => trim($value) !== ''))) continue;
 
-
             $departamento = Departamento::where('nombre_departamento', $row[5])->first();
             if (!$departamento){$this->errorFila('Departamento', $row[5], $index, $resultadoFinal); continue;}
             $row[5] = $departamento->id_departamento;
@@ -86,11 +85,11 @@ class DatosExcelController extends Controller
             $row[6] = $provincia;
 
             $colegio = ColegioResolver::resolve($row[5], $row[6]);
-            if (!$colegio){$this->errorFila('Unidad educativa', $row[7], $index, $resultadoFinal); continue;}
+            if (!$colegio){$this->errorFila('Unidad educativa', $row[7], $index, $resultadoFinal);}
             $row[7] = $colegio;
 
             $grado = GradoResolver::resolve($row[8]);
-            if (!$grado){$this->errorFila('Grado', $row[8], $index, $resultadoFinal); continue;}
+            if (!$grado){$this->errorFila('Grado', $row[8], $index, $resultadoFinal);}
             $row[8] = $grado;
 
             $nivel = NivelResolver::resolve($row[15]);

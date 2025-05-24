@@ -20,6 +20,7 @@ class OlimpistasProcessor
                 // if (empty($olimpista['cedula_identidad'])) {
                 //     throw new \Exception("El campo 'cedula_identidad' no puede ser null");
                 // }
+                
                 if (!is_numeric($olimpista['cedula_identidad'])) {
                     $resultado['olimpistas_errores'][] = [
                         'ci' => $olimpista['cedula_identidad'],
@@ -35,6 +36,14 @@ class OlimpistasProcessor
                             'fila'=>$olimpista['fila']+2
                         ];
                     continue;
+                }
+                //Validación para grado válido
+                if($olimpista['id_grado']===null){
+                    $resultado['olimpistas_errores'][] =[
+                        'ci' => $olimpista['cedula_identidad'],
+                        'message'=> 'El olimpista con cédula de identidad '-$olimpista['cedula_identidad'].' no tiene un grado válido',
+                        'fila'=>$olimpista['fila']+2
+                    ];
                 }
                 // Usar reglas y mensajes personalizados del FormRequest
                 $formRequest = new StoreOlimpistaRequest();
