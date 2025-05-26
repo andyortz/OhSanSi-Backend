@@ -38,14 +38,23 @@ class OcrExtractors
 
     public static function aclaracion(string $text): ?string
     {
+        // Caso 3: "N° PAGO-xxxx"
+        if (preg_match('/N[°º]?\s*PAGO[\s\-:]*([A-Za-z0-9]+)/iu', $text, $m)) {
+            return 'PAGO-' . trim($m[1]);
+        }
+        // Caso 1: "Aclaración: ..." en la misma línea
         if (preg_match('/Aclaraci[oó]n\s*[:\-]?\s*([^\n]+)/iu', $text, $m)) {
             return trim($m[1]);
         }
 
+        // Caso 2: "Aclaración:\n ..." en la línea siguiente
         if (preg_match('/Aclaraci[oó]n\s*[:\-]?\s*\n\s*([^\n]+)/iu', $text, $m)) {
             return trim($m[1]);
         }
 
+        
+
         return null;
     }
+
 }
