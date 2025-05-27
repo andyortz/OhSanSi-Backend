@@ -19,7 +19,7 @@ class OcrTextoParser
             'concepto'        => $this->match('/concepto\s+de\s*:?[\s\n]*(.+?)(?:\n|$)/i', $normalizado),
             'importe_literal' => $this->match('/La\s+suma\s+de\s*:?[\s\n]*([A-ZÁÉÍÓÚÑ ]{3,})/i', $normalizado),
 
-            'importe_total'   => 30, OcrExtractors::importeTotal($normalizado),
+            'importe_total'   => OcrExtractors::importeTotal($normalizado),
             'documento'       => OcrExtractors::documento($normalizado),
             'aclaracion'      => OcrExtractors::aclaracion($normalizado),
 
