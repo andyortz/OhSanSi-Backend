@@ -29,6 +29,7 @@ use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\BoletaController;
 use App\Http\Controllers\TestPreprocessorController;
 use App\Http\Controllers\PagoValidacionController;
+use App\Http\Controllers\ConsultaPagoController;
 
 
 use App\Imports\OlimpistaImport;
@@ -161,3 +162,5 @@ Route::post('/prueba-ocr', [BoletaController::class, 'procesar']);
 Route::post('/test-preprocessor', [TestPreprocessorController::class, 'test']);
 
 Route::get('/olimpistas-inscritos/{id}',[ListaInscripcionController::class, 'getById']);
+
+Route::get('/consulta-pago/{ci}', [ConsultaPagoController::class, 'verificarPorCi']);
