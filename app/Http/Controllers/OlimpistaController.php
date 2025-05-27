@@ -71,7 +71,7 @@ class OlimpistaController extends Controller
 
     public function getByCedula($cedula): JsonResponse
     {
-        // $persona = Persona::where('ci_persona', $cedula)->first();
+        
         $persona = DB::table('persona')
             ->join('detalle_olimpista', 'persona.ci_persona', '=', 'detalle_olimpista.ci_olimpista')
             ->join('grado', 'detalle_olimpista.id_grado', '=', 'grado.id_grado')
@@ -87,10 +87,10 @@ class OlimpistaController extends Controller
                 'persona.correo_electronico',
                 'persona.celular',
                 'detalle_olimpista.ci_tutor_legal',
-                'departamento.nombre_departamento',
-                'provincia.nombre_provincia',
-                'colegio.nombre_colegio',
-                'grado.nombre_grado',
+                'departamento.id_departamento',
+                'provincia.id_provincia',
+                'colegio.id_colegio',
+                'grado.id_grado',
             )
             ->first();
         
