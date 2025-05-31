@@ -28,7 +28,7 @@ class colegiosController extends Controller
 
     public function soloNombres()
     {
-        $nombres = Colegio::pluck('nombre_colegio');
+        $nombres = Colegio::select('id_colegio', 'nombre_colegio')->get();
         return response()->json($nombres, 200);
     }
 }

@@ -6,9 +6,9 @@ use App\Models\Provincia;
 
 class ProvinciaController extends Controller
 {
-     public function index()
+    public function index()
     {
-        $provincias = Provincia::pluck('nombre_provincia');
+        $provincias = Provincia::select('id_provincia', 'nombre_provincia')->get();
         return response()->json($provincias, 200);
     }
 
