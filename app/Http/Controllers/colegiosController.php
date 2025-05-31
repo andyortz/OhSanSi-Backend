@@ -25,4 +25,10 @@ class colegiosController extends Controller
         }
         return response()->json($colegios, 200);
     }
+
+    public function soloNombres()
+    {
+        $nombres = Colegio::pluck('nombre_colegio');
+        return response()->json($nombres, 200);
+    }
 }

@@ -98,7 +98,9 @@ Route::get('/areas-niveles-grados', [AreasController::class, 'areasConNivelesYGr
 
 //Colegios
 Route::get('/colegios', [ColegiosController::class, 'index']);
+Route::get('/colegios/nombres', [ColegiosController::class, 'soloNombres']); 
 Route::get('/colegios/{id}', [ColegiosController::class, 'porProvincia']);
+
 //Olimpiadas
 Route::get('/olimpiadas', [OlimpiadaGestionController::class, 'index']);
 Route::post('/olympiad-registration', [OlympiadRegistrationController::class, 'store']);
@@ -122,7 +124,7 @@ Route::get('/departamentos', [DepartamentoController::class, 'index']);
 Route::get('/provincias/{id}', [ProvinciaController::class, 'porDepartamento']);
 Route::get('/olimpistas/{id_olimpista}/olimpiadas/{id_olimpiada}/areas-disponibles', [AreasFiltroController::class, 'obtenerAreasDisponibles']);
 Route::get('/estructura-olimpiada/{id_olimpiada}', [EstructuraOlimpiadaController::class, 'obtenerEstructuraOlimpiada']);
-
+Route::get('/provincias', [ProvinciaController::class, 'index']); 
 //new db
 Route::post('/vincular-olimpista-tutor', [VincularController::class, 'registrarConParentesco']);
 Route::get('/olimpiada/abierta', [OlimpiadaController::class, 'verificarOlimpiadaAbierta']);
