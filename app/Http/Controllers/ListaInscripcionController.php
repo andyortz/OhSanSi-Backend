@@ -153,6 +153,73 @@ class ListaInscripcionController extends Controller
        ], 200);
     }
 
+    public function listasPagoPendiente($ci)
+    {
+        $responsable = Persona::where('ci_persona', $ci)
+            ->first(['nombres', 'apellidos', 'ci_persona']);
+
+        if (!$responsable) {
+            return response()->json([
+                'message' => 'No existe ninguna persona con ese CI.',
+                'ci_buscado' => $ci
+            ], 404);
+        }
+
+        // Obtén los id_lista que tengan pago pendiente (verificado = false)
+        $listasConPagoPendiente = \DB::table('lista_inscripcion')
+            ->join('pago', 'lista_inscripcion.id_lista', '=', 'pago.id_lista')
+            ->where('lista_inscripcion.ci_responsable_inscripcion', $ci)
+            ->where('pago.verificado', false);
+
+        $idsListas = $listasConPagoPendiente
+            ->pluck('lista_inscripcion.id_lista')
+            ->unique()
+            ->toArray();
+
+        if (empty($idsListas)) {
+            return response()->json([
+                'message' => 'No existen listas con pagos pendientes para este responsable.',
+                'ci_buscado' => $ci
+            ], 404);
+        }
+
+        // Trae solo las listas filtradas por esos IDs
+        $listas = ListaInscripcion::with([
+            'inscripciones.detalleOlimpista.olimpista:nombres,apellidos,ci_persona',
+            'inscripciones.nivel.asociaciones.area:nombre,id_area'
+        ])
+        ->whereIn('id_lista', $idsListas)
+        ->get(['id_lista', 'estado', 'ci_responsable_inscripcion']);
+
+        $resultado = [];
+        foreach ($listas as $lista) {
+            $inscripciones = $lista->inscripciones;
+            $allSameDetalle = $inscripciones->count() > 0 && 
+                $inscripciones->every(function ($insc) use ($inscripciones) {
+                    return $insc->id_detalle_olimpista === $inscripciones->first()->id_detalle_olimpista;
+                });
+
+            $item = [
+                'id_lista' => $lista->id_lista,
+                'estado' => $lista->estado,
+                'detalle' => $allSameDetalle ? $this->formatoIndividual($inscripciones) : $this->formatoGrupal($inscripciones)
+            ];
+            $resultado[] = $item;
+        }
+
+        return response()->json([
+            'responsable' => [
+                'ci' => $responsable->ci_persona,
+                'nombres' => $responsable->nombres,
+                'apellidos' => $responsable->apellidos
+            ],
+            'listas' => $resultado
+        ], 200);
+    }
+
+
+
+
     public function individual($id){
         try {
             $lista = ListaInscripcion::with([
