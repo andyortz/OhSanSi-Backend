@@ -58,7 +58,7 @@ class BoletaController extends Controller
         Storage::disk('public')->delete($relativePath);
 
         return response()->json([
-            //'data' => $fields, //uncomment this line to see the parsed fields
+            'data' => $fields, //uncomment this line to see the parsed fields
             'verificacion_pago' => $verificacion,
             //'raw' => $rawText, //uncoment this line to see the raw text
         ]);

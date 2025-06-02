@@ -25,9 +25,10 @@ class VerificacionPagoService
             ];
         }
 
-        $lista = ListaInscripcion::where('ci_responsable_inscripcion', $ci)->first();
+        // Obtener todas las listas asociadas al CI del responsable
+        $listas = ListaInscripcion::where('ci_responsable_inscripcion', $ci)->pluck('id_lista');
 
-        if (!$lista) {
+        if ($listas->isEmpty()) {
             return [
                 'verificado' => false,
                 'mensaje' => 'El CI proporcionado no pertenece a ninguna lista de inscripción.',
@@ -35,20 +36,21 @@ class VerificacionPagoService
             ];
         }
 
-        $pago = Pago::where('id_lista', $lista->id_lista)
-                    ->where(function ($q) use ($comprobante) {
-                        $q->where('comprobante', $comprobante);
-                    })
-                    ->where(function ($q) use ($monto) {
-                        $q->where('monto_total', $monto);
-                    })
-                    ->first();
+        // Buscar el pago que coincida con cualquiera de las listas, el comprobante y el monto
+        $pago = Pago::whereIn('id_lista', $listas)
+                ->where('comprobante', $comprobante)
+                ->where('monto_total', $monto)
+                ->first();
 
         if (!$pago) {
             $errores = [];
 
-            $comprobanteOk = Pago::where('id_lista', $lista->id_lista)->where('comprobante', $comprobante)->exists();
-            $montoOk = Pago::where('id_lista', $lista->id_lista)->where('monto_total', $monto)->exists();
+            $comprobanteOk = Pago::whereIn('id_lista', $listas)
+                                ->where('comprobante', $comprobante)
+                                ->exists();
+            $montoOk = Pago::whereIn('id_lista', $listas)
+                            ->where('monto_total', $monto)
+                            ->exists();
 
             if (!$comprobanteOk) $errores[] = 'Comprobante incorrecto o no coincide con el CI';
             if (!$montoOk) $errores[] = 'Monto incorrecto o no coincide con el CI';
@@ -74,11 +76,13 @@ class VerificacionPagoService
             ];
         }
 
+        // Marcar el pago como verificado
         $pago->verificado = true;
         $pago->verificado_en = now();
         $pago->verificado_por = auth()->user()->name ?? 'sistema';
         $pago->save();
 
+        // Actualizar el estado de la lista si corresponde
         $lista = $pago->listaInscripcion ?? ListaInscripcion::find($pago->id_lista);
 
         if ($lista && $lista->estado === 'PENDIENTE') {
