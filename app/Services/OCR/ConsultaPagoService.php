@@ -8,23 +8,25 @@ use App\Models\Pago;
 class ConsultaPagoService
 {
     /**
-     * Verifica si un CI tiene al menos un pago NO verificado asociado.
+     * Verifica si un CI tiene al menos un pago no verificado.
      *
      * @param string $ci
      * @return array [existe => bool, mensaje => string]
      */
     public function tienePagos(string $ci): array
     {
-        $lista = ListaInscripcion::where('ci_responsable_inscripcion', $ci)->first();
+        // Obtener todas las listas asociadas al CI
+        $listas = ListaInscripcion::where('ci_responsable_inscripcion', $ci)->pluck('id_lista');
 
-        if (!$lista) {
+        if ($listas->isEmpty()) {
             return [
                 'existe' => false,
                 'mensaje' => 'No se encontró una lista de inscripción con ese CI.'
             ];
         }
 
-        $existePagoNoVerificado = Pago::where('id_lista', $lista->id_lista)
+        // Verificar si hay al menos un pago no verificado en cualquiera de esas listas
+        $existePagoNoVerificado = Pago::whereIn('id_lista', $listas)
             ->where('verificado', false)
             ->exists();
 
@@ -40,4 +42,5 @@ class ConsultaPagoService
             'mensaje' => 'El CI tiene al menos un pago pendiente de verificación.'
         ];
     }
+
 }
