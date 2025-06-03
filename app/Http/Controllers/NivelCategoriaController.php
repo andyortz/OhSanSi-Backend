@@ -233,12 +233,28 @@ class NivelCategoriaController extends Controller
         }
     }
 
-    public function index()
+    public function getById($idOlimpiada)
     {
-        // Obtener solo niveles que tienen al menos un grado relacionado
-        $niveles = NivelCategoria::whereHas('grados')->with('grados')->get();
-        
-        // Formatear la respuesta
+        $niveles = NivelCategoria::whereHas('grados', function($query) use ($idOlimpiada) {
+                // Filtro opcional por olimpiada
+                if ($idOlimpiada) {
+                    $query->whereHas('nivelGradoPivot', function($q) use ($idOlimpiada) {
+                        $q->where('id_olimpiada', $idOlimpiada)
+                        ->orWhereNull('id_olimpiada');
+                    });
+                }
+            })
+             ->with(['grados' => function($query) {
+                $query->withPivot('id_olimpiada'); // Mantenemos el pivot original
+            }, 'nivelGradoPivot.olimpiada' => function($query) use ($idOlimpiada) {
+                // Filtramos las olimpiadas si se especificó un ID
+                if ($idOlimpiada) {
+                    $query->where('id_olimpiada', $idOlimpiada)
+                        ->orWhereNull('id_olimpiada');
+                }
+            }])
+            ->get();
+
         $response = $niveles->map(function ($nivel) {
             return [
                 'id_nivel' => $nivel->id_nivel,
@@ -246,20 +262,87 @@ class NivelCategoriaController extends Controller
                 'grados' => $nivel->grados->map(function ($grado) {
                     return [
                         'id_grado' => $grado->id_grado,
-                        'nombre_grado' => $grado->nombre_grado
+                        'nombre_grado' => $grado->nombre_grado,
                     ];
-                })->unique('id_grado')->values() // Elimina duplicados si los hubiera
+                })->unique('id_grado')->values()
             ];
         });
-        
+
         return response()->json($response);
     }
+
+    public function index()
+    {
+        $fechaActual = now(); // O Carbon::now() si usas Carbon
+        
+        $niveles = NivelCategoria::whereHas('grados.nivelGradoPivot.olimpiada', function($query) use ($fechaActual) {
+                $query->where('fecha_inicio', '>=', $fechaActual);
+            })
+            ->with(['grados' => function($query) {
+                $query->withPivot('id_olimpiada');
+            }, 'nivelGradoPivot.olimpiada' => function($query) use ($fechaActual) {
+                $query->where('fecha_inicio', '>=', $fechaActual)
+                    ->select('id_olimpiada', 'nombre_olimpiada', 'fecha_inicio', 'fecha_fin');
+            }])
+            ->get();
+
+        $response = $niveles->map(function ($nivel) {
+            return [
+                'id_nivel' => $nivel->id_nivel,
+                'nombre_nivel' => $nivel->nombre,
+                'nombre_olimpiada' => optional($nivel->nivelGradoPivot->first()->olimpiada)->nombre_olimpiada ?? null,
+                'grados' => $nivel->grados->map(function ($grado) {
+                    return [
+                        'id_grado' => $grado->id_grado,
+                        'nombre_grado' => $grado->nombre_grado
+                    ];
+                })->unique('id_grado')->values()
+            ];
+        });
+
+        return response()->json($response);
+    }
+
+    // public function index()
+    // {
+    //     $niveles = NivelCategoria::whereHas('grados')
+    //         ->with(['grados' => function($query) {
+    //             $query->withPivot('id_olimpiada');
+    //         }, 'nivelGradoPivot.olimpiada'])
+    //         ->get();
+
+    //     $response = $niveles->map(function ($nivel) {
+    //         return [
+    //             'id_nivel' => $nivel->id_nivel,
+    //             'nombre_nivel' => $nivel->nombre,
+    //             'nombre_olimpiada' => optional($nivel->nivelGradoPivot->first()->olimpiada)->nombre_olimpiada ?? null,
+    //             'grados' => $nivel->grados->map(function ($grado) {
+    //                 return [
+    //                     'id_grado' => $grado->id_grado,
+    //                     'nombre_grado' => $grado->nombre_grado
+    //                 ];
+    //             })->unique('id_grado')->values()
+    //         ];
+    //     });
+
+    //     return response()->json($response);
+    // }
+
     public function index2()
     {
         $niveles = NivelCategoria::all();
 
         return response()->json([
             'message' => 'Lista de niveles cargada correctamente.',
+            'niveles' => $niveles
+        ], 200);
+    }
+    public function index3()
+    {
+        $niveles = NivelCategoria::where('id_nivel', '>', 12)->get();
+        
+        return response()->json([
+            'message' => 'Lista de niveles cargada correctamente. (a partir del id 13).',
             'niveles' => $niveles
         ], 200);
     }

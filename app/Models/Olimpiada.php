@@ -34,4 +34,9 @@ class Olimpiada extends Model
     {
         return $this->hasMany(DetalleOlimpista::class, 'id_olimpiada', 'id_olimpiada');
     }
+
+    public function nivelesGrados()
+    {
+        return $this->hasMany(NivelGrado::class, 'id_olimpiada', 'id_olimpiada');
+    }
 }

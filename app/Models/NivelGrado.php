@@ -15,6 +15,7 @@ class NivelGrado extends Model
     protected $fillable = [
         'id_grado',
         'id_nivel',
+        'id_olimpiada',
     ];
 
     public function grado()
@@ -26,9 +27,15 @@ class NivelGrado extends Model
     {
         return $this->belongsTo(NivelCategoria::class, 'id_nivel');
     }
+
     public function nivelAreas()
     {
         // hasMany(Modelo, llave_foránea_en_la_OTRA_tabla)
         return $this->hasMany(NivelAreaOlimpiada::class, 'id_nivel', 'id_nivel');
     }
+    
+    public function olimpiada()
+    {
+        return $this->belongsTo(Olimpiada::class, 'id_olimpiada', 'id_olimpiada');
+    } 
 }

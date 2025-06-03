@@ -18,12 +18,20 @@ class NivelCategoria extends Model
     {
         $this->attributes['nombre'] = strtoupper($value);
     }
+
     public function grados()
     {
-        return $this->belongsToMany(Grado::class, 'grado_nivel', 'id_nivel', 'id_grado');
+        return $this->belongsToMany(Grado::class, 'grado_nivel', 'id_nivel', 'id_grado')->withPivot('id_olimpiada');
     }
+
     public function asociaciones()
     {
         return $this->hasMany(NivelAreaOlimpiada::class, 'id_nivel');
     }
+    
+    public function nivelGradoPivot()
+    {
+        return $this->hasMany(NivelGrado::class, 'id_nivel');
+    }
+    
 }
