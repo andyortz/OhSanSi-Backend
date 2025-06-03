@@ -61,11 +61,14 @@ class ProfesoresProcessor
                     );
                     
                     if ($validator->fails()) {
-                        $resultado['profesores_errores'][] = [
-                            'ci' => $profesor['ci'],
-                            'error' => $validator->errors()->all(),
-                            'fila' => $profesor['fila'] + 2
-                        ];
+                        foreach($validator -> errors()->all() as $mensaje){
+                            self::agregarErrorProfesor(
+                                $resultado,
+                                $profesor['ci'] ?? 'Desconocido',
+                                $mensaje,
+                                $profesor['fila'] + 2
+                            );
+                        }
                         continue;
                     }
                     // Registro si la validación fue exitosa
@@ -76,10 +79,46 @@ class ProfesoresProcessor
             }catch (\Throwable $e) {
                 $resultado['profesores_errores'][] = [
                     'profesor' => $profesor['ci'] ?? 'Desconocido',
-                    'fila' => $profesor['fila'] + 2,
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
+                    'fila' => $profesor['fila'] + 2
                 ];
             }
+        }
+    }
+    private static function agregarErrorProfesor(array &$resultado, $ci, $mensaje, $fila)
+    {
+        // Buscar si ya hay un error con ese CI y fila
+        $indice = null;
+        foreach ($resultado['profesores_errores'] as $i => $error) {
+            if ($error['ci'] == $ci && $error['fila'] == $fila) {
+                $indice = $i;
+                break;
+            }
+        }
+
+        if ($indice !== null) {
+            // Ya existe, agregar nuevo mensaje
+            if (!isset($resultado['profesores_errores'][$indice]['errores'])) {
+                $resultado['profesores_errores'][$indice]['errores'] = [];
+                if (isset($resultado['profesores_errores'][$indice]['error'])) {
+                    // Migrar error plano si existe
+                    $resultado['profesores_errores'][$indice]['errores'][] = $resultado['profesores_errores'][$indice]['error'];
+                    unset($resultado['profesores_errores'][$indice]['error']);
+                }
+                if (isset($resultado['profesores_errores'][$indice]['message'])) {
+                    $resultado['profesores_errores'][$indice]['errores'][] = $resultado['profesores_errores'][$indice]['message'];
+                    unset($resultado['profesores_errores'][$indice]['message']);
+                }
+            }
+
+            $resultado['profesores_errores'][$indice]['errores'][] = $mensaje;
+        } else {
+            // No existe, crear nuevo
+            $resultado['profesores_errores'][] = [
+                'ci' => $ci,
+                'errores' => [$mensaje],
+                'fila' => $fila
+            ];
         }
     }
 }
