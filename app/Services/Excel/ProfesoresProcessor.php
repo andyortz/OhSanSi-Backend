@@ -81,7 +81,7 @@ class ProfesoresProcessor
             }catch (\Throwable $e) {
                 $resultado['profesores_errores'][] = [
                     'profesor' => $profesor['ci'] ?? 'Desconocido',
-                    'error' => $e->getMessage(),
+                    'message' => $e->getMessage(),
                     'fila' => $profesor['fila'] + 2
                 ];
             }
@@ -100,12 +100,12 @@ class ProfesoresProcessor
 
         if ($indice !== null) {
             // Ya existe, agregar nuevo mensaje
-            if (!isset($resultado['profesores_errores'][$indice]['errores'])) {
-                $resultado['profesores_errores'][$indice]['errores'] = [];
-                if (isset($resultado['profesores_errores'][$indice]['error'])) {
+            if (!isset($resultado['profesores_errores'][$indice]['message'])) {
+                $resultado['profesores_errores'][$indice]['message'] = [];
+                if (isset($resultado['profesores_errores'][$indice]['message'])) {
                     // Migrar error plano si existe
-                    $resultado['profesores_errores'][$indice]['errores'][] = $resultado['profesores_errores'][$indice]['error'];
-                    unset($resultado['profesores_errores'][$indice]['error']);
+                    $resultado['profesores_errores'][$indice]['message'][] = $resultado['profesores_errores'][$indice]['message'];
+                    unset($resultado['profesores_errores'][$indice]['message']);
                 }
                 if (isset($resultado['profesores_errores'][$indice]['message'])) {
                     $resultado['profesores_errores'][$indice]['errores'][] = $resultado['profesores_errores'][$indice]['message'];
@@ -113,12 +113,12 @@ class ProfesoresProcessor
                 }
             }
 
-            $resultado['profesores_errores'][$indice]['errores'][] = $mensaje;
+            $resultado['profesores_errores'][$indice]['message'][] = $mensaje;
         } else {
             // No existe, crear nuevo
             $resultado['profesores_errores'][] = [
                 'ci' => $ci,
-                'errores' => [$mensaje],
+                'message' => [$mensaje],
                 'fila' => $fila
             ];
         }

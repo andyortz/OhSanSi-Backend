@@ -42,7 +42,7 @@ class TutoresProcessor
                 if ($validator->fails()) {
                     $resultado['tutores_errores'][] = [
                         'ci' => $tutor['ci'] ?? 'Desconocido',
-                        'error' => $validator->errors()->all(),
+                        'message' => $validator->errors()->all(),
                         'fila' => $tutor['fila'] + 2
                     ];
                     continue;
@@ -56,7 +56,7 @@ class TutoresProcessor
             } catch (\Throwable $e) {
                 $resultado['tutores_errores'][] = [
                     'ci' => $tutor['ci'],
-                    'error' => $e->getMessage(),
+                    'message' => $e->getMessage(),
                     'fila' => $tutor['fila'] + 2
                 ];
             }

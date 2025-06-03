@@ -33,7 +33,7 @@ class OlimpistasProcessor
                     if(Persona::where('ci_persona', $olimpista['cedula_identidad'])->exists()){
                         $resultado['olimpistas_guardados'][] = [
                             'ci' => $olimpista['cedula_identidad'],
-                            'error' => 'La cédula de identidad "'.$olimpista['cedula_identidad'].'" ya está registrada',
+                            'message' => 'La cédula de identidad "'.$olimpista['cedula_identidad'].'" ya está registrada',
                             'fila' => $olimpista['fila'] + 2
                         ];
                         continue;
@@ -118,7 +118,7 @@ class OlimpistasProcessor
                     } else {
                         $resultado['olimpistas_errores'][] = [
                             'ci' => $olimpista['cedula_identidad'],
-                            'error' => $response->getContent(),
+                            'message' => $response->getContent(),
                             'fila' => $olimpista['fila'] + 2
                         ];
                     }
@@ -134,7 +134,7 @@ class OlimpistasProcessor
             } catch (\Throwable $e) {
                 $resultado['olimpistas_errores'][] = [
                     'ci' => $olimpista['cedula_identidad'] ?? 'desconocido',
-                    'error' => json_encode(['error' => $e->getMessage()]),
+                    'message' => json_encode(['error' => $e->getMessage()]),
                     'fila' => $olimpista['fila'] + 2
                 ];
             }
@@ -153,12 +153,12 @@ class OlimpistasProcessor
 
         if ($indice !== null) {
             // Ya existe, agregar nuevo mensaje
-            if (!isset($resultado['olimpistas_errores'][$indice]['errores'])) {
-                $resultado['olimpistas_errores'][$indice]['errores'] = [];
-                if (isset($resultado['olimpistas_errores'][$indice]['error'])) {
+            if (!isset($resultado['olimpistas_errores'][$indice]['message'])) {
+                $resultado['olimpistas_errores'][$indice]['message'] = [];
+                if (isset($resultado['olimpistas_errores'][$indice]['message'])) {
                     // Migrar error plano si existe
-                    $resultado['olimpistas_errores'][$indice]['errores'][] = $resultado['olimpistas_errores'][$indice]['error'];
-                    unset($resultado['olimpistas_errores'][$indice]['error']);
+                    $resultado['olimpistas_errores'][$indice]['message'][] = $resultado['olimpistas_errores'][$indice]['message'];
+                    unset($resultado['olimpistas_errores'][$indice]['message']);
                 }
                 if (isset($resultado['olimpistas_errores'][$indice]['message'])) {
                     $resultado['olimpistas_errores'][$indice]['errores'][] = $resultado['olimpistas_errores'][$indice]['message'];
@@ -166,12 +166,12 @@ class OlimpistasProcessor
                 }
             }
 
-            $resultado['olimpistas_errores'][$indice]['errores'][] = $mensaje;
+            $resultado['olimpistas_errores'][$indice]['message'][] = $mensaje;
         } else {
             // No existe, crear nuevo
             $resultado['olimpistas_errores'][] = [
                 'ci' => $ci,
-                'errores' => [$mensaje],
+                'message' => [$mensaje],
                 'fila' => $fila
             ];
         }

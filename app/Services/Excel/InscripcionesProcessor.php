@@ -28,7 +28,7 @@ class InscripcionesProcessor
         if (!$detalle) {
             $resultado['inscripciones_errores'][] = [
                 // 'ci' => $primerCI?? 'Desconocido',
-                'error' => 'Complete los campos campos correctamente antes de inscribir',
+                'message' => 'Complete los campos campos correctamente antes de inscribir',
                 // 'fila' => $sanitizedData['fila'] + 2
             ];
             return;
@@ -134,7 +134,7 @@ class InscripcionesProcessor
             } catch (\Throwable $e) {
                 $resultado['inscripciones_errores'][] = [
                     'ci' => $data['ci'] ?? 'Desconocido',
-                    'error' => $e->getMessage(),
+                    'message' => $e->getMessage(),
                     'fila'=> $data['fila'] + 2
                 ];
             }
@@ -168,12 +168,12 @@ class InscripcionesProcessor
 
         if ($indice !== null) {
             // Ya existe, agregar nuevo mensaje
-            if (!isset($resultado['inscripciones_errores'][$indice]['errores'])) {
-                $resultado['inscripciones_errores'][$indice]['errores'] = [];
-                if (isset($resultado['inscripciones_errores'][$indice]['error'])) {
+            if (!isset($resultado['inscripciones_errores'][$indice]['message'])) {
+                $resultado['inscripciones_errores'][$indice]['message'] = [];
+                if (isset($resultado['inscripciones_errores'][$indice]['message'])) {
                     // Migrar error plano si existe
-                    $resultado['inscripciones_errores'][$indice]['errores'][] = $resultado['inscripciones_errores'][$indice]['error'];
-                    unset($resultado['inscripciones_errores'][$indice]['error']);
+                    $resultado['inscripciones_errores'][$indice]['message'][] = $resultado['inscripciones_errores'][$indice]['message'];
+                    unset($resultado['inscripciones_errores'][$indice]['message']);
                 }
                 if (isset($resultado['inscripciones_errores'][$indice]['message'])) {
                     $resultado['inscripciones_errores'][$indice]['errores'][] = $resultado['inscripciones_errores'][$indice]['message'];
@@ -181,12 +181,12 @@ class InscripcionesProcessor
                 }
             }
 
-            $resultado['inscripciones_errores'][$indice]['errores'][] = $mensaje;
+            $resultado['inscripciones_errores'][$indice]['message'][] = $mensaje;
         } else {
             // No existe, crear nuevo
             $resultado['inscripciones_errores'][] = [
                 'ci' => $ci,
-                'errores' => [$mensaje],
+                'message' => [$mensaje],
                 'fila' => $fila
             ];
         }
