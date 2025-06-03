@@ -23,10 +23,10 @@ class InscripcionesImport
         foreach ($rows as $index => $row) {
             $rowArray = array_values(array_slice($row->toArray(), 0, 21));
 
-            if (empty(array_filter($rowArray))) {
-                logger()->info("Row $index is empty. Stopping the import.");
-                continue;
-            }
+            // if (empty(array_filter($rowArray))) {
+            //     logger()->info("Row $index is empty. Stopping the import.");
+            //     continue;
+            // }
 
             // Convertir fecha si viene como número serial
             if (isset($rowArray[3]) && is_numeric($rowArray[3])) {

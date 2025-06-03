@@ -157,7 +157,7 @@ class DatosExcelController extends Controller
     {
         $resultado[$campo."_errores"][] = [
             // 'ci' => $tutor['ci'] ?? 'Desconocido',
-            'error' => "$campo inválido o no encontrado: '$valor'",
+            'error' => "$campo inválido o no encontrado.",
             'fila' => $fila + 2
         ];
     }
