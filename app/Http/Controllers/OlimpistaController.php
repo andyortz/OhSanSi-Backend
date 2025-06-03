@@ -41,7 +41,7 @@ class OlimpistaController extends Controller
                 'cedula_identidad' => 'required|integer|unique:persona,ci_persona',
                 'correo_electronico' => 'required|email|max:100',
                 'fecha_nacimiento' => 'required|date',
-                'unidad_educativa' => 'required|string|max:255',
+                'unidad_educativa' => 'required|integer',
                 'id_grado' => 'required|exists:grado,id_grado', 
                 'celular' => 'nullable|string|max:8',
                 'ci_tutor' => 'required',

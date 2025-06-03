@@ -29,10 +29,12 @@ class ProfesoresProcessor
                 $llenos = array_filter($campos, fn($valor) => $valor !== null && $valor !== '');
 
                 if (count($llenos) > 0 && count($llenos) < count($campos)) {
-                    $resultado['profesores_errores'][] = [
-                        'fila' => $profesor['fila'] + 2,
-                        'error' => 'Debe completar todos los campos del profesor si va a llenar alguno.',
-                    ];
+                    agregarErrorProfesor(
+                        $resultado,
+                        $profesor['ci'] ?? 'Desconocido',
+                        'Debe completar todos los campos del profesor si va a llenar alguno.',
+                        $profesor['fila'] + 2
+                    );
                     continue;
                 }else if(count($llenos) == 5){
                     if (is_numeric($profesor['ci']) && Persona::where('ci_persona', $profesor['ci'])->exists()) {

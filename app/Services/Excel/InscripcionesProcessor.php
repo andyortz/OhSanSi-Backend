@@ -46,7 +46,8 @@ class InscripcionesProcessor
         //         'ci_tutor_academico' => $item[18] ?? null,
         //         'fila' => $item['fila'] ?? null,
                 //validacion de nivel
-                $nivel = NivelResolver::resolve($data['nivel']);
+                $data['nivel'] = NivelResolver::resolve($data['nivel']);
+
                 if (!is_numeric($data['ci'])) {
                     self::agregarErrorInscripcion(
                         $resultado,
@@ -59,7 +60,7 @@ class InscripcionesProcessor
 
                 
                 //Verificamos que tenga un nivel asociado.
-                if($nivel == null){
+                if($data['nivel'] == null){
                     self::agregarErrorInscripcion(
                         $resultado,
                         $data['ci'],
@@ -106,11 +107,11 @@ class InscripcionesProcessor
                     $nivelExistente = DB::table('inscripcion')
                         ->join('detalle_olimpista', 'inscripcion.id_detalle_olimpista', 'detalle_olimpista.id_detalle_olimpista')
                         ->where('detalle_olimpista.ci_olimpista', $data['ci'])
-                        ->where('inscripcion.id_nivel', $nivel)
+                        ->where('inscripcion.id_nivel', $data['nivel'])
                         ->pluck('inscripcion.id_nivel')
                         ->first();
 
-                    if ($nivelExistente == $nivel) {
+                    if ($nivelExistente == $data['nivel']) {
                         $resultado['inscripciones_errores'][] = [
                             'ci' => $data['ci'],
                             'error' => 'El olimpista ya está inscrito en el nivel seleccionado',
@@ -125,7 +126,7 @@ class InscripcionesProcessor
 
                     $resultado['inscripciones_guardadas'][] = [
                         'ci' => $data['ci'],
-                        'nivel' => $nivel,
+                        'nivel' => $data['nivel'],
                         'id_lista' => $inscripcion->id_lista ?? null,
                     ];
                 }

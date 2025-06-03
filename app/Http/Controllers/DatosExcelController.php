@@ -69,8 +69,6 @@ class DatosExcelController extends Controller
             'olimpistas_guardados' => [], 'olimpistas_errores' => [],
             'profesores_guardados' => [], 'profesores_errores' => [],
             'inscripciones_guardadas' => [], 'inscripciones_errores' => [],
-            'Departamento_errores' => [], 'Provincia_errores' => [],
-            'Colegio_errores' => [], 'Grado_errores' => [], 'Nivel_errores' => [],
         ];
 
         foreach ($datos as $index => $row) {

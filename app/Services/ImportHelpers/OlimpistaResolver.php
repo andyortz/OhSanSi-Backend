@@ -17,7 +17,7 @@ class OlimpistaResolver
     public static function extractOlimpistaData(array $row, $fila): array
     {
         // Convertir la unidad educativa a string
-        $unidadEducativa = (string) $row[7];
+        $unidadEducativa =$row[7];
 
         // Procesar la fecha de nacimiento
         $fechaNacimiento = self::normalizarFecha($row[3], $fila);
