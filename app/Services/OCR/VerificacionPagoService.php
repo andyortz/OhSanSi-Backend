@@ -86,7 +86,7 @@ class VerificacionPagoService
         $lista = $pago->listaInscripcion ?? ListaInscripcion::find($pago->id_lista);
 
         if ($lista && $lista->estado === 'PENDIENTE') {
-            $lista->estado = 'REGISTRADO';
+            $lista->estado = 'PAGADO';
             $lista->save();
         }
 
