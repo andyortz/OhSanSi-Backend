@@ -6,7 +6,7 @@ use App\Models\Colegio;
 
 class ColegioResolver
 {
-    public static function resolve(int $idDepartamento, int $idProvincia): int
+    public static function resolve(int $idProvincia): int
     {
         $colegio = Colegio::where('id_provincia', $idProvincia)->first();
 

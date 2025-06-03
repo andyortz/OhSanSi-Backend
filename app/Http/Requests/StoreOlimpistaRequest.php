@@ -49,7 +49,6 @@ class StoreOlimpistaRequest extends FormRequest
         'correo_electronico.max' => 'El correo electrónico del olimpista no debe superar los 100 caracteres.',
         'correo_electronico.regex' => 'El correo electrónico del olimpista contiene caracteres no válidos.',
 
-        'unidad_educativa.string' => 'La unidad educativa debe ser un texto.',
         'unidad_educativa.required' => 'La unidad educativa es obligatoria.',
         'unidad_educativa.integer' => 'La unidad educativa debe ser un número.',
         

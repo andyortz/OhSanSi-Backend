@@ -4,6 +4,7 @@ namespace App\Services\ImportHelpers;
 
 use Carbon\Carbon;
 
+
 class OlimpistaResolver
 {
     /**
@@ -19,7 +20,7 @@ class OlimpistaResolver
         $unidadEducativa = (string) $row[7];
 
         // Procesar la fecha de nacimiento
-        $fechaNacimiento = self::normalizarFecha($row[3]);
+        $fechaNacimiento = self::normalizarFecha($row[3], $fila);
 
         return [
             'nombres' => $row[0],
@@ -27,6 +28,8 @@ class OlimpistaResolver
             'cedula_identidad' => $row[2],
             'fecha_nacimiento' => $fechaNacimiento,
             'correo_electronico' => $row[4],
+            'departamento' => $row[5],
+            'provincia' => $row[6],
             'unidad_educativa' => $unidadEducativa,
             'id_grado' => $row[8],
             'ci_tutor' => $row[11],
@@ -34,7 +37,7 @@ class OlimpistaResolver
         ];
     }
 
-    private static function normalizarFecha($valor): string
+    private static function normalizarFecha($valor, $fila): string
     {
         if (is_numeric($valor)) {
             return self::excelDateToDateString((int) $valor);
@@ -46,7 +49,7 @@ class OlimpistaResolver
         }
 
         // Si falla, lanzar error
-        throw new \Exception("Formato de fecha no reconocido: '$valor'");
+        throw new \Exception("Formato de fecha no reconocido, fila " . ($fila + 2));
     }
 
 
