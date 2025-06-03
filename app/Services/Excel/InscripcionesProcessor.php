@@ -19,12 +19,13 @@ class InscripcionesProcessor
 
         // Obtener CI de un olimpista para encontrar la olimpiada
         $primerCI = $interesados[0]['ci'] ?? null;
-        $detalle = \App\Models\DetalleOlimpista::where('ci_olimpista', $primerCI)->first();
+        $detalle = DetalleOlimpista::where('ci_olimpista', $primerCI)->first();
 
         if (!$detalle) {
             $resultado['inscripciones_errores'][] = [
-                'ci' => $primerCI,
-                'error' => 'No se pudo obtener la olimpiada para crear la lista'
+                // 'ci' => $primerCI?? 'Desconocido',
+                'error' => 'No hay una olimpiada activa',
+                // 'fila' => $sanitizedData['fila'] + 2
             ];
             return;
         }
