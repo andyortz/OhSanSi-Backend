@@ -117,7 +117,7 @@ class DatosExcelController extends Controller
 
             // Validar ahora que el responsable ya esté registrado
             if (!Persona::where('ci_persona', $ci_responsable)->exists()) {
-                throw new \Exception("El CI del responsable no existe en la base de datos.");
+                throw new \Exception("EL CI del responsable no se encuentra registrado");
             }
 
             // Registrar inscripciones con la lista asociada
