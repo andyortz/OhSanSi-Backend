@@ -77,7 +77,7 @@ class OlimpistasProcessor
                         self::agregarErrorOlimpista(
                             $resultado,
                             $olimpista['cedula_identidad'],
-                            'El grado "'.$olimpista['id_grado'].'" no es válido',
+                            'El grado "'.$olimpista['id_grado'].'" no es válido, formato esperado: "1ro Secundaria", "3ro Primaria", etc.',
                             $olimpista['fila'] + 2
                         );
                         $olimpista['id_grado'] = null; // Asignar null si no es válido
