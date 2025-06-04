@@ -117,51 +117,69 @@ class VerificarInscripcionController extends Controller
             'total_inscripciones' => $total
         ]);
     }
+    
     public function getInscripcionesPorCI($ci)
     {
         try {
             // 1. Buscar el detalle olimpista
             $detalle = DetalleOlimpista::where('ci_olimpista', $ci)->first();
-    
+
             if (!$detalle) {
                 return response()->json([
                     'success' => false,
                     'message' => 'No se encontró el olimpista'
                 ], 404);
             }
-    
-            // 2. Obtener inscripciones con relaciones necesarias
+
+            // 2. Obtener la olimpiada actual
+            $olimpiadaActual = Olimpiada::whereDate('fecha_inicio', '<=', now())
+                ->whereDate('fecha_fin', '>=', now())
+                ->first();
+
+            if (!$olimpiadaActual) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No hay una olimpiada activa actualmente'
+                ], 404);
+            }
+
+            // 3. Obtener inscripciones con relaciones necesarias
             $inscripciones = Inscripcion::with([
-                'nivel:id_nivel,nombre', // Solo necesitamos estos campos
-                'nivel.asociaciones.area:id_area,nombre'
+                'nivel:id_nivel,nombre',
+                'nivel.asociaciones' => function($query) use ($olimpiadaActual) {
+                    $query->where('id_olimpiada', $olimpiadaActual->id_olimpiada)
+                        ->with('area:id_area,nombre');
+                }
             ])
             ->where('id_detalle_olimpista', $detalle->id_detalle_olimpista)
             ->get();
-    
-            // 3. Formatear la respuesta
+
+            // 4. Formatear la respuesta
             $response = [
-                'ci_olimpista' => $ci,
+                
                 'inscripciones' => $inscripciones->map(function ($inscripcion) {
+                    // Filtrar solo asociaciones válidas (no null)
+                    $asociacionValida = $inscripcion->nivel->asociaciones->firstWhere('area', '!=', null);
+                    
                     return [
                         'id_inscripcion' => $inscripcion->id_inscripcion,
                         'nivel' => $inscripcion->nivel ? [
                             'id_nivel' => $inscripcion->nivel->id_nivel,
                             'nombre' => $inscripcion->nivel->nombre
                         ] : null,
-                        'area' => $inscripcion->nivel->asociaciones->first() ? [
-                            'id_area' => $inscripcion->nivel->asociaciones->first()->area->id_area,
-                            'nombre' => $inscripcion->nivel->asociaciones->first()->area->nombre
+                        'area' => $asociacionValida ? [
+                            'id_area' => $asociacionValida->area->id_area,
+                            'nombre' => $asociacionValida->area->nombre
                         ] : null
                     ];
                 })
             ];
-    
+
             return response()->json([
                 'success' => true,
                 'data' => $response
             ]);
-    
-            
+
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

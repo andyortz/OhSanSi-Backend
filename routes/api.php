@@ -56,14 +56,19 @@ Route::post('/asociar-grados-nivel', [NivelCategoriaController::class,'asociarGr
 // Grados
 Route::get('/grados', [GradosController::class, 'index']);
 
-Route::get('/grados-niveles', [NivelCategoriaController::class, 'index']);
+Route::get('/grados-niveles/{id}', [NivelCategoriaController::class, 'getById']);
 
 // Áreas por olimpiada
 Route::get('/olimpiada/{id}/areas', [AreasController::class, 'areasPorOlimpiada']);
 
 // Niveles por área
 Route::get('/areas/{id}/niveles', [NivelCategoriaController::class, 'nivelesPorArea']);
-Route::get('/get-niveles', [NivelCategoriaController::class, 'index2']);
+
+Route::get('/get-niveles/{id}', [NivelCategoriaController::class, 'index4']);
+Route::get('/get-niveles-areas/{id}', [NivelCategoriaController::class, 'getByNivelesById']);
+Route::get('/get-niveles/', [NivelCategoriaController::class, 'index3']);
+
+
 Route::get('/olimpiadas/{id}/max-categorias', [OlimpiadaAreaController::class, 'maxCategorias']);
 
 //Route::post('/inscripciones', [InscripcionAreaController::class, 'store']);
@@ -103,6 +108,8 @@ Route::get('/colegios/{id}', [ColegiosController::class, 'porProvincia']);
 
 //Olimpiadas
 Route::get('/olimpiadas', [OlimpiadaGestionController::class, 'index']);
+Route::get('/olimpiadas-actuales', [OlimpiadaGestionController::class, 'index2']);
+
 Route::post('/olympiad-registration', [OlympiadRegistrationController::class, 'store']);
 Route::get('/olympiad-registration', [OlympiadRegistrationController::class, 'index']);
 Route::get('/olympiad/{gestion}', [OlimpiadaGestionController::class, 'show']);
