@@ -26,4 +26,8 @@ class Pago extends Model
         return $this->belongsTo(ListaInscripcion::class, 'id_lista', 'ci_persona');
     }
 
+    public function listaInscripcion()
+    {
+        return $this->belongsTo(ListaInscripcion::class, 'id_lista', 'id_lista');
+    }
 }

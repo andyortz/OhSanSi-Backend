@@ -65,11 +65,13 @@ class VerificacionPagoService
         $pago->verificado_por = auth()->user()->name ?? 'sistema';
         $pago->save();
 
-        $lista = $pago->listaInscripcion;
+        $lista = $pago->listaInscripcion ?? ListaInscripcion::find($pago->id_lista);
+
         if ($lista && $lista->estado === 'PENDIENTE') {
             $lista->estado = 'PAGADO';
             $lista->save();
         }
+
 
         return [
             'verificado' => true,
