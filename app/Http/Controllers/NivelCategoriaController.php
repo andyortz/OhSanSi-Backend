@@ -176,84 +176,202 @@ class NivelCategoriaController extends Controller
             'id_nivel' => 'required|integer|exists:nivel_categoria,id_nivel',
             'id_grado_min' => 'required|integer|exists:grado,id_grado',
             'id_grado_max' => 'required|integer|exists:grado,id_grado',
+            'id_olimpiada' => 'required|integer|exists:olimpiada,id_olimpiada',
         ]);
 
-        try {
-            // Verificar que el nivel existe
-            $nivel = NivelCategoria::findOrFail($request->id_nivel);
-            
-            // Obtener todos los grados entre el mínimo y el máximo
-            $grados = Grado::whereBetween('id_grado', [$request->id_grado_min, $request->id_grado_max])
-                          ->orderBy('id_grado')
-                          ->get();
+        // Verificar si ya existe una asociación con la misma olimpiada y nivel
+        $asociacionExistente = NivelGrado::where('id_olimpiada', $request->id_olimpiada)
+            ->where('id_nivel', $request->id_nivel)
+            ->first();
 
-            $asociacionesCreadas = 0;
-            $asociacionesExistentes = 0;
-
-            // Crear las asociaciones
-            foreach ($grados as $grado) {
-                // Verificar si la asociación ya existe
-                $existe = NivelGrado::where('id_nivel', $request->id_nivel)
-                                    ->where('id_grado', $grado->id_grado)
-                                    ->exists();
-
-                if ($existe) {
-                    $asociacionesExistentes++;
-                    continue;
-                }
-
-                // Crear nueva asociación si no existe
-                NivelGrado::create([
-                    'id_nivel' => $request->id_nivel,
-                    'id_grado' => $grado->id_grado
-                ]);
-                $asociacionesCreadas++;
-            }
-                
-            return response()->json([
-                'success' => true,
-                'message' => 'Proceso de asociación completado',
-                'detalle' => [
-                    'asociaciones_nuevas' => $asociacionesCreadas,
-                    'asociaciones_ya_existentes' => $asociacionesExistentes,
-                    'total_grados_procesados' => $grados->count()
-                ],
-                'nivel_id' => $request->id_nivel,
-                'rango_grados' => [
-                    'min' => $request->id_grado_min,
-                    'max' => $request->id_grado_max
-                ]
-            ]);
-
-        } catch (\Exception $e) {
+        if ($asociacionExistente) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error al crear las asociaciones: ' . $e->getMessage()
-            ], 500);
+                'message' => 'Ya existe una asociación con esta olimpiada y nivel',
+                'existing_association' => $asociacionExistente
+            ], 409); // 409 Conflict
         }
+        // Obtener todos los grados en el rango especificado
+        $grados = Grado::whereBetween('id_grado', [$request->id_grado_min, $request->id_grado_max])
+            ->orderBy('id_grado')
+            ->get();
+
+        $asociacionesCreadas = 0;
+        $asociaciones = [];
+
+        // Crear las asociaciones para cada grado en el rango
+        foreach ($grados as $grado) {
+            $nivelGrado = NivelGrado::create([
+                'id_nivel' => $request->id_nivel,
+                'id_grado' => $grado->id_grado,
+                'id_olimpiada' => $request->id_olimpiada
+            ]);
+            $asociacionesCreadas++;
+            $asociaciones[] = $nivelGrado;
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Asociaciones creadas exitosamente',
+            'detalle' => [
+                    'asociaciones_nuevas' => $asociacionesCreadas,
+                    'total_grados_procesados' => $grados->count()
+                ],
+            'nivel_id' => $request->id_nivel,
+            'rango_grados' => [
+                'min' => $request->id_grado_min,
+                'max' => $request->id_grado_max
+            ],
+            'associations' => $asociaciones
+        ], 201); // 201 Created
+    }
+
+    public function getById($idOlimpiada)
+    {
+        $olimpiada = Olimpiada::find($idOlimpiada);
+        if (!$olimpiada) {
+            return response()->json([
+                'success' => false,
+                'message' => 'La olimpiada especificada no existe.'
+            ], 404);
+        }
+        $niveles = NivelCategoria::whereHas('nivelGradoPivot', function($query) use ($idOlimpiada) {
+            $query->where('id_olimpiada', $idOlimpiada)
+                  ->orWhereNull('id_olimpiada');
+        })
+        ->with(['grados' => function($query) use ($idOlimpiada) {
+            $query->whereHas('nivelGradoPivot', function($q) use ($idOlimpiada) {
+                $q->where('id_olimpiada', $idOlimpiada)
+                  ->orWhereNull('id_olimpiada');
+            });
+        }])
+        ->get();
+        $response = $niveles->map(function ($nivel) use ($idOlimpiada) {
+            $gradosOlimpiada = $nivel->grados->filter(function ($grado) use ($idOlimpiada) {
+                return $grado->nivelGradoPivot->contains('id_olimpiada', $idOlimpiada);
+            });
+            $gradosNull = $nivel->grados->filter(function ($grado) {
+                return $grado->nivelGradoPivot->contains('id_olimpiada', null);
+            });
+
+            // Combinar ambos conjuntos, eliminando duplicados
+            $todosGrados = $gradosOlimpiada->merge($gradosNull)->unique('id_grado');
+                return [
+                'id_nivel' => $nivel->id_nivel,
+                'nombre_nivel' => $nivel->nombre,
+                'grados' => $todosGrados->map(function ($grado) {
+                    return [
+                        'id_grado' => $grado->id_grado,
+                        'nombre_grado' => $grado->nombre_grado,
+                    ];
+                })->values() // Reindexar array
+            ];
+        });
+
+        return response()->json(
+            $response,
+        );
+    }
+
+    public function getByNivelesById($idOlimpiada)
+    {
+        $olimpiada = Olimpiada::find($idOlimpiada);
+        if (!$olimpiada) {
+            return response()->json([
+                'success' => false,
+                'message' => 'La olimpiada especificada no existe.'
+            ], 404);
+        }
+
+        $nivelesConArea = NivelAreaOlimpiada::where('id_olimpiada', $idOlimpiada)
+            ->pluck('id_nivel')
+            ->toArray();
+
+        // Obtener los niveles asociados a la olimpiada que NO tienen área asignada
+        $nivelesDisponibles = NivelGrado::with('nivel')
+            ->where(function($query) use ($idOlimpiada, $nivelesConArea) {
+                // Niveles de esta olimpiada sin área asignada
+                $query->where('id_olimpiada', $idOlimpiada)
+                    ->whereNotIn('id_nivel', $nivelesConArea);
+            })
+            ->orWhere(function($query) {
+                // Niveles globales (id_olimpiada = NULL)
+                $query->whereNull('id_olimpiada');
+            })
+            ->get()
+            ->unique('id_nivel') // Eliminar duplicados
+            ->map(function ($item) {
+                return [
+                    'id_nivel' => $item->id_nivel,
+                    'nombre' => $item->nivel->nombre,
+                ];
+            })
+            ->values();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Niveles disponibles sin área asignada',
+            'niveles' => $nivelesDisponibles,
+        ]);
     }
 
     public function index()
     {
-        // Obtener solo niveles que tienen al menos un grado relacionado
-        $niveles = NivelCategoria::whereHas('grados')->with('grados')->get();
+        $fechaActual = now(); // O Carbon::now() si usas Carbon
         
-        // Formatear la respuesta
+        $niveles = NivelCategoria::whereHas('grados.nivelGradoPivot.olimpiada', function($query) use ($fechaActual) {
+                $query->where('fecha_inicio', '>=', $fechaActual);
+            })
+            ->with(['grados' => function($query) {
+                $query->withPivot('id_olimpiada');
+            }, 'nivelGradoPivot.olimpiada' => function($query) use ($fechaActual) {
+                $query->where('fecha_inicio', '>=', $fechaActual)
+                    ->select('id_olimpiada', 'nombre_olimpiada', 'fecha_inicio', 'fecha_fin');
+            }])
+            ->get();
+
         $response = $niveles->map(function ($nivel) {
             return [
                 'id_nivel' => $nivel->id_nivel,
                 'nombre_nivel' => $nivel->nombre,
+                'nombre_olimpiada' => optional($nivel->nivelGradoPivot->first()->olimpiada)->nombre_olimpiada ?? null,
                 'grados' => $nivel->grados->map(function ($grado) {
                     return [
                         'id_grado' => $grado->id_grado,
                         'nombre_grado' => $grado->nombre_grado
                     ];
-                })->unique('id_grado')->values() // Elimina duplicados si los hubiera
+                })->unique('id_grado')->values()
             ];
         });
-        
+
         return response()->json($response);
     }
+
+    // public function index()
+    // {
+    //     $niveles = NivelCategoria::whereHas('grados')
+    //         ->with(['grados' => function($query) {
+    //             $query->withPivot('id_olimpiada');
+    //         }, 'nivelGradoPivot.olimpiada'])
+    //         ->get();
+
+    //     $response = $niveles->map(function ($nivel) {
+    //         return [
+    //             'id_nivel' => $nivel->id_nivel,
+    //             'nombre_nivel' => $nivel->nombre,
+    //             'nombre_olimpiada' => optional($nivel->nivelGradoPivot->first()->olimpiada)->nombre_olimpiada ?? null,
+    //             'grados' => $nivel->grados->map(function ($grado) {
+    //                 return [
+    //                     'id_grado' => $grado->id_grado,
+    //                     'nombre_grado' => $grado->nombre_grado
+    //                 ];
+    //             })->unique('id_grado')->values()
+    //         ];
+    //     });
+
+    //     return response()->json($response);
+    // }
+
     public function index2()
     {
         $niveles = NivelCategoria::all();
@@ -263,4 +381,41 @@ class NivelCategoriaController extends Controller
             'niveles' => $niveles
         ], 200);
     }
-}
+    public function index3()
+    {
+        $niveles = NivelCategoria::where('id_nivel', '>', 12)->get();
+        
+        return response()->json([
+            'message' => 'Lista de niveles cargada correctamente. (a partir del id 13).',
+            'niveles' => $niveles
+        ], 200);
+    }
+    public function index4($idOlimpiada)
+    {
+        // Verificar que la olimpiada existe
+        $olimpiada = Olimpiada::find($idOlimpiada);
+        if (!$olimpiada) {
+            return response()->json([
+                'success' => false,
+                'message' => 'La olimpiada especificada no existe.'
+            ], 404);
+        }
+
+        // Obtener los IDs de los niveles que YA están asociados a esta olimpiada
+        $nivelesAsociados = NivelGrado::where('id_olimpiada', $idOlimpiada)
+            ->distinct()
+            ->pluck('id_nivel')
+            ->toArray();
+
+        // Obtener los niveles disponibles (id > 12) que NO están en la lista de asociados
+        $nivelesDisponibles = NivelCategoria::where('id_nivel', '>', 12)
+            ->whereNotIn('id_nivel', $nivelesAsociados)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Lista de niveles disponibles para esa olimpiada',
+            'niveles' => $nivelesDisponibles
+            ], 200);
+        }
+    }

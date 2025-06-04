@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('grado_nivel', function (Blueprint $table) {
             $table->unsignedSmallInteger('id_nivel'); // FK a int8
             $table->unsignedSmallInteger('id_grado'); // FK a int2
-
+            $table->unsignedMediumInteger('id_olimpiada') -> nullable();//FK id_olimpiada
+            
             $table->foreign('id_nivel')->references('id_nivel')->on('nivel_categoria')->onDelete('cascade');
             $table->foreign('id_grado')->references('id_grado')->on('grado')->onDelete('cascade');
+            $table->foreign('id_olimpiada')->references('id_olimpiada')->on('olimpiada')->onDelete('cascade');
         });
     }
 

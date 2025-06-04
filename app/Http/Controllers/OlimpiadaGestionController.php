@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Olimpiada;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class OlimpiadaGestionController extends Controller
 {
@@ -14,6 +15,12 @@ class OlimpiadaGestionController extends Controller
     public function index()
     {
         $olimpiadas = Olimpiada::all();
+        return response()->json($olimpiadas, 200);
+    }
+    public function index2()
+    {
+        $hoy = Carbon::now();
+        $olimpiadas = Olimpiada::where('fecha_inicio', '>', $hoy)->get();
         return response()->json($olimpiadas, 200);
     }
     /**

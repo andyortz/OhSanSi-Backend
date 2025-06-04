@@ -29,4 +29,9 @@ class Persona extends Model
     {
         return $this->hasMany(Inscripcion::class, 'id_tutor_academico', 'ci_persona');
     }
+
+    public function detalleOlimpista()
+    {
+        return $this->hasOne(DetalleOlimpista::class, 'ci_olimpista', 'ci_persona');
+    }
 }

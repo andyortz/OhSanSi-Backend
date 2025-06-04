@@ -21,4 +21,8 @@ class Grado extends Model
     {
         $this->attributes['nombre_grado'] = strtoupper($value);
     }
+    public function nivelGradoPivot()
+{
+    return $this->hasMany(NivelGrado::class, 'id_grado');
+}
 }

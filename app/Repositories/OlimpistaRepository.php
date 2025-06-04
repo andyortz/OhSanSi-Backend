@@ -4,6 +4,7 @@ namespace App\Repositories;
 use App\Models\Area;
 use App\Models\DetalleOlimpista;
 use App\Models\NivelGrado;
+use App\Models\Olimpiada;
 
 class OlimpistaRepository
 {
@@ -14,33 +15,55 @@ class OlimpistaRepository
             ->where('ci_olimpista', $ci)
             ->firstOrFail();
 
-        // 2. Obtener directamente las áreas con sus niveles filtrados por grado
-        $resultado = Area::with(['asociaciones.nivelGrado' => function($query) use ($olimpista) {
-                $query->where('id_grado', $olimpista->id_grado)
-                      ->with('nivel'); // Cargar la relación nivel
-            }])
-            ->whereHas('asociaciones.nivelGrado', function($query) use ($olimpista) {
-                $query->where('id_grado', $olimpista->id_grado);
+        // 2. Obtener la olimpiada actual (basada en la fecha de hoy)
+        $olimpiadaActual = Olimpiada::whereDate('fecha_inicio', '<=', now())
+            ->whereDate('fecha_fin', '>=', now())
+            ->first();
+
+        if (!$olimpiadaActual) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No hay una olimpiada activa en la fecha actual'
+            ], 404);
+        }
+
+        // 3. Consulta principal con todos los filtros
+        $resultado = Area::whereHas('asociaciones', function($query) use ($olimpiadaActual, $olimpista) {
+                $query->where('id_olimpiada', $olimpiadaActual->id_olimpiada)
+                    ->whereHas('nivelGrado', function($q) use ($olimpista) {
+                        $q->where('id_grado', $olimpista->id_grado);
+                    });
             })
+            ->with(['asociaciones' => function($query) use ($olimpista) {
+                $query->whereHas('nivelGrado', function($q) use ($olimpista) {
+                        $q->where('id_grado', $olimpista->id_grado);
+                    })
+                    ->with(['nivelGrado.nivel']);
+            }])
             ->get()
             ->map(function($area) use ($olimpista) {
-                return [
+                $nivelesFiltrados = $area->asociaciones
+                    ->filter(function($nivelArea) {
+                        return $nivelArea->nivelGrado !== null;
+                    })
+                    ->map(function($nivelArea) {
+                        return [
+                            'id_nivel' => $nivelArea->nivelGrado->id_nivel,
+                            'nombre_nivel' => $nivelArea->nivelGrado->nivel->nombre,
+                            'id_grado' => $nivelArea->nivelGrado->id_grado
+                        ];
+                    })
+                    ->unique('id_nivel')
+                    ->values();
+
+                return $nivelesFiltrados->isNotEmpty() ? [
                     'id_area' => $area->id_area,
                     'nombre_area' => $area->nombre,
-                    'niveles' => $area->asociaciones
-                        ->flatMap(function($nivelArea) use ($olimpista) {
-                            return optional($nivelArea->nivelGrado)->id_grado == $olimpista->id_grado
-                                ? [[
-                                    'id_nivel' => $nivelArea->nivelGrado->id_nivel,
-                                    'nombre_nivel' => $nivelArea->nivelGrado->nivel->nombre,
-                                    'id_grado' => $nivelArea->nivelGrado->id_grado
-                                ]]
-                                : [];
-                        })
-                        ->unique('id_nivel')
-                        ->values()
-                ];
-            });
+                    'niveles' => $nivelesFiltrados
+                ] : null;
+            })
+            ->filter()
+            ->values();
 
         return $resultado;
     }
