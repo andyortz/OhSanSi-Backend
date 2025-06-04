@@ -27,8 +27,10 @@ class BoletaController extends Controller
     {
         $request->validate([
             'boleta' => 'required|image|mimes:jpg,jpeg,png|max:5120',
+            'id_lista' => 'required|integer|exists:lista_inscripcion,id_lista',
         ]);
 
+        $idLista = $request->input('id_lista');
         $relativePath = $request->file('boleta')->store('boletas', 'public');
         $absolutePath = storage_path('app/public/' . $relativePath);
 
@@ -36,15 +38,11 @@ class BoletaController extends Controller
             $rawText = $this->ocrService->extraerTexto($absolutePath);
             $fields = $this->parser->parse($rawText);
 
-            // Verificar pago si tenemos documento y total
-            $verificacion = null;
-            if (!empty($fields['documento']) && !empty($fields['importe_total'])) {
-                $verificacion = $this->validador->verificarPagoOCR([
-                    'documento' => $fields['documento'],
-                    'importe_total' => $fields['importe_total'],
-                    'aclaracion' => $fields['aclaracion'], //
-                ]);
-            }
+            // Agregar id_lista al array de datos OCR para validación
+            $fields['id_lista'] = $idLista;
+
+            // Verificar pago
+            $verificacion = $this->validador->verificarPagoOCR($fields);
 
         } catch (\Throwable $e) {
             Storage::disk('public')->delete($relativePath);
@@ -58,9 +56,7 @@ class BoletaController extends Controller
         Storage::disk('public')->delete($relativePath);
 
         return response()->json([
-            //'data' => $fields, //uncomment this line to see the parsed fields
             'verificacion_pago' => $verificacion,
-            //'raw' => $rawText, //uncoment this line to see the raw text
         ]);
     }
 }

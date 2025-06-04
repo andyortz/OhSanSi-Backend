@@ -15,7 +15,7 @@ return new class extends Migration
             
             $table->unsignedBigInteger('id_olimpiada');
             $table->id('id_lista');
-            $table->string('estado', 50)->default('PENDIENTE');
+            $table->enum('estado', ['PAGADO', 'PENDIENTE'])->default('PENDIENTE');
             $table->unsignedBigInteger('ci_responsable_inscripcion');
             $table->timestamp('fecha_creacion_lista', 6)->useCurrent();
            
