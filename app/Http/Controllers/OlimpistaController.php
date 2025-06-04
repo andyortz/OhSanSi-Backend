@@ -71,34 +71,30 @@ class OlimpistaController extends Controller
 
     public function getByCedula($cedula): JsonResponse
     {
-        
-        $persona = DB::table('persona')
-            ->join('detalle_olimpista', 'persona.ci_persona', '=', 'detalle_olimpista.ci_olimpista')
-            ->join('grado', 'detalle_olimpista.id_grado', '=', 'grado.id_grado')
-            ->join('colegio', 'detalle_olimpista.unidad_educativa', '=', 'colegio.id_colegio')
-            ->join('provincia', 'colegio.id_provincia', '=', 'provincia.id_provincia')
-            ->join('departamento', 'departamento.id_departamento', '=', 'provincia.id_departamento')
-            ->where('persona.ci_persona', $cedula)
-            ->select(
-                'persona.ci_persona',
-                'persona.nombres',
-                'persona.apellidos',
-                'persona.fecha_nacimiento',
-                'persona.correo_electronico',
-                'persona.celular',
-                'detalle_olimpista.ci_tutor_legal',
-                'departamento.id_departamento',
-                'provincia.id_provincia',
-                'colegio.id_colegio',
-                'grado.id_grado',
-            )
+        $persona = Persona::with(['detalleOlimpista.grado', 'detalleOlimpista.colegio.provincia.departamento'])
+            ->where('ci_persona', $cedula)
             ->first();
-        
-        return $persona
-            ? response()->json($persona)
-            : response()->json(['message' => 'No encontrado'], 404);
-    }
 
+        if (!$persona) {
+            return response()->json(['message' => 'No encontrado'], 404);
+        }
+
+        $response = [
+            'ci_persona' => $persona->ci_persona,
+            'nombres' => $persona->nombres,
+            'apellidos' => $persona->apellidos,
+            'fecha_nacimiento' => $persona->fecha_nacimiento,
+            'correo_electronico' => $persona->correo_electronico,
+            'celular' => $persona->celular,
+            'ci_tutor_legal' => $persona->detalleOlimpista->ci_tutor_legal ?? null,
+            'id_departamento' => $persona->detalleOlimpista->colegio->provincia->id_departamento ?? null,
+            'id_provincia' => $persona->detalleOlimpista->colegio->id_provincia ?? null,
+            'id_colegio' => $persona->detalleOlimpista->unidad_educativa ?? null,
+            'id_grado' => $persona->detalleOlimpista->id_grado ?? null
+        ];
+
+        return response()->json($response);
+    }
     public function getByEmail($email): JsonResponse
     {
         $persona = Persona::where('correo_electronico', $email)->first();
