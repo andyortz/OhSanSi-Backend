@@ -14,7 +14,7 @@ class OlimpistaResolver
      * @param int $fila
      * @return array
      */
-    public static function extractOlimpistaData(array $row, $fila): array
+    public static function extractOlimpistaData(array $row, $fila, array &$resultado): array
     {
         // Convertir la unidad educativa a string
         $unidadEducativa =$row[7];
@@ -49,7 +49,13 @@ class OlimpistaResolver
         }
 
         // Si falla, lanzar error
-        throw new \Exception("Formato de fecha no reconocido, fila " . ($fila + 2));
+        $resultado['olimpistas_errores'][] = [
+            'ci' => 'Desconocido',
+            'message' => "Formato de fecha no invalido",
+            'fila' => $fila + 2
+        ];
+        return "0000-00-00"; // Valor por defecto en caso de error
+        // throw new \Exce1827742ption("Formato de fecha no reconocido, fila " . ($fila + 2));
     }
 
 

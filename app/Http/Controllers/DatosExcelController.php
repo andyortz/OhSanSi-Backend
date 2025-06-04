@@ -97,13 +97,13 @@ class DatosExcelController extends Controller
             // $nivel = NivelResolver::resolve($row[15]);
             // if (!$nivel){$this->errorFila('Nivel', $row[15], $index, $resultadoFinal);}
             // $row[15] = $nivel;
-
-            $tutorsData[$row[11]] = TutorResolver::extractTutorData($row, $index);
-            $olimpistasData[$row[2]] = OlimpistaResolver::extractOlimpistaData($row, $index);
-            $profesorData[$row[19]] = ProfesorResolver::extractProfesorData($row, $index);
+            $row['fila'] = $index;
+            $tutorsData[$row[11]] = TutorResolver::extractTutorData($row, $index, $resultadoFinal);
+            $olimpistasData[$row[2]] = OlimpistaResolver::extractOlimpistaData($row, $index, $resultadoFinal);
+            $profesorData[$row[19]] = ProfesorResolver::extractProfesorData($row, $index, $resultadoFinal);
             $areasData[] = AreaResolver::extractAreaData($row);
 
-            $row['fila'] = $index;
+            
             $sanitizedData[] = $row;
         }
         
