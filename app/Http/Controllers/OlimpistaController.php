@@ -90,7 +90,8 @@ class OlimpistaController extends Controller
             'id_departamento' => $persona->detalleOlimpista->colegio->provincia->id_departamento ?? null,
             'id_provincia' => $persona->detalleOlimpista->colegio->id_provincia ?? null,
             'id_colegio' => $persona->detalleOlimpista->unidad_educativa ?? null,
-            'id_grado' => $persona->detalleOlimpista->id_grado ?? null
+            'id_grado' => $persona->detalleOlimpista->id_grado ?? null,
+            'id_olimpiada' => $persona->detalleOlimpista->id_olimpiada ?? null,
         ];
 
         return response()->json($response);
