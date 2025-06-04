@@ -8,6 +8,7 @@ use App\Models\DetalleOlimpista;
 use Illuminate\Support\Carbon;
 use App\Services\Registers\ListaInscripcionService;
 use App\Services\ImportHelpers\NivelResolver;
+use App\Models\Olimpiada;
 
 class InscripcionesProcessor
 {
@@ -19,23 +20,24 @@ class InscripcionesProcessor
         
 
         $interesados = self::selectData($sanitizedData);
-        $hoy = \Carbon\Carbon::now();
+        $hoy = Carbon::now();
 
         // Obtener CI de un olimpista para encontrar la olimpiada
-        $primerCI = $interesados[0]['ci'] ?? null;
-        $detalle = DetalleOlimpista::where('ci_olimpista', $primerCI)->first();
+        $idOlimpiada = Olimpiada::where('fecha_inicio', '<=', $hoy) ->first();
+        // $primerCI = $interesados[0]['ci'] ?? null;
+        // $detalle = DetalleOlimpista::where('ci_olimpista', $primerCI)->first();
 
-        if (!$detalle) {
-            $resultado['inscripciones_errores'][] = [
-                // 'ci' => $primerCI?? 'Desconocido',
-                'message' => 'Complete los campos campos correctamente antes de inscribir',
-                // 'fila' => $sanitizedData['fila'] + 2
-            ];
-            return;
-        }
+        // if (!$detalle) {
+        //     $resultado['inscripciones_errores'][] = [
+        //         // 'ci' => $primerCI?? 'Desconocido',
+        //         'message' => 'Complete los campos campos correctamente antes de inscribir',
+        //         // 'fila' => $sanitizedData['fila'] + 2
+        //     ];
+        //     return;
+        // }
 
         // Crear UNA sola lista
-        $lista = $listaService->crearLista($ci_responsable, $detalle->id_olimpiada);
+        $lista = $listaService->crearLista($ci_responsable, $idOlimpiada->id_olimpiada);
         $idLista = $lista->id_lista;
 
         foreach ($interesados as $data) {
@@ -70,14 +72,14 @@ class InscripcionesProcessor
                     // continue;
                 }
                 $detalle = DetalleOlimpista::where('ci_olimpista', $data['ci'])->first();
-                if (!$detalle) {
+                if ($detalle == null) {
                     self::agregarErrorInscripcion(
                         $resultado,
                         $data['ci'],
                         'El CI: "'.$data['ci'].'" del olimpista no es válido',
                         $data['fila'] + 2
                     );
-                    //continue;
+                    continue;
                 }else{
                     //obtenemos el limite permitido para la olimpiada
                     $limite = DB::table('olimpiada')
@@ -176,7 +178,7 @@ class InscripcionesProcessor
                     unset($resultado['inscripciones_errores'][$indice]['message']);
                 }
                 if (isset($resultado['inscripciones_errores'][$indice]['message'])) {
-                    $resultado['inscripciones_errores'][$indice]['errores'][] = $resultado['inscripciones_errores'][$indice]['message'];
+                    $resultado['inscripciones_errores'][$indice]['message'][] = $resultado['inscripciones_errores'][$indice]['message'];
                     unset($resultado['inscripciones_errores'][$indice]['message']);
                 }
             }
