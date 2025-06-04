@@ -76,7 +76,7 @@ class InscripcionesProcessor
                     self::agregarErrorInscripcion(
                         $resultado,
                         $data['ci'],
-                        'El CI: "'.$data['ci'].'" del olimpista no es válido',
+                        'El CI: "'.$data['ci'].'" no se encuentra registrado como olimpista, revise los datos ingresados',
                         $data['fila'] + 2
                     );
                     continue;

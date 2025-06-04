@@ -38,25 +38,31 @@ class OlimpistaResolver
     }
 
     private static function normalizarFecha($valor, $fila): string
-    {
-        if (is_numeric($valor)) {
-            return self::excelDateToDateString((int) $valor);
-        }
-
-        // Si es string y parece formato válido, devolverlo tal cual
-        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $valor)) {
-            return $valor;
-        }
-
-        // Si falla, lanzar error
-        $resultado['olimpistas_errores'][] = [
-            'ci' => 'Desconocido',
-            'message' => "Formato de fecha no invalido",
-            'fila' => $fila + 2
-        ];
-        return "0000-00-00"; // Valor por defecto en caso de error
-        // throw new \Exce1827742ption("Formato de fecha no reconocido, fila " . ($fila + 2));
+{
+    // Si es numérico tipo Excel
+    if (is_numeric($valor)) {
+        return self::excelDateToDateString((int) $valor);
     }
+
+    // Lista de formatos aceptados
+    $formatos = ['Y-m-d', 'd/m/Y', 'd-m-Y', 'm/d/Y'];
+
+    foreach ($formatos as $formato) {
+        $fecha = \DateTime::createFromFormat($formato, $valor);
+        if ($fecha && $fecha->format($formato) === $valor) {
+            return $fecha->format('Y-m-d');
+        }
+    }
+
+    // Si nada funciona, registrar error
+    $resultado['olimpistas_errores'][] = [
+        'ci' => 'Desconocido',
+        'message' => "Formato de fecha no válido",
+        'fila' => $fila + 2
+    ];
+
+    return "0000-00-00"; // Valor por defecto para no romper la lógica
+}
 
 
     private static function excelDateToDateString(int $excelDate): string
