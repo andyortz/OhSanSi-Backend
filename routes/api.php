@@ -64,7 +64,10 @@ Route::get('/olimpiada/{id}/areas', [AreasController::class, 'areasPorOlimpiada'
 // Niveles por área
 Route::get('/areas/{id}/niveles', [NivelCategoriaController::class, 'nivelesPorArea']);
 
-Route::get('/get-niveles', [NivelCategoriaController::class, 'index3']);
+Route::get('/get-niveles/{id}', [NivelCategoriaController::class, 'index4']);
+Route::get('/get-niveles-areas/{id}', [NivelCategoriaController::class, 'getByNivelesById']);
+Route::get('/get-niveles/', [NivelCategoriaController::class, 'index3']);
+
 
 Route::get('/olimpiadas/{id}/max-categorias', [OlimpiadaAreaController::class, 'maxCategorias']);
 
