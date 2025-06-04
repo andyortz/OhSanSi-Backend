@@ -114,11 +114,12 @@ class InscripcionesProcessor
                         ->first();
 
                     if ($nivelExistente == $data['nivel']) {
-                        $resultado['inscripciones_errores'][] = [
-                            'ci' => $data['ci'],
-                            'error' => 'El olimpista ya está inscrito en el nivel seleccionado',
-                            'fila'=> $data['fila'] + 2
-                        ];
+                        self::agregarErrorInscripcion(
+                            $resultado,
+                            $data['ci'],
+                            'El olimpista ya está inscrito en el nivel seleccionado',
+                            $data['fila'] + 2
+                        );
                         continue;
                     }
                     $data['ci_responsable_inscripcion'] = $ci_responsable;

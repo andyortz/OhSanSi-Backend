@@ -123,10 +123,12 @@ class OlimpistasProcessor
                         ];
                     }
                 }else{
-                    $resultado['olimpistas_errores'][] = [
-                        'message' => 'La cédula de identidad del olimpista debe ser un número entero',
-                        'fila'=>$olimpista['fila']+2
-                    ];
+                    self::agregarErrorOlimpista(
+                        $resultado,
+                        $olimpista['cedula_identidad'] ?? 'desconocido',
+                        'La cédula de identidad del olimpista debe ser un número entero',
+                        $olimpista['fila'] + 2
+                    );
                     continue;
                 }
                 
