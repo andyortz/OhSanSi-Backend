@@ -43,8 +43,8 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/pago/verificar', [PagoValidacionController::class, 'verificar']);
 //Excel
-Route::post('/olimpistas/excel', [ExcelImportController::class, 'import']);
-Route::post('/registro/excel', [DatosExcelController::class, 'cleanDates']);
+Route::post('/excel/data', [ExcelImportController::class, 'import']);
+Route::post('/excel/registration', [DatosExcelController::class, 'cleanDates']);
 
 // Niveles
 Route::post('/niveles', [NivelCategoriaController::class, 'store']);

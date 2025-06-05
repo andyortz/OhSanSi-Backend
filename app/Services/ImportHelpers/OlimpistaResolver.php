@@ -5,7 +5,7 @@ namespace App\Services\ImportHelpers;
 use Carbon\Carbon;
 
 
-class OlimpistaResolver
+class OlimpystResolver
 {
     /**
      * Extraer los datos del olimpista desde la fila del Excel.
@@ -14,54 +14,53 @@ class OlimpistaResolver
      * @param int $fila
      * @return array
      */
-    public static function extractOlimpistaData(array $row, $fila, array &$resultado): array
+    public static function extractOlimpystaData(array $row, array &$answerFinal): array
     {
         // Convertir la unidad educativa a string
-        $unidadEducativa =$row[7];
+        $school =$row[7];
 
         // Procesar la fecha de nacimiento
-        $fechaNacimiento = self::normalizarFecha($row[3], $fila);
+        $birthdate = self::normalizeDate($row[3], $row[21]);
 
         return [
-            'nombres' => $row[0],
-            'apellidos' => $row[1],
-            'cedula_identidad' => $row[2],
-            'fecha_nacimiento' => $fechaNacimiento,
-            'correo_electronico' => $row[4],
-            'departamento' => $row[5],
-            'provincia' => $row[6],
-            'unidad_educativa' => $unidadEducativa,
-            'id_grado' => $row[8],
+            'names' => $row[0],
+            'lastNames' => $row[1],
+            'ci' => $row[2],
+            'birthdate' => $birthdate,
+            'email' => $row[4],
+            'region' => $row[5],
+            'province' => $row[6],
+            'school' => $school,
+            'id_grade' => $row[8],
             'ci_tutor' => $row[11],
-            'fila' => $fila,
+            'row' => $row[21],
         ];
     }
 
-    private static function normalizarFecha($valor, $fila): string
+    private static function normalizeDate($value, $row): string
 {
     // Si es numérico tipo Excel
-    if (is_numeric($valor)) {
-        return self::excelDateToDateString((int) $valor);
+    if (is_numeric($value)) {
+        return self::excelDateToDateString((int) $value);
     }
 
-    // Lista de formatos aceptados
-    $formatos = ['Y-m-d', 'd/m/Y', 'd-m-Y', 'm/d/Y'];
+    // Lista de formats aceptados
+    $formats = ['Y-m-d', 'd/m/Y', 'd-m-Y', 'm/d/Y'];
 
-    foreach ($formatos as $formato) {
-        $fecha = \DateTime::createFromFormat($formato, $valor);
-        if ($fecha && $fecha->format($formato) === $valor) {
-            return $fecha->format('Y-m-d');
+    foreach ($formats as $format) {
+        $date = \DateTime::createFromFormat($format, $value);
+        if ($date && $date->format($format) === $value) {
+            return $date->format('Y-m-d');
         }
     }
 
     // Si nada funciona, registrar error
-    $resultado['olimpistas_errores'][] = [
-        'ci' => 'Desconocido',
-        'message' => "Formato de fecha no válido",
-        'fila' => $fila + 2
+    $answerFinal['olimpysts_errors'][] = [
+        'message' => "format de fecha no válido",
+        'row' => $row + 2
     ];
 
-    return "0000-00-00"; // Valor por defecto para no romper la lógica
+    return "0000-00-00"; // Value por defecto para no romper la lógica
 }
 
 

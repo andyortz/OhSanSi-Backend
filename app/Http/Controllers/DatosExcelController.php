@@ -24,83 +24,37 @@ class DatosExcelController extends Controller
 {
     public function cleanDates(Request $request)
     {
-        $datos = $request->input('data');
-        $ci_responsable = $request->input('ci_responsable_inscripcion');
-        $columnMap = [
-            0 => 'Nombre estudiante',
-            1 => 'Apellido estudiante',
-            2 => 'CI estudiante',
-            3 => 'RU',
-            4 => 'Correo estudiante',
-            5 => 'Departamento',
-            6 => 'Provincia',
-            7 => 'Unidad Educativa',
-            8 => 'Grado',
-            9 => 'Nombre tutor',
-            10 => 'Apellido tutor',
-            11 => 'Celular tutor',
-            12 => 'CI tutor',
-            13 => 'Correo tutor',
-            14 => 'Área',
-            15 => 'Nivel',
-            16 => 'Nombre profesor',
-            17 => 'Apellido profesor',
-            18 => 'Celular profesor',
-            19 => 'CI profesor',
-            20 => 'Correo profesor',
-        ];
+        $data = $request->input('data');
+        $ci_responsible = $request->input('ci_responsable_inscripcion');
         
-        if (!is_array($datos)) {
+        if (!is_array($data)) {
             return response()->json(['error' => 'El archivo no contiene datos válidos.'], 400);
         }
 
-        if (!$ci_responsable || !is_numeric($ci_responsable)) {
+        if (!$ci_responsible || !is_numeric($ci_responsible)) {
             return response()->json(['error' => 'CI del responsable inválido.'], 422);
         }
 
         $sanitizedData = [];
         $tutorsData = [];
-        $olimpistasData = [];
-        $profesorData = [];
+        $olimpystsData = [];
+        $teachersData = [];
         $areasData = [];
 
-        $resultadoFinal = [
-            'tutores_guardados' => [], 'tutores_omitidos' => [], 'tutores_errores' => [],
-            'olimpistas_guardados' => [], 'olimpistas_errores' => [],
-            'profesores_guardados' => [], 'profesores_errores' => [],
-            'inscripciones_guardadas' => [], 'inscripciones_errores' => [],
+        $answerFinal = [
+            'tutors_saved' => [], 'tutors_omitted' => [], 'tutors_errors' => [],
+            'olimpysts_saved' => [], 'olimpysts_errors' => [],
+            'teachers_saved' => [], 'teachers_errors' => [],
+            'registrations_saved' => [], 'registrations_errors' => [],
         ];
 
-        foreach ($datos as $index => $row) {
+        foreach ($data as $index => $row) {
             if (empty(array_filter($row, fn($value) => trim($value) !== ''))) continue;
-            //departamento
-            // $departamento = Departamento::where('nombre_departamento', $row[5])->first();
-            // if (!$departamento){$this->errorFila('Departamento', $row[5], $index, $resultadoFinal); continue;}
-            // $row[5] = $departamento->id_departamento;
-
-            //Provincia
-            // $provincia = ProvinciaResolver::resolve($row[6], $row[5]);
-            // if (!$provincia){$this->errorFila('Provincia', $row[6], $index, $resultadoFinal); continue;}
-            // $row[6] = $provincia;}
-
-            //Colegio
-            // $colegio = ColegioResolver::resolve($row[6]);
-            // if (!$colegio){$this->errorFila('Unidad educativa', $row[7], $index, $resultadoFinal);}
-            // $row[7] = $colegio;
-
-            //Grado
-            // $grado = GradoResolver::resolve($row[8]);
-            // if (!$grado){$this->errorFila('Grado', $row[8], $index, $resultadoFinal);}
-            // $row[8] = $grado;
-
-            // Nivel
-            // $nivel = NivelResolver::resolve($row[15]);
-            // if (!$nivel){$this->errorFila('Nivel', $row[15], $index, $resultadoFinal);}
-            // $row[15] = $nivel;
-            $row['fila'] = $index;
-            $tutorsData[$row[11]] = TutorResolver::extractTutorData($row, $index, $resultadoFinal);
-            $olimpistasData[$row[2]] = OlimpistaResolver::extractOlimpistaData($row, $index, $resultadoFinal);
-            $profesorData[$row[19]] = ProfesorResolver::extractProfesorData($row, $index, $resultadoFinal);
+        
+            $row['row'] = $index;
+            $tutorsData[$row[11]] = TutorResolver::extractTutorData($row);
+            $olimpystsData[$row[2]] = OlimpistaResolver::extractOlimpistaData($row, $index, $answerFinal);
+            $teachersData[$row[19]] = ProfesorResolver::extractProfesorData($row, $index, $answerFinal);
             $areasData[] = AreaResolver::extractAreaData($row);
 
             
@@ -111,28 +65,23 @@ class DatosExcelController extends Controller
             DB::beginTransaction();
 
             // Guardar primero tutores, profesores y olimpistas
-            TutoresProcessor::save($tutorsData, $resultadoFinal);
-            ProfesoresProcessor::save($profesorData, $resultadoFinal);
-            OlimpistasProcessor::save($olimpistasData, $resultadoFinal);
+            TutoresProcessor::save($tutorsData, $answerFinal);
+            ProfesoresProcessor::save($teachersData, $answerFinal);
+            OlimpistasProcessor::save($olimpystsData, $answerFinal);
 
             // Validar ahora que el responsable ya esté registrado
-            if (!Persona::where('ci_persona', $ci_responsable)->exists()) {
+            if (!Persona::where('ci_persona', $ci_responsible)->exists()) {
                 throw new \Exception("EL CI del responsable no se encuentra registrado");
             }
 
             // Registrar inscripciones con la lista asociada
-            InscripcionesProcessor::save($sanitizedData, $ci_responsable, $resultadoFinal);
+            InscripcionesProcessor::save($sanitizedData, $ci_responsible, $answerFinal);
 
             if (
-                !empty($resultadoFinal['tutores_errores']) ||
-                !empty($resultadoFinal['olimpistas_errores']) ||
-                !empty($resultadoFinal['inscripciones_errores']) ||
-                !empty($resultadoFinal['profesores_errores']) //||
-                // !empty($resultadoFinal['Departamento_errores']) ||
-                // !empty($resultadoFinal['Provincia_errores']) || 
-                // !empty($resultadoFinal['Colegio_errores']) ||
-                // !empty($resultadoFinal['Grado_errores']) ||
-                // !empty($resultadoFinal['Nivel_errores'])
+                !empty($answerFinal['tutors_errors']) ||
+                !empty($answerFinal['olimpysts_errors']) ||
+                !empty($answerFinal['registrations_errors']) ||
+                !empty($answerFinal['teachers_errors']) 
             ) {
                 throw new \Exception("Se encontraron errores en los datos. No se guardó nada.");
             }
@@ -141,7 +90,7 @@ class DatosExcelController extends Controller
 
             return response()->json([
                 'message' => 'Datos validados y guardados correctamente.',
-                'resultado' => $resultadoFinal
+                'answer' => $answerFinal
             ], 200);
             
         } catch (\Throwable $e) {
@@ -150,28 +99,8 @@ class DatosExcelController extends Controller
             return response()->json([
                 'message' => 'Se produjo un error y no se guardó ningún dato.',
                 'error' => $e->getMessage(),
-                'resultado' => $resultadoFinal
+                'answer' => $answerFinal
             ], 500);
         }
     }
-
-    // private function errorFila($campo, $valor, $fila, &$resultado)
-    // {
-    //     $resultado[$campo."_errores"][] = [
-    //         // 'ci' => $tutor['ci'] ?? 'Desconocido',
-    //         'error' => "$campo inválido o no encontrado.",
-    //         'fila' => $fila + 2
-    //     ];
-    // }
-
-    private function columnaLetra($index)
-    {
-        $letra = '';
-        while ($index >= 0) {
-            $letra = chr($index % 26 + 65) . $letra;
-            $index = intdiv($index, 26) - 1;
-        }
-        return $letra;
-    }
-
 }
