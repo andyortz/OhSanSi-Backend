@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('nivel_categoria', function (Blueprint $table) {
-            $table->id('id_nivel');
-            $table->string('nombre', 50);
-
+        Schema::create('departament', function (Blueprint $table) {
+            $table->smallIncrements('id_departament'); // para simular int2
+            $table->string('departament_name', 50);
         });
     }
 
@@ -23,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('nivel_categoria');
+        Schema::dropIfExists('departament');
     }
 };

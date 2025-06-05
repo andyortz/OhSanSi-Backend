@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('colegio', function (Blueprint $table) {
-            $table->smallIncrements("id_colegio");
-            $table->string('nombre_colegio', 100);
-            $table ->unsignedSmallInteger('id_provincia');
+        Schema::create('school', function (Blueprint $table) {
+            $table->smallIncrements("id_school");
+            $table->string('school_name', 100);
+            $table ->unsignedSmallInteger('id_province');
 
             // Relación a provincias
-            $table->foreign('id_provincia')->references('id_provincia')->on('provincia')->onDelete('restrict');
+            $table->foreign('id_province')->references('id_province')->on('province')->onDelete('restrict');
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('colegio');
+        Schema::dropIfExists('school');
     }
 };

@@ -14,21 +14,18 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            GradosSeeder::class,
-            OlimpiadasSeeder::class,
-            DepartamentosSeeder::class,
-            ProvinciasSeeder::class,
-            AreasSeeder::class,
-            ColegiosSeeder::class,
-            NivelesSeeder::class,
-            GradosNivelesSeeder::class,
-            PersonasSeeder::class,
-            NivelesAreasOlimpiadasSeeder::class,
-            DetalleOlimpistaSeeder::class,
-            //InscripcionSeeder::class,
-            //PagoSeeder::class,
+            GradeSeeder::class,
+            OlympiadSeeder::class,
+            DepartamentSeeder::class,
+            ProvinceSeeder::class,
+            AreaSeeder::class,
+            SchoolSeeder::class,
+            LevelSeeder::class,
+            GradeLevelSeeder::class,
+            PersonSeeder::class,
+            AreaLevelOlympiadSeeder::class,
+            OlympicDetailSeeder::class,
         ]);
-
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',

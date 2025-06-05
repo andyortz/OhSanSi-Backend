@@ -8,14 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('area_competencia', function (Blueprint $table) {
+        Schema::create('area', function (Blueprint $table) {
             $table->id('id_area');
-            $table->string('nombre', 50);
+            $table->string('name', 50);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('area_competencia');
+        Schema::dropIfExists('area');
     }
 };
