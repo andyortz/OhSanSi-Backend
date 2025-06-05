@@ -3,32 +3,33 @@
 namespace App\Services\Excel;
 
 use App\Models\Persona;
+use App\CustomModels\Person;
 use App\Http\Requests\StoreTutorRequest;
 use Illuminate\Support\Facades\Validator;
-use App\Services\Registers\PersonaService;
+use App\Services\Registers\PersonService;
 
-class TutoresProcessor
+class TutorsProcessor
 {
-    public static function save(array $tutorsData, array &$resultado): void
+    public static function save(array $tutorsData, array &$answerFinal): void
     {
         foreach ($tutorsData as $tutor) {
             try {
-                if (Persona::where('ci_persona', $tutor['ci'])->exists()) {
-                    $resultado['tutores_omitidos'][] = [
+                if (Person::where('ci_person', $tutor['ci'])->exists()) {
+                    $answerFinal['tutors_omitted'][] = [
                         'ci' => $tutor['ci'],
                         'message' => 'El tutor ya se encuentra registrado en el sistema',
-                        'fila'=>$tutor['fila']+2
+                        'row'=>$tutor['row']+2
                     ];
                     continue;
                 }
 
                 $filteredTutor = [
-                    'nombres' => $tutor['nombres'],
-                    'apellidos' => $tutor['apellidos'],
+                    'names' => $tutor['names'],
+                    'surnames' => $tutor['lastNames'],
                     'ci' => $tutor['ci'],
-                    'celular' => $tutor['celular'],
-                    'correo_electronico' => $tutor['correo_electronico'],
-                    'rol_parentesco' => $tutor['rol_parentesco'],
+                    'phone' => $tutor['phone'],
+                    'email' => $tutor['email'],
+                    // 'rol_parentesco' => $tutor['rol_parentesco'],
                 ];
 
                 // Validación manual utilizando las reglas y mensajes del FormRequest
@@ -40,24 +41,24 @@ class TutoresProcessor
                 );
 
                 if ($validator->fails()) {
-                    $resultado['tutores_errores'][] = [
+                    $answerFinal['tutors_errors'][] = [
                         'ci' => $tutor['ci'] ?? 'Desconocido',
                         'message' => $validator->errors()->all(),
-                        'fila' => $tutor['fila'] + 2
+                        'row' => $tutor['row'] + 2
                     ];
                     continue;
                 }
 
                 // Registro si la validación fue exitosa
                 $validated = $validator->validated();
-                $persona = PersonaService::register($validated);
+                $person = PersonService::register($validated);
 
-                $resultado['tutores_guardados'][] = $filteredTutor;
+                $answerFinal['tutors_saved'][] = $filteredTutor;
             } catch (\Throwable $e) {
-                $resultado['tutores_errores'][] = [
+                $answerFinal['tutors_errors'][] = [
                     'ci' => $tutor['ci'],
                     'message' => $e->getMessage(),
-                    'fila' => $tutor['fila'] + 2
+                    'row' => $tutor['row'] + 2
                 ];
             }
         }

@@ -24,7 +24,7 @@ class OlimpystResolver
 
         return [
             'names' => $row[0],
-            'lastNames' => $row[1],
+            'surnames' => $row[1],
             'ci' => $row[2],
             'birthdate' => $birthdate,
             'email' => $row[4],

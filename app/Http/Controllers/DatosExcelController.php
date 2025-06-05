@@ -6,17 +6,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Departamento;
 use App\Models\Persona;
-use App\Services\ImportHelpers\ProvinciaResolver;
-use App\Services\ImportHelpers\ColegioResolver;
-use App\Services\ImportHelpers\GradoResolver;
-use App\Services\ImportHelpers\NivelResolver;
+use App\CustomModels\Person;
 use App\Services\ImportHelpers\TutorResolver;
-use App\Services\ImportHelpers\OlimpistaResolver;
+use App\Services\ImportHelpers\OlimpystResolver;
 use App\Services\ImportHelpers\AreaResolver;
-use App\Services\ImportHelpers\ProfesorResolver;
-use App\Services\Excel\TutoresProcessor;
-use App\Services\Excel\OlimpistasProcessor;
-use App\Services\Excel\ProfesoresProcessor;
+use App\Services\ImportHelpers\TeacherResolver;
+use App\Services\Excel\TutorsProcessor;
+use App\Services\Excel\OlimpystssProcessor;
+use App\Services\Excel\TeachersProcessor;
 use App\Services\Excel\InscripcionesProcessor;
 use App\Services\Registers\ListaInscripcionService;
 
@@ -39,7 +36,7 @@ class DatosExcelController extends Controller
         $tutorsData = [];
         $olimpystsData = [];
         $teachersData = [];
-        $areasData = [];
+        // $areasData = [];
 
         $answerFinal = [
             'tutors_saved' => [], 'tutors_omitted' => [], 'tutors_errors' => [],
@@ -53,11 +50,10 @@ class DatosExcelController extends Controller
         
             $row['row'] = $index;
             $tutorsData[$row[11]] = TutorResolver::extractTutorData($row);
-            $olimpystsData[$row[2]] = OlimpistaResolver::extractOlimpistaData($row, $index, $answerFinal);
-            $teachersData[$row[19]] = ProfesorResolver::extractProfesorData($row, $index, $answerFinal);
-            $areasData[] = AreaResolver::extractAreaData($row);
+            $olimpystsData[$row[2]] = OlimpystResolver::extractOlimpystData($row, $answerFinal);
+            $teachersData[$row[19]] = TeacherResolver::extractTeacherData($row);
+            // $areasData[] = AreaResolver::extractAreaData($row);
 
-            
             $sanitizedData[] = $row;
         }
         
@@ -65,9 +61,9 @@ class DatosExcelController extends Controller
             DB::beginTransaction();
 
             // Guardar primero tutores, profesores y olimpistas
-            TutoresProcessor::save($tutorsData, $answerFinal);
-            ProfesoresProcessor::save($teachersData, $answerFinal);
-            OlimpistasProcessor::save($olimpystsData, $answerFinal);
+            TutorsProcessor::save($tutorsData, $answerFinal);
+            TeachersProcessor::save($teachersData, $answerFinal);
+            OlimpystsProcessor::save($olimpystsData, $answerFinal);
 
             // Validar ahora que el responsable ya esté registrado
             if (!Persona::where('ci_persona', $ci_responsible)->exists()) {
