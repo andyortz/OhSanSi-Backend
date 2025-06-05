@@ -5,13 +5,13 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
-use App\Models\Persona;
+use App\Models\Person;
 
 class OlympicDetailSeeder extends Seeder
 {
     public function run()
     {
-        $peopleCi = Persona::pluck('ci_person')->toArray();
+        $peopleCi = Person::pluck('ci_person')->toArray();
         $details = [
             [
                 'id_olympiad' => 1, // Asume que existe olimpiada con id 1

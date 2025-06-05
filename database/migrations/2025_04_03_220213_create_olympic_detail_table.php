@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreign('id_olympiad')->references('id_olympiad')->on('olympiad')->onDelete('cascade');
             $table->foreign('ci_olympic')->references('ci_person')->on('person')->onDelete('cascade');
             $table->foreign('id_grade')->references('id_grade')->on('grade')->onDelete('cascade');
-            $table->foreign('id_school')->references('id_school')->on('id_school')->onDelete('cascade');
+            $table->foreign('id_school')->references('id_school')->on('school')->onDelete('cascade');
             $table->foreign('ci_legal_guardian')->references('ci_person')->on('person')->onDelete('cascade');
         });
     }

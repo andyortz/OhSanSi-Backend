@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamp('list_creation_date', 6)->useCurrent();
            
             $table->foreign('ci_enrollment_responsible')->references('ci_person')->on('person')->onDelete('cascade');
-            $table->foreign('id_olympiad')->references('id_olympiad')->on('olimpiad')->onDelete('cascade');
+            $table->foreign('id_olympiad')->references('id_olympiad')->on('olympiad')->onDelete('cascade');
         });
     }
 
