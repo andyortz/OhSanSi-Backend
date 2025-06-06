@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 use App\Models\Person;
 
-class OlympicDetailSeeder extends Seeder
+class OlympistDetailSeeder extends Seeder
 {
     public function run()
     {
@@ -85,6 +85,6 @@ class OlympicDetailSeeder extends Seeder
             ]
         ];
 
-        DB::table('olympic_detail')->insert($details);
+        DB::table('olympist_detail')->insert($details);
     }
 }

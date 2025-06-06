@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
             GradeLevelSeeder::class,
             PersonSeeder::class,
             AreaLevelOlympiadSeeder::class,
-            OlympicDetailSeeder::class,
+            OlympistDetailSeeder::class,
         ]);
         User::factory()->create([
             'name' => 'Test User',
