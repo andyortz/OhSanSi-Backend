@@ -6,7 +6,6 @@ use App\Models\Inscripcion;
 use App\Models\Pagos;
 use App\Models\NivelCategoria;
 use App\Models\Area;
-use App\Http\Requests\StoreInscripcionRequest;
 use Illuminate\Support\Facades\DB;
 
 class InscripcionAreaController extends Controller

@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreNivelAreaOlimpiadaRequest extends FormRequest
+class StoreAreaLevelOlympiadRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,15 +23,15 @@ class StoreNivelAreaOlimpiadaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_olimpiada' => [
+            'id_olympiad' => [
                 'required',
                 'integer',
-                Rule::exists('olimpiadas', 'id_olimpiada'),
+                Rule::exists('olympiad', 'id_olympiad'),
                 function ($attribute, $value, $fail) {
-                    $exists = \App\Models\NivelAreaOlimpiada::where([
-                        'id_olimpiada' => $this->id_olimpiada,
+                    $exists = \App\Models\AreaLevelOlympiad::where([
+                        'id_olympiad' => $this->id_olympiad,
                         'id_area' => $this->id_area,
-                        'id_nivel' => $this->id_nivel
+                        'id_level' => $this->id_level
                     ])->exists();
 
                     if ($exists) {
@@ -42,29 +42,29 @@ class StoreNivelAreaOlimpiadaRequest extends FormRequest
             'id_area' => [
                 'required',
                 'integer',
-                Rule::exists('areas_competencia', 'id_area')
+                Rule::exists('area', 'id_area')
             ],
-            'id_nivel' => [
+            'id_level' => [
                 'required',
                 'integer',
-                Rule::exists('niveles_categoria', 'id_nivel')
+                Rule::exists('category_level', 'id_nivel')
             ],
         ];
     }
     public function messages(): array
     {
         return [
-            'id_olimpiada.required' => 'El ID de la olimpiada es obligatorio',
-            'id_olimpiada.integer' => 'El ID de la olimpiada debe ser un número entero',
-            'id_olimpiada.exists' => 'La olimpiada especificada no existe',
+            'id_olympiad.required' => 'El ID de la olimpiada es obligatorio',
+            'id_olympiad.integer' => 'El ID de la olimpiada debe ser un número entero',
+            'id_olympiad.exists' => 'La olimpiada especificada no existe',
             
             'id_area.required' => 'El ID del área es obligatorio',
             'id_area.integer' => 'El ID del área debe ser un número entero',
             'id_area.exists' => 'El área especificada no existe',
             
-            'id_nivel.required' => 'El ID del nivel es obligatorio',
-            'id_nivel.integer' => 'El ID del nivel debe ser un número entero',
-            'id_nivel.exists' => 'El nivel especificado no existe',
+            'id_level.required' => 'El ID del nivel es obligatorio',
+            'id_level.integer' => 'El ID del nivel debe ser un número entero',
+            'id_level.exists' => 'El nivel especificado no existe',
         ];
     }
 }
