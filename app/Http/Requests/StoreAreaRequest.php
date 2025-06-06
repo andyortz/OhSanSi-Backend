@@ -17,23 +17,23 @@ class StoreAreaRequest extends FormRequest
     public function prepareForValidation()
     {
         $this->merge([
-            'nombre' => strtoupper($this->nombre),
+            'name' => strtoupper($this->nombre),
         ]);
     }
 
     public function rules(): array
     {
         return [
-            'nombre' => 'required|string|unique:area_competencia,nombre|max:50',
+            'name' => 'required|string|unique:area,name|max:50',
         ];
     }
 
     public function messages()
     {
         return [
-            'nombre.required' => 'El nombre del área es obligatorio.',
-            'nombre.unique' => 'Ya se ha registrado esta área.',
-            'nombre.max' => 'El tamaño máximo para el nombre es de 50 caracteres.',
+            'name.required' => 'El nombre del área es obligatorio.',
+            'name.unique' => 'Ya se ha registrado esta área.',
+            'name.max' => 'El tamaño máximo para el nombre es de 50 caracteres.',
         ];
     }
 }

@@ -8,11 +8,11 @@ use App\Models\Departamento;
 use App\Models\Persona;
 use App\CustomModels\Person;
 use App\Services\ImportHelpers\TutorResolver;
-use App\Services\ImportHelpers\OlimpystResolver;
+use App\Services\ImportHelpers\OlympiadParticipantResolver;
 use App\Services\ImportHelpers\AreaResolver;
 use App\Services\ImportHelpers\TeacherResolver;
 use App\Services\Excel\TutorsProcessor;
-use App\Services\Excel\OlimpystssProcessor;
+use App\Services\Excel\OlimpystsProcessor;
 use App\Services\Excel\TeachersProcessor;
 use App\Services\Excel\InscripcionesProcessor;
 use App\Services\Registers\ListaInscripcionService;
@@ -50,7 +50,7 @@ class DatosExcelController extends Controller
         
             $row['row'] = $index;
             $tutorsData[$row[11]] = TutorResolver::extractTutorData($row);
-            $olimpystsData[$row[2]] = OlimpystResolver::extractOlimpystData($row, $answerFinal);
+            $olimpystsData[$row[2]] = OlympiadParticipantResolver::extractOlympiadParticipantData($row, $answerFinal);
             $teachersData[$row[19]] = TeacherResolver::extractTeacherData($row);
             // $areasData[] = AreaResolver::extractAreaData($row);
 

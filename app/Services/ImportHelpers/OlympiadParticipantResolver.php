@@ -5,7 +5,7 @@ namespace App\Services\ImportHelpers;
 use Carbon\Carbon;
 
 
-class OlimpystResolver
+class OlympiadParticipantResolver
 {
     /**
      * Extraer los datos del olimpista desde la fila del Excel.
@@ -14,7 +14,7 @@ class OlimpystResolver
      * @param int $fila
      * @return array
      */
-    public static function extractOlimpystaData(array $row, array &$answerFinal): array
+    public static function extractOlympiadParticipantData(array $row, array &$answerFinal): array
     {
         // Convertir la unidad educativa a string
         $school =$row[7];
@@ -28,7 +28,7 @@ class OlimpystResolver
             'ci' => $row[2],
             'birthdate' => $birthdate,
             'email' => $row[4],
-            'region' => $row[5],
+            'departament' => $row[5],
             'province' => $row[6],
             'school' => $school,
             'id_grade' => $row[8],
