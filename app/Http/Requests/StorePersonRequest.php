@@ -21,36 +21,36 @@ class StorePersonRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombres' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
-            'apellidos' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
-            'ci' => 'required|integer|unique:persona,ci_persona',
-            'celular' => 'nullable|string|max:20',
-            'correo_electronico' => 'required|email:rfc,dns|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|max:100',
+            'names' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
+            'surnames' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
+            'ci' => 'required|integer|unique:person,ci_person',
+            'phone' => 'nullable|string|max:20',
+            'email' => 'required|email:rfc,dns|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|max:100',
         ];
     }
     public function messages(): array
     {
         return [
-            'nombres.required' => 'El campo "nombres" es obligatorio.',
-            'nombres.string' => 'El campo "nombres" debe ser un texto.',
-            'nombres.max' => 'El campo "nombres" no puede exceder los 100 caracteres.',
-            'nombres.regex' => 'El campo "nombres" solo puede contener letras y espacios.',
+            'names.required' => 'El campo "nombres" es obligatorio.',
+            'names.string' => 'El campo "nombres" debe ser un texto.',
+            'names.max' => 'El campo "nombres" no puede exceder los 100 caracteres.',
+            'names.regex' => 'El campo "nombres" solo puede contener letras y espacios.',
             
-            'apellidos.required' => 'El campo "apellidos" es obligatorio.',
-            'apellidos.string' => 'El campo "apellidos" debe ser un texto.',
-            'apellidos.max' => 'El campo "apellidos" no puede exceder los 100 caracteres.',
-            'apellidos.regex' => 'El campo "apellidos" solo puede contener letras y espacios.',
+            'surnames.required' => 'El campo "apellidos" es obligatorio.',
+            'surnames.string' => 'El campo "apellidos" debe ser un texto.',
+            'surnames.max' => 'El campo "apellidos" no puede exceder los 100 caracteres.',
+            'surnames.regex' => 'El campo "apellidos" solo puede contener letras y espacios.',
             
             'ci.required' => 'El campo "CI" es obligatorio.',
             'ci.integer' => 'El campo "CI" debe ser un número entero.',
             'ci.unique' => 'El "CI" ya está registrado en la base de datos.',
             
-            'celular.string' => 'El campo "celular" debe ser un texto.',
-            'celular.max' => 'El campo "celular" no puede exceder los 20 caracteres.',
+            'phone.string' => 'El campo "celular" debe ser un texto.',
+            'phone.max' => 'El campo "celular" no puede exceder los 20 caracteres.',
             
-            'correo_electronico.required' => 'El campo "correo electrónico" es obligatorio.',
-            'correo_electronico.regex' => 'El campo correo electrónico no tiene un formato válido.',
-            'correo_electronico.max' => 'El campo "correo electrónico" no puede exceder los 100 caracteres.',
+            'email.required' => 'El campo "correo electrónico" es obligatorio.',
+            'email.regex' => 'El campo correo electrónico no tiene un formato válido.',
+            'email.max' => 'El campo "correo electrónico" no puede exceder los 100 caracteres.',
         ];
     }
 }

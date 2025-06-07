@@ -18,7 +18,7 @@ class TeacherResolver
             'ci' => $row[18],  
             'phone' => strval($row[19]),
             'email' => $row[20], 
-            'rol_parentesco' => 'Madre',
+            // 'rol_parentesco' => 'Madre',
             'row' => $row[21],  // Asumiendo que la fila es la primera columna
         ];
     }

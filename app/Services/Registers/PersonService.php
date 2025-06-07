@@ -2,7 +2,7 @@
 
 namespace App\Services\Registers;
 
-use App\Models\Person;
+use App\Modules\Olympist\Models\Person;
 use Illuminate\Support\Facades\DB;
 
 class PersonService

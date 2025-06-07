@@ -2,8 +2,8 @@
 
 namespace App\Services\Excel;
 
-use App\Models\Persona;
-use App\CustomModels\Person;
+
+use App\Modules\Olympist\Models\Person;
 use App\Http\Requests\StoreTutorRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Services\Registers\PersonService;
@@ -25,7 +25,7 @@ class TutorsProcessor
 
                 $filteredTutor = [
                     'names' => $tutor['names'],
-                    'surnames' => $tutor['lastNames'],
+                    'surnames' => $tutor['surnames'],
                     'ci' => $tutor['ci'],
                     'phone' => $tutor['phone'],
                     'email' => $tutor['email'],

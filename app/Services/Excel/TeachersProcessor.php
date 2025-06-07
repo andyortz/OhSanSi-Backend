@@ -4,8 +4,8 @@ namespace App\Services\Excel;
 
 // use App\Http\Controllers\ProfesorController;
 
-use App\Models\Persona;
-use App\CustomModels\Person;
+
+use App\Modules\Olympist\Models\Person;
 use App\Http\Requests\StorePersonRequest;
 use App\Services\Registers\PersonService;
 use Illuminate\Support\Facades\Validator;
@@ -38,11 +38,11 @@ class TeachersProcessor
                     );
                     continue;
                 }else if(count($full) == 5){
-                    if (is_numeric($teacher['ci']) && Persona::where('ci_persona', $teacher['ci'])->exists()) {
-                        $answerFinal['profesores_omitidos'][] = [
+                    if (is_numeric($teacher['ci']) && Person::where('ci_person', $teacher['ci'])->exists()) {
+                        $answerFinal['teachers_omitted'][] = [
                             'ci' => $teacher['ci'],
                             'message' => 'El profesor ya se encuentra registrado en el sistema',
-                            'fila'=>$teacher['fila']+2
+                            'row'=>$teacher['row']+2
                         ];
                         continue;
                     }
@@ -93,7 +93,7 @@ class TeachersProcessor
         // Buscar si ya hay un error con ese CI y fila
         $index = null;
         foreach ($answerFinal['teachers_errors'] as $i => $error) {
-            if ($error['ci'] == $ci && $error['fila'] == $row) {
+            if ($error['ci'] == $ci && $error['row'] == $row) {
                 $index = $i;
                 break;
             }
