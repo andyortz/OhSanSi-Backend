@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+//REVISAR!!!
 use App\Models\ListaInscripcion;
 use App\Models\Persona;
 use App\Models\Inscripcion;

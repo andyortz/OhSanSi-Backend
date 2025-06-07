@@ -2,33 +2,33 @@
 
 namespace App\Services\Excel;
 
-use App\Services\Registers\InscripcionService;
+use App\Services\Registers\EnrollmentService;
 use Illuminate\Support\Facades\DB;
-use App\Models\DetalleOlimpista;
+use App\Modules\Oylimpist\Models\OlympicDetail;
 use Illuminate\Support\Carbon;
-use App\Services\Registers\ListaInscripcionService;
-use App\Services\ImportHelpers\NivelResolver;
-use App\Models\Olimpiada;
+use App\Services\Registers\EnrollmentListService;
+use App\Services\ImportHelpers\LevelResolver;
+use App\Modules\Olympiad\Models\Olympiad;
 
 class InscripcionesProcessor
 {
-    public static function save(array $sanitizedData, int $ci_responsable, array &$resultado): void
+    public static function save(array $sanitizedData, int $ci_responsible, array &$answerFinal): void
     {
-        $service = app(InscripcionService::class);
-        $listaService = app(\App\Services\Registers\ListaInscripcionService::class);
+        $service = app(EnrollmentService::class);
+        $listService = app(EnrollmentListService::class);
 
         
 
-        $interesados = self::selectData($sanitizedData);
-        $hoy = Carbon::now();
+        $interested = self::selectData($sanitizedData);
+        $today = Carbon::now();
 
         // Obtener CI de un olimpista para encontrar la olimpiada
-        $idOlimpiada = Olimpiada::where('fecha_inicio', '<=', $hoy) ->first();
-        // $primerCI = $interesados[0]['ci'] ?? null;
-        // $detalle = DetalleOlimpista::where('ci_olimpista', $primerCI)->first();
+        $idOlympiad = Olympiad::where('start_date', '<=', $today) ->first();
+        // $primerCI = $interested[0]['ci'] ?? null;
+        // $detail = DetalleOlimpista::where('ci_olimpista', $primerCI)->first();
 
-        // if (!$detalle) {
-        //     $resultado['inscripciones_errores'][] = [
+        // if (!$detail) {
+        //     $answerFinal['registrations_errors'][] = [
         //         // 'ci' => $primerCI?? 'Desconocido',
         //         'message' => 'Complete los campos campos correctamente antes de inscribir',
         //         // 'fila' => $sanitizedData['fila'] + 2
@@ -37,10 +37,10 @@ class InscripcionesProcessor
         // }
 
         // Crear UNA sola lista
-        $lista = $listaService->crearLista($ci_responsable, $idOlimpiada->id_olimpiada);
-        $idLista = $lista->id_lista;
+        $list = $listService->createList($ci_responsible, $idOlympiad->id_olympiad);
+        $idList = $list->id_list;
 
-        foreach ($interesados as $data) {
+        foreach ($interested as $data) {
             try {
                 // 'ci' => $item[2],
         //         'nivel' => $item[15],
@@ -48,97 +48,97 @@ class InscripcionesProcessor
         //         'ci_tutor_academico' => $item[18] ?? null,
         //         'fila' => $item['fila'] ?? null,
                 //validacion de nivel
-                $data['nivel'] = NivelResolver::resolve($data['nivel']);
+                $data['level'] = LevelResolver::resolve($data['level']);
 
                 if (!is_numeric($data['ci'])) {
-                    self::agregarErrorInscripcion(
-                        $resultado,
+                    self::addRegistrationError(
+                        $answerFinal,
                         $data['ci'],
                         'El CI del olimpista no es válido',
-                        $data['fila'] + 2
+                        $data['row'] + 2
                     );
                     continue;
                 }
 
                 
                 //Verificamos que tenga un nivel asociado.
-                if($data['nivel'] == null){
-                    self::agregarErrorInscripcion(
-                        $resultado,
+                if($data['level'] == null){
+                    self::addRegistrationError(
+                        $answerFinal,
                         $data['ci'],
                         'El nivel que desea inscribir no es válido',
-                        $data['fila'] + 2
+                        $data['row'] + 2
                     );
                     // continue;
                 }
-                $detalle = DetalleOlimpista::where('ci_olimpista', $data['ci'])->first();
-                if ($detalle == null) {
-                    self::agregarErrorInscripcion(
-                        $resultado,
+                $detail = OlympicDetail::where('ci_olympic', $data['ci'])->first();
+                if ($detail == null) {
+                    self::addRegistrationError(
+                        $answerFinal,
                         $data['ci'],
                         'El CI: "'.$data['ci'].'" no se encuentra registrado como olimpista, revise los datos ingresados',
-                        $data['fila'] + 2
+                        $data['row'] + 2
                     );
                     continue;
                 }else{
                     //obtenemos el limite permitido para la olimpiada
-                    $limite = DB::table('olimpiada')
-                        ->where('fecha_inicio', '<=', $hoy)
-                        ->where('fecha_fin', '>=', $hoy)
-                        ->pluck('max_categorias_olimpista')
+                    $limit = DB::table('olympiad')
+                        ->where('start_date', '<=', $today)
+                        ->where('end_date', '>=', $today)
+                        ->pluck('max_olympic_categories')
                         ->first();
 
-                    $areasinscrito = DB::table('inscripcion')
-                        ->join('detalle_olimpista', 'inscripcion.id_detalle_olimpista', 'detalle_olimpista.id_detalle_olimpista')
-                        ->join('nivel_area_olimpiada', 'inscripcion.id_nivel', 'nivel_area_olimpiada.id_nivel')
-                        ->where('detalle_olimpista.ci_olimpista', $data['ci'])
-                        ->select('nivel_area_olimpiada.id_area')
+                    $areasregistered = DB::table('enrollment')
+                        ->join('olympic_detail', 'enrollment.id_olympic_detail', 'olympic_detail.id_olympic_detail')
+                        ->join('area_level_olympiad', 'enrollment.id_level', 'area_level_olympiad.id_level')
+                        ->where('olympic_detail.ci_olympic', $data['ci'])
+                        ->select('area_level_olympiad.id_area')
                         ->distinct()
                         ->count();
 
-                    if ($areasinscrito >= $limite) {
-                        self::agregarErrorInscripcion(
-                            $resultado,
+                    if ($areasregistered >= $limit) {
+                        self::addRegistrationError(
+                            $answerFinal,
                             $data['ci'],
                             'El olimpista ya alcanzó el límite de inscripciones',
-                            $data['fila'] + 2
+                            $data['row'] + 2
                         );
                         continue;
                     }
                     //Verificamos que no se inscriba a una mismo nivel
-                    $nivelExistente = DB::table('inscripcion')
-                        ->join('detalle_olimpista', 'inscripcion.id_detalle_olimpista', 'detalle_olimpista.id_detalle_olimpista')
-                        ->where('detalle_olimpista.ci_olimpista', $data['ci'])
-                        ->where('inscripcion.id_nivel', $data['nivel'])
-                        ->pluck('inscripcion.id_nivel')
+                    $existingLevel = DB::table('enrollment')
+                        ->join('olympic_detail', 'enrollment.id_olympic_detail', 'olympic_detail.id_olympic_detail')
+                        ->where('olympic_detail.ci_olympic', $data['ci'])
+                        ->where('enrollment.id_level', $data['level'])
+                        ->pluck('enrollment.id_level')
                         ->first();
 
-                    if ($nivelExistente == $data['nivel']) {
-                        self::agregarErrorInscripcion(
-                            $resultado,
+                    if ($existingLevel == $data['level']) {
+                        self::addRegistrationError(
+                            $answerFinal,
                             $data['ci'],
                             'El olimpista ya está inscrito en el nivel seleccionado',
-                            $data['fila'] + 2
+                            $data['row'] + 2
                         );
                         continue;
                     }
-                    $data['ci_responsable_inscripcion'] = $ci_responsable;
-                    $data['id_lista'] = $idLista;
+                    $data['ci_enrollment_responsible'] = $ci_responsible;
+                    $data['id_list'] = $idList;
 
-                    $inscripcion = $service->register($data);
+                    $enrollment = $service->register($data);
 
-                    $resultado['inscripciones_guardadas'][] = [
+                    $answerFinal['registrations_saved'][] = [
                         'ci' => $data['ci'],
-                        'nivel' => $data['nivel'],
-                        'id_lista' => $inscripcion->id_lista ?? null,
+                        'level' => $data['level'],
+                        'id_list' => $enrollment->id_list ?? null,
                     ];
                 }
                 
             } catch (\Throwable $e) {
-                $resultado['inscripciones_errores'][] = [
+                $answerFinal['registrations_errors'][] = [
                     'ci' => $data['ci'] ?? 'Desconocido',
                     'message' => $e->getMessage(),
-                    'fila'=> $data['fila'] + 2
+                    'row'=> $data['row'] + 2
                 ];
             }
         }
@@ -151,46 +151,46 @@ class InscripcionesProcessor
         return collect($sanitizedData)->map(function ($item) {
             return [
                 'ci' => $item[2],
-                'nivel' => $item[15],
-                'estado' => 'PENDIENTE',
-                'ci_tutor_academico' => $item[18] ?? null,
-                'fila' => $item['fila'] ?? null,
+                'level' => $item[15],
+                'status' => 'PENDIENTE',
+                'ci_academic_advisor' => $item[18] ?? null,
+                'row' => $item['row'] ?? null,
             ];
         })->toArray();
     }
-    private static function agregarErrorInscripcion(array &$resultado, $ci, $mensaje, $fila)
+    private static function addRegistrationError(array &$answerFinal, $ci, $message, $row)
     {
         // Buscar si ya hay un error con ese CI y fila
-        $indice = null;
-        foreach ($resultado['inscripciones_errores'] as $i => $error) {
-            if ($error['ci'] == $ci && $error['fila'] == $fila) {
-                $indice = $i;
+        $index = null;
+        foreach ($answerFinal['registrations_errors'] as $i => $error) {
+            if ($error['ci'] == $ci && $error['fila'] == $row) {
+                $index = $i;
                 break;
             }
         }
 
-        if ($indice !== null) {
+        if ($index !== null) {
             // Ya existe, agregar nuevo mensaje
-            if (!isset($resultado['inscripciones_errores'][$indice]['message'])) {
-                $resultado['inscripciones_errores'][$indice]['message'] = [];
-                if (isset($resultado['inscripciones_errores'][$indice]['message'])) {
+            if (!isset($answerFinal['registrations_errors'][$index]['message'])) {
+                $answerFinal['registrations_errors'][$index]['message'] = [];
+                if (isset($answerFinal['registrations_errors'][$index]['message'])) {
                     // Migrar error plano si existe
-                    $resultado['inscripciones_errores'][$indice]['message'][] = $resultado['inscripciones_errores'][$indice]['message'];
-                    unset($resultado['inscripciones_errores'][$indice]['message']);
+                    $answerFinal['registrations_errors'][$index]['message'][] = $answerFinal['registrations_errors'][$index]['message'];
+                    unset($answerFinal['registrations_errors'][$index]['message']);
                 }
-                if (isset($resultado['inscripciones_errores'][$indice]['message'])) {
-                    $resultado['inscripciones_errores'][$indice]['message'][] = $resultado['inscripciones_errores'][$indice]['message'];
-                    unset($resultado['inscripciones_errores'][$indice]['message']);
+                if (isset($answerFinal['registrations_errors'][$index]['message'])) {
+                    $answerFinal['registrations_errors'][$index]['message'][] = $answerFinal['registrations_errors'][$index]['message'];
+                    unset($answerFinal['registrations_errors'][$index]['message']);
                 }
             }
 
-            $resultado['inscripciones_errores'][$indice]['message'][] = $mensaje;
+            $answerFinal['registrations_errors'][$index]['message'][] = $message;
         } else {
             // No existe, crear nuevo
-            $resultado['inscripciones_errores'][] = [
+            $answerFinal['registrations_errors'][] = [
                 'ci' => $ci,
-                'message' => [$mensaje],
-                'fila' => $fila
+                'message' => [$message],
+                'row' => $row
             ];
         }
     }

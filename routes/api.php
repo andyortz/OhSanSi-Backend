@@ -15,20 +15,21 @@ use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\OlimpiadaGestionController;
 // use App\Http\Controllers\AreasFiltroController;
 use App\Http\Controllers\colegiosController;
-use App\Http\Controllers\OlimpistaController;
+// use App\Http\Controllers\OlimpistaController;
 use App\Http\Controllers\VincularController;
 use App\Http\Controllers\EstructuraOlimpiadaController;
 use App\Http\Controllers\OlimpiadaController;
 use App\Http\Controllers\VerificarInscripcionController;
 use App\Http\Controllers\InscripcionNivelesController;
-use App\Http\Controllers\ListaInscripcionController;
+use App\Http\Controllers\EnrollmentListController;
 use App\Http\Controllers\ExcelImportController;
-use App\Http\Controllers\DatosExcelController;
+use App\Http\Controllers\ExcelDataController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\PaymentSlipController;;
 use App\Http\Controllers\TestPreprocessorController;
 use App\Http\Controllers\PagoValidacionController;
 use App\Http\Controllers\PaymentInquiryController;
+use App\Modules\Olympist\Controllers\OlympistController;
 
 
 use App\Imports\OlimpistaImport;
@@ -43,7 +44,7 @@ Route::get('/user', function (Request $request) {
 Route::post('/pago/verificar', [PagoValidacionController::class, 'verificar']);
 //Excel
 Route::post('/excel/data', [ExcelImportController::class, 'import']);
-Route::post('/excel/registration', [DatosExcelController::class, 'cleanDates']);
+Route::post('/excel/registration', [ExcelDataController::class, 'cleanDates']);
 
 // Niveles
 Route::post('/niveles', [NivelCategoriaController::class, 'store']);
@@ -70,9 +71,9 @@ Route::get('/get-niveles/', [NivelCategoriaController::class, 'index3']);
 
 Route::get('/olimpiadas/{id}/max-categorias', [OlimpiadaAreaController::class, 'maxCategorias']);
 
-//Route::post('/inscripciones', [InscripcionAreaController::class, 'store']);
-Route::post('/inscripciones', [InscripcionNivelesController::class, 'store']);
-Route::post('/inscripcionesOne', [InscripcionNivelesController::class, 'storeOne']);
+//Route::post('/inscripciones', [AreaRegistrationController::class, 'store']); //REVISAR!!!
+// Route::post('/inscripciones', [InscripcionNivelesController::class, 'store']);//REVISAR!!!
+// Route::post('/inscripcionesOne', [InscripcionNivelesController::class, 'storeOne']);//REVISAR!!!
 
 // inscrpcion con posible tutor
 Route::post('/inscripciones-con-tutor', [InscripcionNivelesController::class, 'storeWithTutor']);
@@ -120,58 +121,59 @@ Route::get('/olympiad/{gestion}', [OlimpiadaGestionController::class, 'show']);
 //Route::get('/student-registration', [StudentRegistrationController::class, 'index']);
 
 //Olimpista
-Route::get('olimpistas/cedula/{cedula}', [OlimpistaController::class, 'getByCedula']);
-Route::get('olimpistas/email/{email}', [OlimpistaController::class, 'getByEmail']);
-Route::post('/olimpistas', [OlimpistaController::class, 'store']);
+Route::get('olimpistas/cedula/{cedula}', [OlympistController::class, 'getByCedula']);
+// Route::get('olimpistas/email/{email}', [OlimpistaController::class, 'getByEmail']);
+Route::post('/olimpistas', [OlympistController::class, 'store']);
 
 
 //Departamentos
-Route::get('/departamentos', [DepartamentoController::class, 'index']);
+Route::get('/departaments', [DepartamentoController::class, 'index']);
 
 //Provincias
-Route::get('/provincias/{id}', [ProvinciaController::class, 'porDepartamento']);
+Route::get('/provinces/{id}', [ProvinciaController::class, 'porDepartamento']);
 // Route::get('/olimpistas/{id_olimpista}/olimpiadas/{id_olimpiada}/areas-disponibles', [AreasFiltroController::class, 'obtenerAreasDisponibles']); //REVISAR!!!
-Route::get('/estructura-olimpiada/{id_olimpiada}', [EstructuraOlimpiadaController::class, 'obtenerEstructuraOlimpiada']);
-Route::get('/provincias', [ProvinciaController::class, 'index']); 
+// Route::get('/estructura-olimpiada/{id_olimpiada}', [EstructuraOlimpiadaController::class, 'obtenerEstructuraOlimpiada']); //REVISAR!!!
+Route::get('/provinces', [ProvinciaController::class, 'index']); 
 //new db
-Route::post('/vincular-olimpista-tutor', [VincularController::class, 'registrarConParentesco']);
-Route::get('/olimpiada/abierta', [OlimpiadaController::class, 'verificarOlimpiadaAbierta']);
-Route::get('/verificar-inscripcion', [VerificarInscripcionController::class, 'verificar']);
+// Route::post('/vincular-olimpista-tutor', [VincularController::class, 'registrarConParentesco']);//REVISAR!!!
+// Route::get('/olimpiada/abierta', [OlimpiadaController::class, 'verificarOlimpiadaAbierta']); //REVISAR!!!
+// Route::get('/verificar-inscripcion', [VerificarInscripcionController::class, 'verificar']); //REVISAR!!!
 
-Route::post('/registro-olimpista', [OlimpistaController::class, 'store']);
+// Route::post('/registro-olimpista', [OlympistController::class, 'store']);
 
 
-//Areas de inscripcion para un Olimpista
-Route::get('/olimpistas/{ci}/areas-niveles', [OlimpistaController::class, 'getAreasNivelesInscripcion']);
+//Areas de inscripcion para un Olimpista // REVISAR!!!!
+// Route::get('/olimpistas/{ci}/areas-niveles', [OlimpistaController::class, 'getAreasNivelesInscripcion']);
 
 //maxima cantidad de categorias
-Route::get('/olimpiada/max-categorias', [OlimpiadaController::class, 'getMaxCategorias']);
+Route::get('/olympiads/max-categories', [OlimpiadaController::class, 'getMaxCategorias']);
 
-Route::get('/olimpiadas/{id}/areas-niveles', [OlimpiadaController::class, 'getAreasConNiveles']);
+Route::get('/olympiads/{id}/levels-areas', [OlimpiadaController::class, 'getAreasConNiveles']);
 
-Route::get('/olimpiada-data/{id}', [OlimpiadaController::class, 'getAreasYNiveles']);
+// Route::get('/olimpiada-data/{id}', [OlimpiadaController::class, 'getAreasYNiveles']);//REVISAR!!!
 
 //get Inscripciones
 
-Route::get('/inscripciones/{ci}/{estado}', [ListaInscripcionController::class, 'obtenerPorResponsable'])
-    ->where('estado', 'PENDIENTE|PAGADO|TODOS');
-Route::get('/inscripciones-pendiente/{ci}', [ListaInscripcionController::class, 'listasPagoPendiente']);
+Route::get('/enrollments/{ci}/{estado}', [EnrollmentListController::class, 'obtenerPorResponsable'])
+    ->where('status', 'PENDIENTE|PAGADO|TODOS');
+Route::get('/enrollments/pending/{ci}', [EnrollmentListController::class, 'listasPagoPendiente']);
 
-Route::get('/inscripciones', [ListaInscripcionController::class, 'index']);
+Route::get('/enrollments', [EnrollmentListController::class, 'index']);
 
-Route::get('/boleta-de-pago-individual/{id}', [ListaInscripcionController::class, 'individual']);
+Route::get('/receipts/individual/{id}', [EnrollmentListController::class, 'individual']);
 
-Route::get('/boleta-de-pago-grupal/{id}', [ListaInscripcionController::class, 'grupal']);
+Route::get('/receipts/group/{id}', [EnrollmentListController::class, 'grupal']);
 
+Route::get('/enrrolments/participants/{id}',[EnrollmentListController::class, 'getById']);
 
-Route::post('/niveles-categoria', [NivelCategoriaController::class, 'newCategoria']);
+Route::post('/category-levels', [NivelCategoriaController::class, 'newCategoria']);
 
-Route::get('/persona/{ci}', [PersonaController::class, 'getByCi']);
+Route::get('/person/{ci}', [PersonaController::class, 'getByCi']);
 
 Route::post('/prueba-ocr', [PaymentSlipController::class, 'process']); //probar con cuidado
 
 Route::post('/test-preprocessor', [TestPreprocessorController::class, 'test']);
 
-Route::get('/olimpistas-inscritos/{id}',[ListaInscripcionController::class, 'getById']);
+
 
 Route::get('/payment/{ci}', [PaymentInquiryController::class, 'checkByCi']);

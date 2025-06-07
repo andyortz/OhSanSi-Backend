@@ -8,6 +8,9 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use App\Modules\Olympist\Models\OlympicDetail;
+use App\Modules\Olympist\Models\EnrollmentList;
+use App\Modules\Olympist\Models\Enrollment;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -58,4 +61,9 @@ class Person extends Model
 	{
 		return $this->hasMany(Enrollment::class, 'ci_academic_advisor');
 	}
+
+	public function olympicDetail()
+    {
+        return $this->hasOne(OlympicDetail::class, 'ci_olympic', 'ci_person');
+    }
 }

@@ -2,88 +2,90 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ListaInscripcion;
-use App\Models\NivelAreaOlimpiada;
-use App\Models\Pago;
-use App\Models\Persona;
-use App\Models\Inscripcion;
+
+
+use App\Modules\Olympist\Models\EnrollmentList;
+use App\Modules\Olympiad\Models\AreaLevelOlympiad;
+use App\Modules\Olympist\Models\Payment;
+use App\Modules\Olympist\Models\Person;
+use App\Modules\Olympist\Models\Enrollment;
 
 use Illuminate\Http\Request\Request;
 use Illuminate\Support\Facades\DB;
 
-class ListaInscripcionController extends Controller
+class EnrollmentListController extends Controller
 {
     /**
      * Obtener todas las áreas
      */
     public function index()
     {
-        $resultado = [];
-        foreach ($listas as $lista) {
+        $answer = [];
+        foreach ($lists as $list) {
             // Primero: Todos los campos de la lista
-            $item = $lista->toArray(); 
+            $item = $list->toArray(); 
         
             // Luego: Añadir el detalle específico
-            if ($lista->count() == 1) {
-                $inscripcion = $lista->inscripciones->first();
+            if ($list->count() == 1) {
+                $enrollment = $list->enrollments->first();
 
-                if ($inscripcion) {
+                if ($enrollment) {
                     // Cargar todas las relaciones necesarias en una sola consulta
-                    $inscripcion->load([
-                        'nivel.asociaciones.area',  // Relación a área a través de nivel
-                        'detalleOlimpista.olimpista',   // Nombre del olimpista
-                        'detalleOlimpista.colegio'    // Nombre del colegio
+                    $enrollment->load([
+                        'level.associations.area',  // Relación a área a través de nivel
+                        'olympicDetail.olympist',   // Nombre del olimpista
+                        'olympicDetail.school'    // Nombre del colegio
                     ]);
 
-                    $item['detalle'] = [
-                        'tipo' => 'individual',
-                        'nivel' => [
-                            'id' => $inscripcion->id_nivel,
-                            'nombre' => $inscripcion->nivel->nombre ?? null,
-                            'area' => $inscripcion->nivel->asociaciones->area->nombre ?? null
+                    $item['detail'] = [
+                        'kind' => 'individual',
+                        'level' => [
+                            'id' => $enrollment->id_level,
+                            'nome' => $enrollment->level->name ?? null,
+                            'area' => $enrollment->level->associations->area->name ?? null
                         ],
-                        'olimpista' => [
-                            'ci' => $inscripcion->detalleOlimpista->ci_olimpista ?? null,
-                            'nombre' => $inscripcion->detalleOlimpista->olimpista->nombre ?? null
+                        'olympist' => [
+                            'ci' => $enrollment->olympistDetail->ci_olympic ?? null,
+                            'name' => $enrollment->olympistDetail->olympist->name ?? null
                         ],
-                        'colegio' => [
-                            'id' => $inscripcion->detalleOlimpista->unidad_educativa ?? null,
-                            'nombre' => $inscripcion->detalleOlimpista->colegio->nombre_colegio ?? null
+                        'school' => [
+                            'id' => $enrollment->olympistDetail->school ?? null,
+                            'name' => $enrollment->olympistDetail->school->school_name ?? null
                         ]
                     ];
                 } else {
-                    $item['detalle'] = [
-                        'tipo' => 'individual',
+                    $item['detail'] = [
+                        'kind' => 'individual',
                         'error' => 'Inscripción no encontrada'
                     ];
                 }
             } else {
-                $inscripciones = $lista->inscripciones;
-                $item['detalle'] = [
-                    'tipo' => 'grupal',
-                    'cantidad_participantes' => $inscripciones->count(),
-                    'inscripciones' => $lista->inscripciones->toArray()
+                $enrollments = $list->enrollments;
+                $item['details'] = [
+                    'kind' => 'grupal',
+                    'participant_amount' => $enrollments->count(),
+                    'inscripciones' => $list->enrollments->toArray()
                 ];
             }
         
-            $resultado[] = $item;
+            $answer[] = $item;
         }
-        return response()->json(['data' => $resultado], 200);
+        return response()->json(['data' => $answer], 200);
     }
 
-    private function formatoIndividual($inscripciones)
+    private function formatoIndividual($enrollments)
     {
-        $olimpista = $inscripciones->first()->detalleOlimpista->olimpista;
+        $olimpista = $enrollments->first()->detalleOlimpista->olimpista;
         
         return [
             'tipo' => 'individual',
-            'cantidad_inscripciones' => $inscripciones->count(),
+            'cantidad_inscripciones' => $enrollments->count(),
             'olimpista' => [
                 'ci' => $olimpista->ci_persona,
                 'nombres' => $olimpista->nombres,
                 'apellidos' => $olimpista->apellidos
             ],
-            'niveles' => $inscripciones->map(function ($insc) {
+            'niveles' => $enrollments->map(function ($insc) {
                 return [
                     'id' => $insc->nivel->id_nivel,
                     'nombre' => $insc->nivel->nombre,
@@ -93,31 +95,31 @@ class ListaInscripcionController extends Controller
         ];
     }
 
-    private function formatoGrupal($inscripciones)
+    private function formatoGrupal($enrollments)
     {
         return [
             'tipo' => 'grupal',
-            'cantidad_estudiantes' => $inscripciones->groupBy('id_detalle_olimpista')->count(),
-            'cantidad_inscripciones' => $inscripciones->count()
+            'cantidad_estudiantes' => $enrollments->groupBy('id_detalle_olimpista')->count(),
+            'cantidad_inscripciones' => $enrollments->count()
         ];
     }
-    public function obtenerPorResponsable($ci, $estado)
+    public function getByResponsible($ci, $status)
     {
-        $responsable = Persona::where('ci_persona', $ci)
+        $responsible = Person::where('ci_person', $ci)
             ->first(['nombres', 'apellidos', 'ci_persona']);
-        if ($estado !== 'TODOS') {
-            $listas = ListaInscripcion::with([
-                'inscripciones.detalleOlimpista.olimpista:nombres,apellidos,ci_persona',
-                'inscripciones.nivel.asociaciones.area:nombre,id_area'
-            ])->where('ci_responsable_inscripcion', $ci)->where('estado', $estado)->get(['id_lista', 'estado', 'ci_responsable_inscripcion']);
+        if ($status !== 'TODOS') {
+            $lists = EnrollmentList::with([
+                'enrollments.olympicDetail..olympist:names,surnames,ci_person',
+                'enrollments.nivel.enrollments.area:name,id_area'
+            ])->where('ci_enrollment_responsible', $ci)->where('status', $status)->get(['id_list', 'status', 'ci_enrollment_responsible']);
         } else {
-            $listas = ListaInscripcion::with([
-                'inscripciones.detalleOlimpista.olimpista:nombres,apellidos,ci_persona',
-                'inscripciones.nivel.asociaciones.area:nombre,id_area'
-            ])->where('ci_responsable_inscripcion', $ci)->get(['id_lista', 'estado', 'ci_responsable_inscripcion']);
+            $lists = EnrollmentList::with([
+                'enrollments.olympicDetail..olympist:names,surnames,ci_person',
+                'enrollments.nivel.enrollments.area:name,id_area'
+            ])->where('ci_enrollment_responsible', $ci)->get(['id_list', 'status', 'ci_enrollment_responsible']);
         }
 
-        if ($listas->isEmpty()) {
+        if ($lists->isEmpty()) {
             return response()->json(
                 [
                     'message' => 'No existe ninguna lista asociada a este CI.',
@@ -127,21 +129,21 @@ class ListaInscripcionController extends Controller
             );
         }
         //Desgloce
-        $resultado = [];
-        foreach ($listas as $lista) {
+        $answer = [];
+        foreach ($lists as $list) {
             // Primero: Todos los campos de la lista
-            $inscripciones = $lista->inscripciones;
+            $enrollments = $list->inscripciones;
 
-            $allSameDetalle = $inscripciones->count() > 0 && 
-            $inscripciones->every(function ($insc) use ($inscripciones) {
-                return $insc->id_detalle_olimpista === $inscripciones->first()->id_detalle_olimpista;
+            $allSameDetalle = $enrollments->count() > 0 && 
+            $enrollments->every(function ($insc) use ($enrollments) {
+                return $insc->id_detalle_olimpista === $enrollments->first()->id_detalle_olimpista;
             });
             $item = [
-                'id_lista' => $lista->id_lista,
-                'estado' => $lista->estado,
-                'detalle' => $allSameDetalle ? $this->formatoIndividual($inscripciones) : $this->formatoGrupal($inscripciones)
+                'id_lista' => $list->id_lista,
+                'estado' => $list->estado,
+                'detalle' => $allSameDetalle ? $this->formatoIndividual($enrollments) : $this->formatoGrupal($enrollments)
             ];
-            $resultado[] = $item;
+            $answer[] = $item;
         }
         return response()->json([
         'responsable' => [
@@ -149,8 +151,8 @@ class ListaInscripcionController extends Controller
             'nombres' => $responsable->nombres,
             'apellidos' => $responsable->apellidos
         ],
-        'listas' => $resultado
-       ], 200);
+        'listas' => $answer
+        ], 200);
     }
 
     public function listasPagoPendiente($ci)
@@ -184,27 +186,27 @@ class ListaInscripcionController extends Controller
         }
 
         // Trae solo las listas filtradas por esos IDs
-        $listas = ListaInscripcion::with([
+        $lists = ListaInscripcion::with([
             'inscripciones.detalleOlimpista.olimpista:nombres,apellidos,ci_persona',
             'inscripciones.nivel.asociaciones.area:nombre,id_area'
         ])
         ->whereIn('id_lista', $idsListas)
         ->get(['id_lista', 'estado', 'ci_responsable_inscripcion']);
 
-        $resultado = [];
-        foreach ($listas as $lista) {
-            $inscripciones = $lista->inscripciones;
-            $allSameDetalle = $inscripciones->count() > 0 && 
-                $inscripciones->every(function ($insc) use ($inscripciones) {
-                    return $insc->id_detalle_olimpista === $inscripciones->first()->id_detalle_olimpista;
+        $answer = [];
+        foreach ($lists as $list) {
+            $enrollments = $list->inscripciones;
+            $allSameDetalle = $enrollments->count() > 0 && 
+                $enrollments->every(function ($insc) use ($enrollments) {
+                    return $insc->id_detalle_olimpista === $enrollments->first()->id_detalle_olimpista;
                 });
 
             $item = [
-                'id_lista' => $lista->id_lista,
-                'estado' => $lista->estado,
-                'detalle' => $allSameDetalle ? $this->formatoIndividual($inscripciones) : $this->formatoGrupal($inscripciones)
+                'id_lista' => $list->id_lista,
+                'estado' => $list->estado,
+                'detalle' => $allSameDetalle ? $this->formatoIndividual($enrollments) : $this->formatoGrupal($enrollments)
             ];
-            $resultado[] = $item;
+            $answer[] = $item;
         }
 
         return response()->json([
@@ -213,32 +215,29 @@ class ListaInscripcionController extends Controller
                 'nombres' => $responsable->nombres,
                 'apellidos' => $responsable->apellidos
             ],
-            'listas' => $resultado
+            'listas' => $answer
         ], 200);
     }
 
-
-
-
     public function individual($id){
         try {
-            $lista = ListaInscripcion::with([
+            $list = ListaInscripcion::with([
                 'olimpiada:costo,id_olimpiada',
                 'inscripciones.detalleOlimpista.olimpista',
                 'inscripciones.nivel.asociaciones.area',
             ])->findOrFail($id);
             
-            $responsable = Persona::where('ci_persona', $lista->ci_responsable_inscripcion)
+            $responsable = Persona::where('ci_persona', $list->ci_responsable_inscripcion)
             ->first(['nombres', 'apellidos', 'ci_persona']);
 
             // Verificar que sea individual
-            if ($lista->inscripciones->groupBy('id_detalle_olimpista')->count() > 1) {
+            if ($list->inscripciones->groupBy('id_detalle_olimpista')->count() > 1) {
                 throw new \Exception('Esta función es solo para listas individuales');
             }
     
-            $precioUnitario = (float)$lista->olimpiada->costo;
-            $montoTotal = round((float)$precioUnitario * $lista->inscripciones->count(), 2);
-            $cantidad = $lista->inscripciones->count();
+            $precioUnitario = (float)$list->olimpiada->costo;
+            $montoTotal = round((float)$precioUnitario * $list->inscripciones->count(), 2);
+            $cantidad = $list->inscripciones->count();
 
             $pago = Pago::firstOrCreate(
                 ['id_lista' => $id],
@@ -251,11 +250,11 @@ class ListaInscripcionController extends Controller
             );
     
             // Procesar niveles
-            $niveles = $lista->inscripciones->map(function ($inscripcion) {
+            $niveles = $list->inscripciones->map(function ($enrollment) {
                 return [
-                    'nivel_id' => $inscripcion->nivel->id_nivel,
-                    'nombre_nivel' => $inscripcion->nivel->nombre,
-                    'area' => optional($inscripcion->nivel->asociaciones->first())->area->nombre ?? 'Sin área'
+                    'nivel_id' => $enrollment->nivel->id_nivel,
+                    'nombre_nivel' => $enrollment->nivel->nombre,
+                    'area' => optional($enrollment->nivel->asociaciones->first())->area->nombre ?? 'Sin área'
                 ];
             });
             return response()->json([
@@ -274,9 +273,9 @@ class ListaInscripcionController extends Controller
                     'fecha_pago' => now()
                 ],
                 'olimpista' => [
-                    'ci' => $lista->inscripciones->first()->detalleOlimpista->olimpista->ci_persona,
-                    'nombres' => $lista->inscripciones->first()->detalleOlimpista->olimpista->nombres,
-                    'apellidos' => $lista->inscripciones->first()->detalleOlimpista->olimpista->apellidos
+                    'ci' => $list->inscripciones->first()->detalleOlimpista->olimpista->ci_persona,
+                    'nombres' => $list->inscripciones->first()->detalleOlimpista->olimpista->nombres,
+                    'apellidos' => $list->inscripciones->first()->detalleOlimpista->olimpista->apellidos
                 ],
                 'niveles' => $niveles
             ], 200);
@@ -288,19 +287,19 @@ class ListaInscripcionController extends Controller
     }
     public function grupal($id){
         try {
-            $lista = ListaInscripcion::with([
+            $list = ListaInscripcion::with([
                 'inscripciones',
                 'responsable',
                 'olimpiada'
             ])->findOrFail($id);
-            $responsable = Persona::where('ci_persona', $lista->ci_responsable_inscripcion)
+            $responsable = Persona::where('ci_persona', $list->ci_responsable_inscripcion)
             ->first(['nombres', 'apellidos', 'ci_persona']);
 
             // Cálculos básicos
-            $precioUnitario = (float)$lista->olimpiada->costo;
-            $cantidad = $lista->inscripciones->count();
+            $precioUnitario = (float)$list->olimpiada->costo;
+            $cantidad = $list->inscripciones->count();
             
-            $montoTotal = round((float)$lista->olimpiada->costo * $lista->inscripciones->count(), 2);
+            $montoTotal = round((float)$list->olimpiada->costo * $list->inscripciones->count(), 2);
 
             // Verificar/crear pago
             $pago = Pago::firstOrCreate(
@@ -315,7 +314,7 @@ class ListaInscripcionController extends Controller
     
             return response()->json([
                 'responsable' => [
-                    'ci' => $lista->ci_responsable_inscripcion,
+                    'ci' => $list->ci_responsable_inscripcion,
                     'nombres' => $responsable->nombres,
                     'apellidos' => $responsable->apellidos
                 ],
@@ -329,7 +328,7 @@ class ListaInscripcionController extends Controller
                     'fecha_pago' => now()
                 ],
                 'detalle_grupo' => [
-                    'participantes_unicos' => $lista->inscripciones->groupBy('id_detalle_olimpista')->count()
+                    'participantes_unicos' => $list->inscripciones->groupBy('id_detalle_olimpista')->count()
                 ]
             ], 200);
     
@@ -342,7 +341,7 @@ class ListaInscripcionController extends Controller
     
     }
     public function getById($id){
-        $listas = ListaInscripcion::with(
+        $lists = ListaInscripcion::with(
             'inscripciones.detalleOlimpista.olimpista',
             'inscripciones.detalleOlimpista.grado',
             'inscripciones.detalleOlimpista.colegio.provincia.departamento',
@@ -351,17 +350,17 @@ class ListaInscripcionController extends Controller
                 ->where('id_olimpiada', $id)
                 ->get();
         $data = [];
-        foreach ($listas as $lista) {
+        foreach ($lists as $list) {
             // Acceder al olimpista relacionado (asumiendo que hay una relación definida en el modelo)
-            $inscripciones = $lista->inscripciones;
-            foreach ($inscripciones as $inscripcion) {
-                $olimpista = $inscripcion -> detalleOlimpista;
+            $enrollments = $list->inscripciones;
+            foreach ($enrollments as $enrollment) {
+                $olimpista = $enrollment -> detalleOlimpista;
                 $persona = $olimpista -> olimpista;
                 $grado = $olimpista -> grado;
                 $colegio = $olimpista-> colegio;
                 $provincia = $colegio -> provincia;
                 $departamento = $provincia -> departamento ?? null;
-                $nivel = $inscripcion -> nivel;
+                $nivel = $enrollment -> nivel;
                 $area = $nivel -> asociaciones -> first() -> area;
     
                 $data[] = [

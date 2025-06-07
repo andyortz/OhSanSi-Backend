@@ -5,12 +5,23 @@ namespace App\Http\Controllers;
 use App\Modules\Olympist\Models\OlympistDetail;
 use App\Modules\Olympiad\Models\Olympiad;
 use App\Modules\Olympist\Models\Enrollment;
+use App\Services\Registers\OlympistService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class OlympistController extends Controller
 {
+    // protected $repo;
+    protected $olimpistaService;
+
+    public function __construct(OlympistService $olimpistaService)
+    {
+        //OlimpistaRepository $repo, 
+        // $this->repo = $repo;
+        $this->olympistService = $olympistService;
+    }
+
     public function enrollments($ci)
     {
         try {
@@ -73,46 +84,37 @@ class OlympistController extends Controller
         }
     }
 
-    protected $repo;
-    protected $olimpistaService;
-
-    public function __construct(OlimpistaRepository $repo, OlimpistaService $olimpistaService)
-    {
-        $this->repo = $repo;
-        $this->olimpistaService = $olimpistaService;
-    }
-
-    public function areasLevels($ci): JsonResponse
-    {
-        try {
-            $data = $this->repo->areasLevels($ci);
-            return response()->json($data);
-        } catch (\Throwable $e) {
-            return response()->json(['error' => $e->getMessage()], 404);
-        }
-    }
+    // public function areasLevels($ci): JsonResponse
+    // {
+    //     try {
+    //         $data = $this->repo->areasLevels($ci);
+    //         return response()->json($data);
+    //     } catch (\Throwable $e) {
+    //         return response()->json(['error' => $e->getMessage()], 404);
+    //     }
+    // }
 
     public function store(Request $request): JsonResponse
     {
         try {
             $validated = $request->validate([
-                'nombres' => 'required|string|max:100',
-                'apellidos' => 'required|string|max:100',
-                'cedula_identidad' => 'required|integer|unique:persona,ci_persona',
-                'correo_electronico' => 'required|email|max:100',
-                'fecha_nacimiento' => 'required|date',
-                'unidad_educativa' => 'required|integer',
-                'id_grado' => 'required|exists:grado,id_grado', 
-                'celular' => 'nullable|string|max:8',
+                'names' => 'required|string|max:100',
+                'surname' => 'required|string|max:100',
+                'ci' => 'required|integer|unique:person,ci_person',
+                'email' => 'required|email|max:100',
+                'birthdate' => 'required|date',
+                'school' => 'required|integer',
+                'id_grade' => 'required|exists:gradE,id_gradE', 
+                'phone' => 'nullable|string|max:8',
                 'ci_tutor' => 'required',
             ]);
 
             
-            $persona = $this->olimpistaService->register($validated);
+            $person = $this->olympistService->register($validated);
 
             return response()->json([
                 'message' => 'Olimpista registrado exitosamente.',
-                'persona' => $persona
+                'person' => $person
             ], 201);
 
         } catch (ValidationException $e) {
@@ -127,5 +129,33 @@ class OlympistController extends Controller
                 'error' => $e->getMessage()
             ], $statusCode);
         }
+    }
+
+    public function getByCedula($ID): JsonResponse
+    {
+        $person = Persona::with(['olympicDetail.grade', 'olympicDetail.school.province.departament'])
+            ->where('ci_person', $ID)
+            ->first();
+
+        if (!$person) {
+            return response()->json(['message' => 'No encontrado'], 404);
+        }
+
+        $response = [
+            'ci_person' => $person->ci_persona,
+            'names' => $person->nombres,
+            'surnames' => $person->apellidos,
+            'birthdate' => $person->fecha_nacimiento,
+            'email' => $person->correo_electronico,
+            'phone' => $person->celular,
+            'ci_tutor_guardia' => $person->detalleOlimpista->ci_tutor_legal ?? null,
+            'id_departament' => $person->detalleOlimpista->colegio->provincia->id_departamento ?? null,
+            'id_province' => $person->detalleOlimpista->colegio->id_provincia ?? null,
+            'id_school' => $person->detalleOlimpista->unidad_educativa ?? null,
+            'id_grade' => $person->detalleOlimpista->id_grado ?? null,
+            'id_olympiad' => $person->detalleOlimpista->id_olimpiada ?? null,
+        ];
+
+        return response()->json($response);
     }
 }

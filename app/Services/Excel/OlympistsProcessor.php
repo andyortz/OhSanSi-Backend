@@ -2,8 +2,9 @@
 
 namespace App\Services\Excel;
 
-use App\Http\Controllers\OlimpystController;
-use App\Http\Requests\StoreOlympiadParticipantRequest;
+use App\Modules\Olympist\Controllers\OlimpystController;
+// use App\Http\Requests\StoreOlympiadParticipantRequest;
+use App\Modules\Olympist\Requests\StoreOlympiadParticipantRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Modules\Olympist\Models\Person;
 use App\Modules\Olympist\Models\Departament;
@@ -16,7 +17,7 @@ class OlympistsProcessor
 {
     public static function save(array $olimpystsData, array &$answerFinal)
     {
-        $controller = app(OlimpistaController::class);
+        $controller = app(OlympistController::class);
 
         foreach ($olimpystsData as $olimpyst) {
             try {
@@ -81,7 +82,7 @@ class OlympistsProcessor
                     }
                     
                     // Usar reglas y mensajes personalizados del FormRequest
-                    $formRequest = new StoreOlimpistaRequest();
+                    $formRequest = new StoreOlympiadParticipantRequest();
                     $validator = Validator::make(
                         $olimpyst,
                         $formRequest->rules(),
