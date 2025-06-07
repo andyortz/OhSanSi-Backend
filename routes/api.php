@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\OlimpiadaAreaController;
 use App\Http\Controllers\NivelCategoriaController;
-use App\Http\Controllers\AreasController;
+use App\Http\Controllers\AreaController;
 use App\Http\Controllers\GradosController;
 use App\Http\Controllers\InscripcionAreaController;
 use App\Http\Controllers\TutoresControllator;
@@ -13,7 +13,7 @@ use App\Http\Controllers\OlympiadRegistrationController;
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\OlimpiadaGestionController;
-use App\Http\Controllers\AreasFiltroController;
+// use App\Http\Controllers\AreasFiltroController;
 use App\Http\Controllers\colegiosController;
 use App\Http\Controllers\OlimpistaController;
 use App\Http\Controllers\VincularController;
@@ -25,10 +25,10 @@ use App\Http\Controllers\ListaInscripcionController;
 use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\DatosExcelController;
 use App\Http\Controllers\PersonaController;
-use App\Http\Controllers\BoletaController;
+use App\Http\Controllers\PaymentSlipController;;
 use App\Http\Controllers\TestPreprocessorController;
 use App\Http\Controllers\PagoValidacionController;
-use App\Http\Controllers\ConsultaPagoController;
+use App\Http\Controllers\PaymentInquiryController;
 
 
 use App\Imports\OlimpistaImport;
@@ -58,7 +58,7 @@ Route::get('/grados', [GradosController::class, 'index']);
 Route::get('/grados-niveles/{id}', [NivelCategoriaController::class, 'getById']);
 
 // Áreas por olimpiada
-Route::get('/olimpiada/{id}/areas', [AreasController::class, 'areasPorOlimpiada']);
+Route::get('/olympiads/{id}/areas', [AreaController::class, 'areasByOlympiad']);
 
 // Niveles por área
 Route::get('/areas/{id}/niveles', [NivelCategoriaController::class, 'nivelesPorArea']);
@@ -96,9 +96,11 @@ Route::get('tutores/cedula/{cedula}',[TutoresControllator::class,'buscarPorCi'])
 
 
 // Áreas
-Route::get('/areas', [AreasController::class, 'index']);
-Route::post('/areas', [AreasController::class, 'store']);
-Route::get('/areas-niveles-grados', [AreasController::class, 'areasConNivelesYGrados']);
+Route::get('/areas', [AreaController::class, 'index']);
+//Store the área
+Route::post('/areas', [AreaController::class, 'store']);
+// Obtain areas with thier levels and grades,   
+Route::get('/areas-niveles-grados', [AreaController::class, 'areasConNivelesYGrados']);//NO SE ESTÁ UTILIZANDO REVISAR!!!
 
 //Colegios
 Route::get('/colegios', [ColegiosController::class, 'index']);
@@ -128,7 +130,7 @@ Route::get('/departamentos', [DepartamentoController::class, 'index']);
 
 //Provincias
 Route::get('/provincias/{id}', [ProvinciaController::class, 'porDepartamento']);
-Route::get('/olimpistas/{id_olimpista}/olimpiadas/{id_olimpiada}/areas-disponibles', [AreasFiltroController::class, 'obtenerAreasDisponibles']);
+// Route::get('/olimpistas/{id_olimpista}/olimpiadas/{id_olimpiada}/areas-disponibles', [AreasFiltroController::class, 'obtenerAreasDisponibles']); //REVISAR!!!
 Route::get('/estructura-olimpiada/{id_olimpiada}', [EstructuraOlimpiadaController::class, 'obtenerEstructuraOlimpiada']);
 Route::get('/provincias', [ProvinciaController::class, 'index']); 
 //new db
@@ -166,10 +168,10 @@ Route::post('/niveles-categoria', [NivelCategoriaController::class, 'newCategori
 
 Route::get('/persona/{ci}', [PersonaController::class, 'getByCi']);
 
-Route::post('/prueba-ocr', [BoletaController::class, 'procesar']);
+Route::post('/prueba-ocr', [PaymentSlipController::class, 'process']); //probar con cuidado
 
 Route::post('/test-preprocessor', [TestPreprocessorController::class, 'test']);
 
 Route::get('/olimpistas-inscritos/{id}',[ListaInscripcionController::class, 'getById']);
 
-Route::get('/consulta-pago/{ci}', [ConsultaPagoController::class, 'verificarPorCi']);
+Route::get('/payment/{ci}', [PaymentInquiryController::class, 'checkByCi']);

@@ -15,14 +15,14 @@ class StoreOlympiadParticipantRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'names'            => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
+            'names'             => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
             'surnames'          => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
-            'ci_person'   => 'required|integer',
-            'birthdate'   => 'required|date',
-            'email' => 'required|email:rfc,dns|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|max:100',
-            'school'   => 'required|integer',
-            'id_grade'           => 'required|integer',
-            'ci_tutor'           => 'required|integer|exists:person,ci_person',
+            'ci_person'         => 'required|integer',
+            'birthdate'         => 'required|date',
+            'email'             => 'required|email:rfc,dns|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|max:100',
+            'school'            => 'required|integer',
+            'id_grade'          => 'required|integer',
+            'ci_tutor'          => 'required|integer|exists:person,ci_person',
         ];
     }
 

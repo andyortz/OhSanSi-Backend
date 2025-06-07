@@ -1,10 +1,12 @@
 <?php
 namespace App\Repositories;
 
-use App\Models\Area;
-use App\Models\DetalleOlimpista;
-use App\Models\NivelGrado;
-use App\Models\Olimpiada;
+
+
+use App\Modules\Olympiad\Models\Area;
+use App\Modules\Olympist\Models\OlympicDetail;
+use App\Modules\Olympiad\Models\GradeLevel;
+use App\Modules\Olympiad\Models\Olympiad;
 
 class OlimpistaRepository
 {

@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\Departamento;
 use App\Models\Persona;
-use App\CustomModels\Person;
+use App\Modules\Olympist\Models\Person;
 use App\Services\ImportHelpers\TutorResolver;
 use App\Services\ImportHelpers\OlympiadParticipantResolver;
 use App\Services\ImportHelpers\AreaResolver;
@@ -17,7 +16,7 @@ use App\Services\Excel\TeachersProcessor;
 use App\Services\Excel\InscripcionesProcessor;
 use App\Services\Registers\ListaInscripcionService;
 
-class DatosExcelController extends Controller
+class ExcelDataController extends Controller
 {
     public function cleanDates(Request $request)
     {
@@ -65,8 +64,8 @@ class DatosExcelController extends Controller
             TeachersProcessor::save($teachersData, $answerFinal);
             OlimpystsProcessor::save($olimpystsData, $answerFinal);
 
-            // Validar ahora que el responsable ya esté registrado
-            if (!Persona::where('ci_persona', $ci_responsible)->exists()) {
+            //Verify if the responsible person is registered
+            if (!Person::where('ci_person', $ci_responsible)->exists()) {
                 throw new \Exception("EL CI del responsable no se encuentra registrado");
             }
 

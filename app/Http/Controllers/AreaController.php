@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Area;
+use app\Modules\Olympiad\Models\Area;
+// use App\Models\Area;
 use App\Http\Requests\StoreAreaRequest;
 use Illuminate\Http\Request\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\NivelAreaOlimpiada;
+// use App\Models\NivelAreaOlimpiada;
+use App\Modules\Olympiad\Models\AreaLevelOlympiad;
 
-class AreasController extends Controller
+class AreaController extends Controller
 {
     /**
      * Obtener todas las áreas
@@ -20,14 +22,15 @@ class AreasController extends Controller
     }
 
     /**
-     * Obtener áreas por ID de olimpiada
+     * Obtain area by Olympiad ID
+     * parameters: id_olympiad -> ID of the Olympiad
      */
-    public function areasPorOlimpiada($id_olimpiada)
+    public function areasByOlympiad($id_olympiad)
     {
-        $areas = NivelAreaOlimpiada::where('id_olimpiada', $id_olimpiada)
-            ->join('areas_competencia', 'niveles_areas_olimpiadas.id_area', '=', 'areas_competencia.id_area')
-            ->select('areas_competencia.id_area', 'areas_competencia.nombre')
-            ->groupBy('areas_competencia.id_area', 'areas_competencia.nombre')
+        $areas = AreaLevelOlympiad::where('id_olympiad', $id_olympiad)
+            ->join('area', 'area_level_olympiad.id_area', '=', 'area.id_area')
+            ->select('area.id_area', 'area.name')
+            ->groupBy('area.id_area', 'area.name')
             ->get();
 
         if ($areas->isEmpty()) {
@@ -49,7 +52,7 @@ class AreasController extends Controller
     public function store(StoreAreaRequest $request)
     {
         Area::create([
-            'nombre' => $request->nombre,
+            'name' => $request->nombre,
         ]);
 
         return response()->json([
@@ -58,6 +61,9 @@ class AreasController extends Controller
         ], 201);
     }
 
+    /**
+     * Obtain all areas with their levels and grades  REVISAR!!!
+     */
     public function areasConNivelesYGrados()
     {
         $areas = Area::with(['niveles.grados'])->get()->map(function ($area) {
