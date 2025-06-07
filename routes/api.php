@@ -10,7 +10,6 @@ use App\Http\Controllers\GradosController;
 use App\Http\Controllers\InscripcionAreaController;
 use App\Http\Controllers\TutoresControllator;
 use App\Http\Controllers\OlympiadRegistrationController;
-use App\Http\Controllers\StudentRegistrationController;
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ProvinciaController;
 use App\Http\Controllers\OlimpiadaGestionController;

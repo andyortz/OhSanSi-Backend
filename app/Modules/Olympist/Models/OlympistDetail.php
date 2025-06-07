@@ -27,15 +27,15 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Models
  */
-class OlympicDetail extends Model
+class OlympistDetail extends Model
 {
-	protected $table = 'olympic_detail';
-	protected $primaryKey = 'id_olympic_detail';
+	protected $table = 'olympist_detail';
+	protected $primaryKey = 'id_olympist_detail';
 	public $timestamps = false;
 
 	protected $casts = [
 		'id_olympiad' => 'int',
-		'ci_olympic' => 'int',
+		'ci_olympist' => 'int',
 		'id_grade' => 'int',
 		'id_school' => 'int',
 		'ci_legal_guardian' => 'int'
@@ -43,7 +43,7 @@ class OlympicDetail extends Model
 
 	protected $fillable = [
 		'id_olympiad',
-		'ci_olympic',
+		'ci_olympist',
 		'id_grade',
 		'id_school',
 		'ci_legal_guardian'
@@ -71,6 +71,6 @@ class OlympicDetail extends Model
 
 	public function enrollments()
 	{
-		return $this->hasMany(Enrollment::class, 'id_olympic_detail');
+		return $this->hasMany(Enrollment::class, 'id_olympist_detail');
 	}
 }

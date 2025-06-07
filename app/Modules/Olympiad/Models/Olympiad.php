@@ -1,13 +1,7 @@
 <?php
 
-/**
- * Created by Reliese Model.
- */
-
 namespace App\Models;
 
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -54,7 +48,7 @@ class Olympiad extends Model
 
 	public function grade_level()
 	{
-		return $this->hasOne(GradeLevel::class, 'id_olympiad');
+		return $this->hasMany(GradeLevel::class, 'id_olympiad');
 	}
 
 	public function olympic_details()

@@ -2,7 +2,7 @@
 
 namespace App\Services\Registers;
 
-use App\Models\Person;
+use App\Modules\Olympist\Models\Person;
 use Illuminate\Support\Facades\DB;
 
 class PersonService
@@ -14,9 +14,10 @@ class PersonService
             
             $person->names = $data['names'];
             $person->surnames = $data['surnames'];
-            $person->ci_person = $data['ci'];
+            $person->ci_person = $data['ci_person'];
             $person->phone = $data['phone'] ?? null;
             $person->email = $data['email'];
+            $person->birthdate = $data['birthdate'] ?? null;;
             
             $person->save();
 

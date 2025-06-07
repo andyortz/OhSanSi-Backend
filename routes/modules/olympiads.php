@@ -3,8 +3,8 @@
 use App\Modules\Olympiads\Controllers\OlympiadController;
 
 Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
-    Route::get('/', [OlympiadController::class, 'index']); // GET /olympiads
-    Route::get('/{id}', [OlympiadController::class, 'show']); // GET /olympiads/1
+    Route::post('/', [OlympiadController::class, 'store']);
+    Route::get('/', [OlympiadController::class, 'index']);
 });
 
 Route::prefix('levels')->middleware('throttle:100,1')->group(function () {

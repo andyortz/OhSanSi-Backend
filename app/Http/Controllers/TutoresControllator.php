@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class TutoresControllator extends Controller
 {
+    //Person show
     public function buscarPorCi($ci)
     {
         $tutor = Persona::where('ci_persona', $ci)->first();
