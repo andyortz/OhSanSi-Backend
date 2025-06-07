@@ -37,7 +37,7 @@ class OlympistsProcessor
 
                     //Verify if the department exists in the database
                     if(!Departament::where('departament_name', $olimpyst['departament'])->exists()){
-                        self::agregarErrorOlimpista(
+                        self::addOlympistError(
                             $answerFinal,
                             $olimpyst['ci'],
                             'El departamento "'.$olimpyst['departament'].'" no es válido',
@@ -46,7 +46,7 @@ class OlympistsProcessor
                     }
                     //Verify if the province exists in the database
                     if(!Province::where('province_name', $olimpyst['province'])->exists()){
-                        self::agregarErrorOlimpista(
+                        self::addOlympistError(
                             $answerFinal,
                             $olimpyst['ci'],
                             'La provincia "'.$olimpyst['provincie'].'" no es válida',
@@ -55,7 +55,7 @@ class OlympistsProcessor
                     }
                     //Verify if the school exists in the database
                     if(!School::where('school_name', $olimpyst['school'])->exists()){
-                        self::agregarErrorOlimpista(
+                        self::addOlympistError(
                             $answerFinal,
                             $olimpyst['ci'],
                             'La unidad educativa "'.$olimpyst['unidad_educativa'].'" no es válida',
@@ -68,7 +68,7 @@ class OlympistsProcessor
                     } 
                     //Verify if the grade exists in the database
                     if(!Grade::where('grade_name', $olimpyst['id_grade'])-> exists()){
-                        self::agregarErrorOlimpista(
+                        self::addOlympistError(
                             $answerFinal,
                             $olimpyst['ci'],
                             'El grado "'.$olimpyst['id_grade'].'" no es válido, formato esperado: "1ro Secundaria", "3ro Primaria", etc.',
@@ -89,7 +89,7 @@ class OlympistsProcessor
                     );
                     if ($validator->fails()) {
                         foreach ($validator->errors()->all() as $message) {
-                            self::agregarErrorOlimpista(
+                            self::addOlympistError(
                                 $answerFinal,
                                 $olimpyst['ci'] ?? 'desconocido',
                                 $message,
@@ -117,7 +117,7 @@ class OlympistsProcessor
                         ];
                     }
                 }else{
-                    self::agregarErrorOlimpista(
+                    self::addOlympistError(
                         $answerFinal,
                         $olimpyst['ci'] ?? 'desconocido',
                         'La cédula de identidad del olimpista debe ser un número entero',
