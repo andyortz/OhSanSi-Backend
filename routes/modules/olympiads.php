@@ -2,6 +2,7 @@
 
 use App\Modules\Olympiads\Controllers\OlympiadController;
 use App\Modules\Olympiads\Controllers\AreaController;
+use App\Modules\Olympiads\Controllers\CategoryLevelController;
 
 Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
     Route::post('/', [OlympiadController::class, 'store']);
@@ -14,18 +15,16 @@ Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
     Route::get('/{id}/areas', [AreaController::class, 'areasByOlympiad']);
 });
 
-//Revise hasta aqui, falta lo de abajo
 Route::prefix('levels')->middleware('throttle:100,1')->group(function () {
-    Route::get('/', [CategoryLevelController::class, 'index3']);
-    Route::post('/', [CategoryLevelController::class, 'newCategory']);
-    Route::get('/{id}', [CategoryLevelController::class, 'index4']);
-    Route::get('/areas/{id}', [CategoryLevelController::class, 'getByNivelesById']);
+    Route::get('/', [CategoryLevelController::class, 'index']);
+    Route::post('/', [CategoryLevelController::class, 'store']);
+    Route::get('/{id}', [CategoryLevelController::class, 'show']);
+    Route::get('/areas/{id}', [CategoryLevelController::class, 'getByNivelesById']);    
 });
 
 Route::prefix('areas')->middleware('throttle:100,1')->group(function () {
     Route::get('/', [AreaController::class, 'index']);
     Route::post('/', [AreaController::class, 'store']);
-    Route::get('/{id}', [LevelController::class, 'show']); // GET /levels/1
     Route::post('/association', [CategoryLevelController::class, 'associateLevelsByArea']);
 });
 
