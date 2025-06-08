@@ -6,7 +6,7 @@ use App\Modules\Olympist\Models\EnrollmentList;
 use App\Modules\Olympiad\Models\AreaLevelOlympiad;
 use App\Modules\Olympist\Models\Payment;
 use App\Modules\Olympist\Models\Person;
-use App\Modules\Olympist\Models\Enrollment;
+use App\Modules\Olympiad\Models\Enrollment;
 
 use Illuminate\Http\Request\Request;
 use Illuminate\Support\Facades\DB;

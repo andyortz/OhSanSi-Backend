@@ -1,22 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Modules\Olympist\Controllers;
 
 use App\Modules\Olympist\Models\OlympistDetail;
 use App\Modules\Olympiad\Models\Olympiad;
-use App\Modules\Olympist\Models\Enrollment;
+use App\Modules\Olympist\Models\Person;
+use App\Modules\Olympiad\Models\Enrollment;
 use App\Services\Registers\OlympistService;
 use App\Repositories\OlympistRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class OlympistController extends Controller
+class OlympistController
 {
     protected $repo;
-    protected $olimpistaService;
+    protected $olympistService;
 
-    public function __construct(OlympistRepository $repo, OlympistService $olimpistaService)
+    public function __construct(OlympistRepository $repo, OlympistService $olympistService)
     {
         $this->repo = $repo;
         $this->olympistService = $olympistService;
@@ -133,7 +134,7 @@ class OlympistController extends Controller
 
     public function getByCedula($ID): JsonResponse
     {
-        $person = Persona::with(['olympicDetail.grade', 'olympicDetail.school.province.departament'])
+        $person = Person::with(['olympicDetail.grade', 'olympicDetail.school.province.departament'])
             ->where('ci_person', $ID)
             ->first();
 

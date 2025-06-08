@@ -4,13 +4,13 @@
  * Created by Reliese Model.
  */
 
-namespace App\Models;
+namespace App\Modules\Olympist\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use App\Modules\Olympist\Models\OlympicDetail;
+use App\Modules\Olympist\Models\OlympistDetail;
 use App\Modules\Olympist\Models\EnrollmentList;
-use App\Modules\Olympist\Models\Enrollment;
+use App\Modules\Olympiad\Models\Enrollment;
 use Illuminate\Database\Eloquent\Model;
 
 /**

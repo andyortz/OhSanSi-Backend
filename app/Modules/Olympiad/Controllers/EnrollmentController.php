@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Modules\Olympist\Models\Person;
 use App\Modules\Olympiad\Models\Olympiad;
 use App\Modules\Olympist\Models\OlympistDetail;
-use App\Modules\Olympist\Models\Enrollment;
+use App\Modules\Olympiad\Models\Enrollment;
 use App\Modules\Olympiad\Models\AreaLevelOlympiad;;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

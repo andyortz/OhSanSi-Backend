@@ -3,7 +3,7 @@
 namespace App\Services\Registers;
 
 use App\Moduels\Olympist\Models\OlympicDetail;
-use App\Modules\Olympist\Models\Enrollment;
+use App\Modules\Olympiad\Models\Enrollment;
 use App\Modules\Olympist\Models\Person;
 
 use Illuminate\Support\Facades\DB;

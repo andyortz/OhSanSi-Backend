@@ -33,6 +33,9 @@ use App\Http\Controllers\PagoValidacionController;  //ojito con este
 use App\Modules\Olympist\Controllers\PaymentInquiryController;
 use App\Modules\Olympist\Controllers\OlympistController;
 use Maatwebsite\Excel\Facades\Excel;
+require base_path('routes/modules/olympists.php');
+require base_path('routes/modules/olympiads.php');
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();

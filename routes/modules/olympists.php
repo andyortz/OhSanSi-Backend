@@ -1,14 +1,16 @@
 <?php
 
-use App\Modules\Olympists\Controllers\OlympistController;
-use App\Modules\Olympists\Controllers\PersonController;
-use App\Modules\Olympists\Controllers\DepartamentController;
-use App\Modules\Olympists\Controllers\EnrollmentController;
-use App\Modules\Olympists\Controllers\ExcelImportController;
-use App\Modules\Olympists\Controllers\ExcelDataController;
-use App\Modules\Olympists\Controllers\SchoolController;
-use App\Modules\Olympists\Controllers\PaymentSlipController;
-use App\Modules\Olympists\Controllers\PaymentInquiryController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Modules\Olympist\Controllers\OlympistController;
+use App\Modules\Olympist\Controllers\PersonController;
+use App\Modules\Olympist\Controllers\DepartamentController;
+use App\Modules\Olympiad\Controllers\EnrollmentController;
+use App\Modules\Olympist\Controllers\ExcelImportController;
+use App\Modules\Olympist\Controllers\ExcelDataController;
+use App\Modules\Olympist\Controllers\SchoolController;
+use App\Modules\Olympist\Controllers\PaymentSlipController;
+use App\Modules\Olympist\Controllers\PaymentInquiryController;
 
 Route::prefix('olympists')->middleware('throttle:100,1')->group(function () {
     Route::post('/', [OlympistController::class, 'store']);
