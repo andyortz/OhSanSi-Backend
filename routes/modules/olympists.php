@@ -6,7 +6,9 @@ use App\Modules\Olympists\Controllers\DepartamentController;
 use App\Modules\Olympists\Controllers\EnrollmentController;
 use App\Modules\Olympists\Controllers\ExcelImportController;
 use App\Modules\Olympists\Controllers\ExcelDataController;
-
+use App\Modules\Olympists\Controllers\SchoolController;
+use App\Modules\Olympists\Controllers\PaymentSlipController;
+use App\Modules\Olympists\Controllers\PaymentInquiryController;
 
 Route::prefix('olympists')->middleware('throttle:100,1')->group(function () {
     Route::post('/', [OlympistController::class, 'store']);
@@ -51,20 +53,16 @@ Route::prefix('enrrolments')->middleware('throttle:100,1')->group(function () {
     Route::get('/pending/{ci}', [EnrollmentListController::class, 'listasPagoPendiente']);
 });
 
-//Revise hasta aqui, falta lo de abajo
 Route::prefix('receipts')->middleware('throttle:100,1')->group(function () {
+    //Revisar estos falta algunas traducciones
     Route::get('/individual/{id}', [EnrollmentListController::class, 'individual']);
-    Route::get('/group/{id}', [EnrollmentListController::class, 'grupal']);
     
-});
-Route::prefix('tutors')->middleware('throttle:100,1')->group(function () {
-    Route::post('/tutors', [TutorsController::class, 'store']);
-    Route::get('/tutors/id/{ci}',[TutorsController::class,'searchByCi']);
+    Route::get('/group/{id}', [EnrollmentListController::class, 'grupal']);
 });
 
 Route::prefix('schools')->middleware('throttle:100,1')->group(function () {
     Route::get('/', [SchoolController::class, 'index']);
-    Route::get('/names', [SchoolController::class, 'justNames']); 
+    Route::get('/names', [SchoolController::class, 'onlyNames']); 
     Route::get('/provinces/{id}', [SchoolController::class, 'byProvince']);
 });
 

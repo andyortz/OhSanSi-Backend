@@ -20,14 +20,14 @@ class SchoolController extends Controller
         $schools = School::where('id_province', $id)->get();
         if($schools->isEmpty()){
             return response()->kson([
-                'message' =>'No se encontraron colegios para esta provincia.',
+                'message' =>'No schools were found for this province.',
                 'status' => 404 
             ]);
         }
         return response()->json($schools, 200);
     }
 
-    public function justNames()
+    public function onlyNames()
     {
         $names = School::select('id_school', 'school_name')->get();
         return response()->json($names, 200);
