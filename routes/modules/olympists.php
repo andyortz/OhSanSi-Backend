@@ -20,6 +20,7 @@ Route::prefix('olympists')->middleware('throttle:100,1')->group(function () {
 Route::prefix('person')->middleware('throttle:100,1')->group(function () {
     Route::post('/', [PersonController::class, 'store']);
     Route::get('/{ci}', [PersonController::class, 'show']);
+    Route::get('/{ci}', [PersonController::class, 'getByCi']);
 });
 
 Route::prefix('province')->middleware('throttle:100,1')->group(function () {
@@ -36,16 +37,19 @@ Route::prefix('excel')->middleware('throttle:100,1')->group(function () {
 
 Route::prefix('enrrolments')->middleware('throttle:100,1')->group(function () {
     Route::get('/', [EnrollmentListController::class, 'index']);
+    
     Route::get('/{ci}/{estado}', [EnrollmentListController::class, 'obtenerPorResponsable'])
-        ->where('status', 'PENDIENTE|PAGADO|TODOS');
+    ->where('status', 'PENDIENTE|PAGADO|TODOS');
     Route::get('/participants/{id}',[EnrollmentListController::class, 'getById']);
     Route::get('/pending/{ci}', [EnrollmentListController::class, 'listasPagoPendiente']);
     Route::post('/with-tutor', [LevelEnrollmentController::class, 'storeWithTutor']);
+    
 });
 
 Route::prefix('receipts')->middleware('throttle:100,1')->group(function () {
     Route::get('/individual/{id}', [EnrollmentListController::class, 'individual']);
     Route::get('/group/{id}', [EnrollmentListController::class, 'grupal']);
+    
 });
 Route::prefix('excel')->middleware('throttle:100,1')->group(function () {
     Route::post('/data', [ExcelImportController::class, 'import']);
@@ -62,13 +66,5 @@ Route::prefix('schools')->middleware('throttle:100,1')->group(function () {
 });
 
 Route::get('/departaments', [DepartamentController::class, 'index']);
-Route::get('/enrollments/{ci}/{estado}', [EnrollmentListController::class, 'obtenerPorResponsable'])
-    ->where('status', 'PENDIENTE|PAGADO|TODOS');
-Route::get('/enrollments/pending/{ci}', [EnrollmentListController::class, 'listasPagoPendiente']);
-Route::get('/enrollments', [EnrollmentListController::class, 'index']);
-Route::get('/receipts/individual/{id}', [EnrollmentListController::class, 'individual']);
-Route::get('/receipts/group/{id}', [EnrollmentListController::class, 'grupal']);
-Route::get('/enrrolments/participants/{id}',[EnrollmentListController::class, 'getById']);
-Route::get('/person/{ci}', [PersonController::class, 'getByCi']);
-Route::post('/ocr', [PaymentSlipController::class, 'process']); //probar con cuidado
+Route::post('/ocr', [PaymentSlipController::class, 'process']);
 Route::get('/payment/{ci}', [PaymentInquiryController::class, 'checkByCi']);
