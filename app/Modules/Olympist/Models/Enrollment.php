@@ -17,7 +17,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id_level
  * @property int $id_list
  * 
- * @property OlympicDetail $olympic_detail
  * @property Person|null $person
  * @property CategoryLevel $category_level
  * @property EnrollmentList $enrollment_list
@@ -31,22 +30,22 @@ class Enrollment extends Model
 	public $timestamps = false;
 
 	protected $casts = [
-		'id_olympic_detail' => 'int',
+		'id_olympist_detail' => 'int',
 		'ci_academic_advisor' => 'int',
 		'id_level' => 'int',
 		'id_list' => 'int'
 	];
 
 	protected $fillable = [
-		'id_olympic_detail',
+		'id_olympist_detail',
 		'ci_academic_advisor',
 		'id_level',
 		'id_list'
 	];
 
-	public function olympic_detail()
+	public function olympist_detail()
 	{
-		return $this->belongsTo(OlympicDetail::class, 'id_olympic_detail');
+		return $this->belongsTo(OlympistDetail::class, 'id_olympist_detail');
 	}
 
 	public function person()

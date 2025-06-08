@@ -34,4 +34,8 @@ class Area extends Model
 		return $this->belongsToMany(Olympiad::class, 'area_level_olympiad', 'id_area', 'id_olympiad')
 					->withPivot('id_level');
 	}
+	public function nivel_area()
+    {
+        return $this->hasMany(AreaLevelOlympiad::class, 'id_area');
+    }
 }

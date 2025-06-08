@@ -17,14 +17,14 @@ class TutorsController extends Controller
 
         if ($tutor) {
             return response()->json([
-                'message' => 'Tutor encontrado',
+                'message' => 'Tutor found',
                 'tutor' => $tutor,
                 'status' => 200
             ], 200);
         }
 
         return response()->json([
-            'message' => 'Tutor no encontrado',
+            'message' => 'Tutor not found',
             'status' => 404
         ], 404);
     }
@@ -46,14 +46,14 @@ class TutorsController extends Controller
             $person = PersonService::register($validated);
 
             return response()->json([
-                'message' => 'Tutor registrado exitosamente',
+                'message' => 'Tutor successfully registered',
                 'tutor' => $person,
                 'status' => 201
             ], 201);
 
         } catch (\Throwable $e) {
             return response()->json([
-                'message' => 'Error al registrar tutor',
+                'message' => 'Error registering tutor',
                 'error' => $e->getMessage(),
                 'status' => 500
             ], 500);

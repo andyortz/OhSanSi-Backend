@@ -49,18 +49,4 @@ class PersonController extends Controller
             ], 500);
         }
     }
-    public function getByCi($ci)
-    {
-        $person = Person::where('ci_person', $ci)->get();
-
-        if ($person->isEmpty()) {
-            return response()->json([
-                'message' => 'La persona no esta registrada.',
-                'ci' => $ci,
-                'status' => 404
-            ], 404);
-        }
-
-        return response()->json($person, 200);
-    }
 }

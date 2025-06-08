@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 use App\Modules\Olympist\Models\EnrollmentList;
 use App\Modules\Olympist\Models\Person;
 use App\Modules\Olympist\Models\Enrollment;
-use App\Modules\Olympist\Models\OlympicDetail;
+use App\Modules\Olympist\Models\OlympistDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
@@ -143,6 +143,7 @@ class LevelEnrollmentController extends Controller
             ], 500);
         }
     }
+    
     public function storeWithTutor(Request $request)
     {
         
@@ -158,8 +159,8 @@ class LevelEnrollmentController extends Controller
         ->first(['names', 'surnames', 'ci_person']);
         try {
             DB::beginTransaction();
-            $olympist = OlympicDetail::firstOrCreate(
-                ['ci_olympic' => $request->ci]
+            $olympist = OlympistDetail::firstOrCreate(
+                ['ci_olympist' => $request->ci]
             );
             // Crear inscripciones para cada nivel
             $list = EnrollmentList::create([
@@ -171,7 +172,7 @@ class LevelEnrollmentController extends Controller
             $enrollments = [];
             foreach ($request->levels as $levelData) {
                 $enrollments[] = Enrollment::create([
-                    'id_olympic_detail' => $olympist->id_olympic_detail,
+                    'id_olympist_detail' => $olympist->id_olympist_detail,
                     'ci_academic_advisor' => $levelData['ci_academic_advisor'] ?? null,
                     'id_list' => $list->id_list,
                     'id_level' => $levelData['id_level'],
@@ -180,7 +181,7 @@ class LevelEnrollmentController extends Controller
 
         DB::commit();
         return response()->json([
-            'message' => 'Inscripciones registradas correctamente.',
+            'message' => 'Enrollments created susccessfully',
             'count' => count($enrollments),
             'ci_responsable' => $request->ci_responsable,
             'names' => $responsible->names,
@@ -190,12 +191,13 @@ class LevelEnrollmentController extends Controller
         } catch (\Throwable $e) {
             DB::rollBack();
             return response()->json([
-                'message' => 'Error interno al registrar.',
+                'message' => 'Error while creating enrollments.',
                 'error' => $e->getMessage(),
                 'line' => $e->getLine()
             ], 500);
         }
     }
+
     public function registrarVarios(Request $request)
     {
         $request->validate([

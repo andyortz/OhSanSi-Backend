@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\Importable;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
-class InscripcionesImport
+class EnrollmentsImport
 {
     use Importable;
 

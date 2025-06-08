@@ -18,6 +18,16 @@ class OlympiadController extends Controller
         $olympiads = Olympiad::where('start-date', '>', $today)->get();
         return response()->json($olympiads, 200);
     }
+    public function getByYear($year)
+    {
+        $olympiads = Olympiad::where('year', $year) -> get();
+        if (!$olympiad) {
+            return response()->json([
+                'message' => "No Olympiad found for $year management."
+            ], 404);
+        }
+        return response()->json($olympiads, 200);
+    }
     public function store(Request $request)
     {
         try {
@@ -49,50 +59,42 @@ class OlympiadController extends Controller
 
         if (!$olympiad) {
             return response()->json([
-                'message' => 'Olimpiada no encontrada',
+                'message' => 'Olympiad not found',
                 'status' => 404
             ], 404);
         }
 
         return response()->json([
-            'message' => 'Máximo de categorías obtenido correctamente',
+            'message' => 'maximum number of Olympic categories successfully obtained',
             'max_categories' => $olympiad->max_olympic_categories
         ], 200);
     }
-    public function getMaxCategories(Request $request)
+    public function getMaxCategories()
     {
-        $request->validate([
-            'date' => 'required|date'
-        ]);
-
-        $date = $request->input('date');
-
-        $olympiad = Olympiad::where('start_date', '<=', $date)
-            ->where('fecha_fin', '>=', $date)
+        $today = Carbon::now();
+        $olympiad = Olympiad::where('start_date', '<=', $today)
+            ->where('fecha_fin', '>=', $today)
             ->first();
 
         if (!$olympiad) {
             return response()->json([
                 'success' => false,
-                'message' => 'No se encontró una olimpiada activa en esa fecha.'
+                'message' => 'No active Olympiad found on the current date'
             ], 404);
         }
 
         return response()->json([
             'success' => true,
-            'date' => $date,
+            'date' => $today,
             'id_olympiad' => $olympiad->id_olympiad,
             'max_olympic_categories' => $olympiad->max_olympic_categories
         ]);
     }
     public function getAreasWithLevels($idOlympiad)
     {
-        \Log::info('Iniciando getAreasWithLevels', ['idOlympiad' => $idOlympiad]);
         try {
-            // Obtener la olimpiada con su gestión
             $olympiad = Olympiad::findOrFail($idOlympiad);
             
-            // Obtener todas las relaciones área-nivel para esta olimpiada
             $LevelsInAreas = AreaLevelOlympiad::with([
                 'area:id_area,name',
                 'category_level:id_level,name'
@@ -101,7 +103,6 @@ class OlympiadController extends Controller
             ->get()
             ->groupBy('id_area'); // Agrupar por área
 
-            // Formatear la respuesta
             $response = [
                 'year' => $olympiad->year,
                 'areas' => $LevelsInAreas->map(function ($items, $idArea) {
@@ -118,14 +119,13 @@ class OlympiadController extends Controller
                 })->values()
             ];
             
-
             return response()->json([
                 'success' => true,
                 'data' => $response
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Error en getAreasConNiveles', [
+            \Log::error('Error fetching areas with levels', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);

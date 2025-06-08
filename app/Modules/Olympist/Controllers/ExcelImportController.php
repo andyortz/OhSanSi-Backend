@@ -5,7 +5,7 @@ namespace App\Modules\Olympiad\Controllers;
 
 
 use Illuminate\Http\Request;
-use App\Imports\InscripcionesImport;
+use App\Imports\EnrollmentsImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ExcelImportController
@@ -17,7 +17,7 @@ class ExcelImportController
         ]);
 
         try {
-            $import = new InscripcionesImport();
+            $import = new EnrollmentsImport();
             $import->import($request->file('file'));
 
             return response()->json([

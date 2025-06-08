@@ -53,4 +53,8 @@ class AreaLevelOlympiad extends Model
 	{
 		return $this->belongsTo(CategoryLevel::class, 'id_level');
 	}
+	public function grade_level()
+    {
+        return $this->belongsTo(GradeLevel::class, 'id_nivel', 'id_nivel');
+    }
 }

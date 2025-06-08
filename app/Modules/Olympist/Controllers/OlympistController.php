@@ -6,19 +6,19 @@ use App\Modules\Olympist\Models\OlympistDetail;
 use App\Modules\Olympiad\Models\Olympiad;
 use App\Modules\Olympist\Models\Enrollment;
 use App\Services\Registers\OlympistService;
+use App\Repositories\OlympistRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class OlympistController extends Controller
 {
-    // protected $repo;
+    protected $repo;
     protected $olimpistaService;
 
-    public function __construct(OlympistService $olimpistaService)
+    public function __construct(OlympistRepository $repo, OlympistService $olimpistaService)
     {
-        //OlimpistaRepository $repo, 
-        // $this->repo = $repo;
+        $this->repo = $repo;
         $this->olympistService = $olympistService;
     }
 
@@ -83,24 +83,16 @@ class OlympistController extends Controller
             ], 500);
         }
     }
-    // public function getAreasNivelesInscripcion($ci): JsonResponse
-    // {
-    //     try {
-    //         $data = $this->repo->getAreasNiveles($ci);
-    //         return response()->json($data);
-    //     } catch (\Throwable $e) {
-    //         return response()->json(['error' => $e->getMessage()], 404);
-    //     }
-    // }
-    // public function areasLevels($ci): JsonResponse
-    // {
-    //     try {
-    //         $data = $this->repo->areasLevels($ci);
-    //         return response()->json($data);
-    //     } catch (\Throwable $e) {
-    //         return response()->json(['error' => $e->getMessage()], 404);
-    //     }
-    // }
+
+    public function areasLevels($ci): JsonResponse
+    {
+        try {
+            $data = $this->repo->areasLevels($ci);
+            return response()->json($data);
+        } catch (\Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
+        }
+    }
 
     public function store(Request $request): JsonResponse
     {
