@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers;
 //REVISAR!!!
-use App\Models\ListaInscripcion;
-use App\Models\Persona;
-use App\Models\Inscripcion;
-use App\Models\DetalleOlimpista;
+
+use App\Modules\Olympist\Models\EnrollmentList;
+use App\Modules\Olympist\Models\Person;
+use App\Modules\Olympist\Models\Enrollment;
+use App\Modules\Olympist\Models\OlympicDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class InscripcionNivelesController extends Controller
+class LevelEnrollmentController extends Controller
 {
-    public function storeOne(Request $request){
+    public function storeOne(Request $request)
+    {
         $data = $request->validate([
             'ci' => 'required|integer|exists:persona,ci_persona',
             'nivel' => 'required|integer',
@@ -146,44 +148,44 @@ class InscripcionNivelesController extends Controller
         
         // Validación básica
         $request->validate([
-            'ci' => 'required|exists:persona,ci_persona',
-            'niveles' => 'required|array|min:1',
-            'niveles.*id_nivel' => 'integer|exists:nivel_categoria,id_nivel',
-            'niveles.*.ci_tutor_academico' => 'nullable|exists:persona,ci_persona',
-            'ci_responsable' => 'required|exists:persona,ci_persona',
+            'ci' => 'required|exists:person,ci_person',
+            'levels' => 'required|array|min:1',
+            'levels.*id_nive' => 'integer|exists:category_level,id_nivel',
+            'levels.*.ci_academic_advisor' => 'nullable|exists:person,ci_person',
+            'ci_responsible' => 'required|exists:person,ci_person',
         ]);
-        $responsable = Persona::where('ci_persona', $request->ci_responsable)
-        ->first(['nombres', 'apellidos', 'ci_persona']);
+        $responsible = Person::where('ci_person', $request->ci_responsible)
+        ->first(['names', 'surnames', 'ci_person']);
         try {
             DB::beginTransaction();
-            $olimpista = DetalleOlimpista::firstOrCreate(
-                ['ci_olimpista' => $request->ci]
+            $olympist = OlympicDetail::firstOrCreate(
+                ['ci_olympic' => $request->ci]
             );
             // Crear inscripciones para cada nivel
-            $lista = ListaInscripcion::create([
-                'id_olimpiada' => $olimpista -> id_olimpiada,
-                'ci_responsable_inscripcion' => $request->ci_responsable,
-                'estado' => 'PENDIENTE',
-                'fecha_creacion_lista' => now()
+            $list = EnrollmentList::create([
+                'id_olympiad' => $olympist -> id_olympiad,
+                'ci_enrollment_responsible' => $request->ci_responsable,
+                'status' => 'PENDIENTE',
+                'list_creation_date' => now()
             ]);
-            $inscripciones = [];
-            foreach ($request->niveles as $nivelData) {
-                $inscripciones[] = Inscripcion::create([
-                    'id_detalle_olimpista' => $olimpista->id_detalle_olimpista,
-                    'ci_tutor_academico' => $nivelData['ci_tutor_academico'] ?? null,
-                    'id_lista' => $lista->id_lista,
-                    'id_nivel' => $nivelData['id_nivel'],
+            $enrollments = [];
+            foreach ($request->levels as $levelData) {
+                $enrollments[] = Enrollment::create([
+                    'id_olympic_detail' => $olympist->id_olympic_detail,
+                    'ci_academic_advisor' => $levelData['ci_academic_advisor'] ?? null,
+                    'id_list' => $list->id_list,
+                    'id_level' => $levelData['id_level'],
                 ]);
             }
 
         DB::commit();
         return response()->json([
             'message' => 'Inscripciones registradas correctamente.',
-            'count' => count($inscripciones),
+            'count' => count($enrollments),
             'ci_responsable' => $request->ci_responsable,
-            'nombres' => $responsable->nombres,
-            'apellidos' => $responsable->apellidos,
-            'data' => $inscripciones
+            'names' => $responsible->names,
+            'surnames' => $responsible->surnames,
+            'data' => $enrollments
         ], 201);    
         } catch (\Throwable $e) {
             DB::rollBack();

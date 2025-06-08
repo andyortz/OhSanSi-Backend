@@ -3,16 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Persona;
-use App\Services\Registers\PersonaService;
-use App\Http\Requests\StorePersonaRequest;
+use App\Modules\Models\Olympist\Person;
+use App\Services\Registers\PersonService;
+use App\Modules\Olympist\Requests\StorePersonRequest;
 use Illuminate\Http\Request;
 
-class TutoresControllator extends Controller
+class TutorsController extends Controller
 {
     //Person show
-    public function buscarPorCi($ci)
+    public function searchByCi($ci)
     {
-        $tutor = Persona::where('ci_persona', $ci)->first();
+        $tutor = Person::where('ci_person', $ci)->first();
 
         if ($tutor) {
             return response()->json([
@@ -30,23 +31,23 @@ class TutoresControllator extends Controller
 
     public function getByEmail($email)
     {
-        $tutor = Persona::where('correo_electronico', $email)->first();
+        $tutor = Person::where('email', $email)->first();
 
         return $tutor
             ? response()->json($tutor)
             : response()->json(['message' => 'No encontrado'], 404);
     }
 
-    public function store(StorePersonaRequest $request)
+    public function store(StorePersonRequest $request)
     {
         try {
             $validated = $request->validated();
 
-            $persona = PersonaService::register($validated);
+            $person = PersonService::register($validated);
 
             return response()->json([
                 'message' => 'Tutor registrado exitosamente',
-                'tutor' => $persona,
+                'tutor' => $person,
                 'status' => 201
             ], 201);
 

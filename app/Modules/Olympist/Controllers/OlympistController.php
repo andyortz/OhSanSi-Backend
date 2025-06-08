@@ -83,7 +83,15 @@ class OlympistController extends Controller
             ], 500);
         }
     }
-
+    // public function getAreasNivelesInscripcion($ci): JsonResponse
+    // {
+    //     try {
+    //         $data = $this->repo->getAreasNiveles($ci);
+    //         return response()->json($data);
+    //     } catch (\Throwable $e) {
+    //         return response()->json(['error' => $e->getMessage()], 404);
+    //     }
+    // }
     // public function areasLevels($ci): JsonResponse
     // {
     //     try {
@@ -157,5 +165,13 @@ class OlympistController extends Controller
         ];
 
         return response()->json($response);
+    }
+    public function getByEmail($email): JsonResponse
+    {
+        $person = Person::where('email', $email)->first();
+
+        return $person
+            ? response()->json($person)
+            : response()->json(['message' => 'No encontrado'], 404);
     }
 }
