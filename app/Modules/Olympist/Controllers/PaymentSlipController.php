@@ -48,7 +48,7 @@ class PaymentSlipController extends Controller
             Storage::disk('public')->delete($relativePath);
 
             return response()->json([
-                'message' => 'Error durante el procesamiento OCR',
+                'message' => 'Error during OCR processing',
                 'error'   => $e->getMessage(),
             ], 422);
         }

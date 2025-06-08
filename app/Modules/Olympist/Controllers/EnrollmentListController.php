@@ -152,129 +152,125 @@ class EnrollmentListController extends Controller
         ], 200);
     }
 
-    public function listasPagoPendiente($ci)
+    public function pendingPaymentLists($id)
     {
-        $responsable = Persona::where('ci_persona', $ci)
-            ->first(['nombres', 'apellidos', 'ci_persona']);
+        $responsiblePerson = Person::where('id_person', $id)
+            ->first(['names', 'surnames', 'id_person']);
 
-        if (!$responsable) {
+        if (!$responsiblePerson) {
             return response()->json([
-                'message' => 'No existe ninguna persona con ese CI.',
-                'ci_buscado' => $ci
+                'message' => 'No person found with this ID.',
+                'searched_id' => $id
             ], 404);
         }
 
-        // Obtén los id_lista que tengan pago pendiente (verificado = false)
-        $listasConPagoPendiente = \DB::table('lista_inscripcion')
-            ->join('pago', 'lista_inscripcion.id_lista', '=', 'pago.id_lista')
-            ->where('lista_inscripcion.ci_responsable_inscripcion', $ci)
-            ->where('pago.verificado', false);
+        // Get enrollment lists with pending payments (verified = false)
+        $listsWithPendingPayment = \DB::table('enrollment_list')
+            ->join('payment', 'enrollment_list.id_list', '=', 'payment.id_list')
+            ->where('enrollment_list.ci_enrollment_responsible', $id)
+            ->where('payment.verified', false);
 
-        $idsListas = $listasConPagoPendiente
-            ->pluck('lista_inscripcion.id_lista')
+        $listIds = $listsWithPendingPayment
+            ->pluck('enrollment_list.id_list')
             ->unique()
             ->toArray();
 
-        if (empty($idsListas)) {
+        if (empty($listIds)) {
             return response()->json([
-                'message' => 'No existen listas con pagos pendientes para este responsable.',
-                'ci_buscado' => $ci
+                'message' => 'No lists with pending payments found for this responsible person.',
+                'searched_id' => $id
             ], 404);
         }
 
-        // Trae solo las listas filtradas por esos IDs
-        $lists = ListaInscripcion::with([
-            'inscripciones.detalleOlimpista.olimpista:nombres,apellidos,ci_persona',
-            'inscripciones.nivel.asociaciones.area:nombre,id_area'
-        ])
-        ->whereIn('id_lista', $idsListas)
-        ->get(['id_lista', 'estado', 'ci_responsable_inscripcion']);
+        // Fetch only the lists filtered by those IDs
+        $lists = EnrollmentList::with([
+                'enrollments.olimpist_detail.olympist:names,surnames,ci_person',
+                'enrollments.category_level.area_level_olympiad.area:name,id_area'
+            ])
+            ->whereIn('id_list', $listIds)
+            ->get(['id_list', 'status', 'ci_enrollment_responsible']);
 
-        $answer = [];
+        $response = [];
         foreach ($lists as $list) {
-            $enrollments = $list->inscripciones;
-            $allSameDetalle = $enrollments->count() > 0 && 
-                $enrollments->every(function ($insc) use ($enrollments) {
-                    return $insc->id_detalle_olimpista === $enrollments->first()->id_detalle_olimpista;
+            $enrollments = $list->enrollments;
+            $allSameDetail = $enrollments->count() > 0 && 
+                $enrollments->every(function ($enrollment) use ($enrollments) {
+                    return $enrollment->id_olympist_detail === $enrollments->first()->id_olympist_detail;
                 });
 
             $item = [
-                'id_lista' => $list->id_lista,
-                'estado' => $list->estado,
-                'detalle' => $allSameDetalle ? $this->formatoIndividual($enrollments) : $this->formatoGrupal($enrollments)
+                'id_list' => $list->id_list,
+                'status' => $list->status,
+                'detail' => $allSameDetail ? $this->individualFormat($enrollments) : $this->groupFormat($enrollments)
             ];
-            $answer[] = $item;
+            $response[] = $item;
         }
 
         return response()->json([
-            'responsable' => [
-                'ci' => $responsable->ci_persona,
-                'nombres' => $responsable->nombres,
-                'apellidos' => $responsable->apellidos
+            'responsible_person' => [
+                'id' => $responsiblePerson->ci_perosn,
+                'names' => $responsiblePerson->names,
+                'surnames' => $responsiblePerson->surnames
             ],
-            'listas' => $answer
+            'lists' => $response
         ], 200);
     }
-
-    public function individual($id){
+    public function individual($id) {
         try {
-            $list = ListaInscripcion::with([
-                'olimpiada:costo,id_olimpiada',
-                'inscripciones.detalleOlimpista.olimpista',
-                'inscripciones.nivel.asociaciones.area',
+            $list = EnrollmentList::with([
+                'olympiad:cost,id_olympiad',
+                'enrollments.olympist_detail.olympist',
+                'enrollments.category_level.area_level_olympiad.area',
             ])->findOrFail($id);
             
-            $responsable = Persona::where('ci_persona', $list->ci_responsable_inscripcion)
-            ->first(['nombres', 'apellidos', 'ci_persona']);
+            $responsiblePerson = Person::where('ci_person', $list->person)
+                ->first(['names', 'surnames', 'ci_person']);
 
-            // Verificar que sea individual
-            if ($list->inscripciones->groupBy('id_detalle_olimpista')->count() > 1) {
-                throw new \Exception('Esta función es solo para listas individuales');
+            // Verify it's individual
+            if ($list->enrollments->groupBy('id_olympist_detail')->count() > 1) {
+                throw new \Exception('This function is only for individual lists');
             }
-    
-            $precioUnitario = (float)$list->olimpiada->costo;
-            $montoTotal = round((float)$precioUnitario * $list->inscripciones->count(), 2);
-            $cantidad = $list->inscripciones->count();
+            $unitPrice = (float)$list->olympiad->cost;
+            $totalAmount = round($unitPrice * $list->enrollments->count(), 2);
+            $quantity = $list->enrollments->count();
 
-            $pago = Pago::firstOrCreate(
-                ['id_lista' => $id],
+            $payment = Payment::firstOrCreate(
+                ['id_list' => $id],
                 [
-                    'comprobante' => 'PAGO-' . uniqid(),
-                    'fecha_pago' => now(),
-                    'monto_total' => $montoTotal,
-                    'estado' => 'PENDIENTE'
+                    'receipt' => 'PAYMENT-' . uniqid(),
+                    'payment_date' => now(),
+                    'total_amount' => $totalAmount,
                 ]
             );
-    
-            // Procesar niveles
-            $niveles = $list->inscripciones->map(function ($enrollment) {
+            // Process levels
+            $levels = $list->enrollments->map(function ($enrollment) {
                 return [
-                    'nivel_id' => $enrollment->nivel->id_nivel,
-                    'nombre_nivel' => $enrollment->nivel->nombre,
-                    'area' => optional($enrollment->nivel->asociaciones->first())->area->nombre ?? 'Sin área'
+                    'id_level' => $enrollment->category_level->id_level,
+                    'level_name' => $enrollment->category_level->name,
+                    'area' => optional($enrollment->category_level->area_level_olympiad->first())->area->name ?? 'No area'
                 ];
             });
+
             return response()->json([
-                'responsable' => [
-                    'ci' => $responsable->ci_persona,
-                    'nombres' => $responsable->nombres,
-                    'apellidos' => $responsable->apellidos
+                'responsible_person' => [
+                    'id' => $responsiblePerson->person_ci,
+                    'names' => $responsiblePerson->names,
+                    'surnames' => $responsiblePerson->surnames
                 ],
-                'pago' => [
-                    'id' => $pago->id_pago,
-                    'referencia' => $pago->comprobante,
-                    'monto_unitario' => $precioUnitario,
-                    'total_inscripciones' => $cantidad,
-                    'total_a_pagar' => $montoTotal,
-                    'estado' => $pago->estado,
-                    'fecha_pago' => now()
+                'payment' => [
+                    'id' => $payment->id_payment,
+                    'reference' => $payment->receipt,
+                    'unit_price' => $unitPrice,
+                    'total_enrollments' => $quantity,
+                    'total_to_pay' => $totalAmount,
+                    'payment_date' => now()
                 ],
-                'olimpista' => [
-                    'ci' => $list->inscripciones->first()->detalleOlimpista->olimpista->ci_persona,
-                    'nombres' => $list->inscripciones->first()->detalleOlimpista->olimpista->nombres,
-                    'apellidos' => $list->inscripciones->first()->detalleOlimpista->olimpista->apellidos
+                'olympist' => [
+                    'id' => $list->enrollments->first()->olympist_detail->olympist->ci_person,
+                    'names' => $list->enrollments->first()->olympist_detail->olympist->names,
+                    'surnames' => $list->enrollments->first()->olympist_detail->olympist->surnames
                 ],
-                'niveles' => $niveles
+                'levels' => $levels
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -282,99 +278,93 @@ class EnrollmentListController extends Controller
             ], 400);
         }
     }
-    public function grupal($id){
+    public function group($id) {
         try {
-            $list = ListaInscripcion::with([
-                'inscripciones',
-                'responsable',
-                'olimpiada'
+            $list = EnrollmentList::with([
+                'enrollments',
+                'person',
+                'olympiad'
             ])->findOrFail($id);
-            $responsable = Persona::where('ci_persona', $list->ci_responsable_inscripcion)
-            ->first(['nombres', 'apellidos', 'ci_persona']);
-
-            // Cálculos básicos
-            $precioUnitario = (float)$list->olimpiada->costo;
-            $cantidad = $list->inscripciones->count();
             
-            $montoTotal = round((float)$list->olimpiada->costo * $list->inscripciones->count(), 2);
+            $responsiblePerson = Person::where('ci_person', $list->ci_enrollment_responsible)
+                ->first(['names', 'surnames', 'ci_person']);
 
-            // Verificar/crear pago
-            $pago = Pago::firstOrCreate(
-                ['id_lista' => $id],
+            // Basic calculations
+            $unitPrice = (float)$list->olympiad->cost;
+            $quantity = $list->enrollments->count();
+            $totalAmount = round($unitPrice * $quantity, 2);
+
+            // Verify/create payment
+            $payment = Payment::firstOrCreate(
+                ['id_list' => $id],
                 [
-                    'comprobante' => 'PAGO-' . uniqid(),
-                    'fecha_pago' => now(),
-                    'monto_total' => $montoTotal,
-                    'estado' => 'PENDIENTE'
+                    'receipt' => 'PAYMENT-' . uniqid(),
+                    'payment_date' => now(),
+                    'total_amount' => $totalAmount,
                 ]
             );
-    
             return response()->json([
-                'responsable' => [
-                    'ci' => $list->ci_responsable_inscripcion,
-                    'nombres' => $responsable->nombres,
-                    'apellidos' => $responsable->apellidos
+                'responsible_person' => [
+                    'ci' => $list->ci_enrollment_responsible,
+                    'names' => $responsiblePerson->names,
+                    'surnames' => $responsiblePerson->surnames
                 ],
-                'pago' => [
-                    'id' => $pago->id_pago,
-                    'referencia' => $pago->comprobante,
-                    'monto_unitario' => $precioUnitario,
-                    'total_inscripciones' => $cantidad,
-                    'total_a_pagar' => $montoTotal,
-                    'estado' => $pago->estado,
-                    'fecha_pago' => now()
+                'payment' => [
+                    'id' => $payment->payment_id,
+                    'reference' => $payment->receipt,
+                    'unit_price' => $unitPrice,
+                    'total_enrollments' => $quantity,
+                    'total_to_pay' => $totalAmount,
+                    'payment_date' => now()
                 ],
-                'detalle_grupo' => [
-                    'participantes_unicos' => $list->inscripciones->groupBy('id_detalle_olimpista')->count()
+                'group_details' => [
+                    'unique_participants' => $list->enrollments->groupBy('id_olympist_detail')->count()
                 ]
             ], 200);
-    
+
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Error al procesar la solicitud',
+                'error' => 'Error processing request',
                 'message' => $e->getMessage()
             ], 500);
         }
-    
     }
+
     public function getById($id){
         $lists = ListaInscripcion::with(
-            'inscripciones.detalleOlimpista.olimpista',
-            'inscripciones.detalleOlimpista.grado',
-            'inscripciones.detalleOlimpista.colegio.provincia.departamento',
-            'inscripciones.nivel.asociaciones.area')
-                ->where('estado', 'PAGADO')
-                ->where('id_olimpiada', $id)
+            'enrollments.olympist_detail.olympist',
+            'enrollments.olympist_detail.grade',
+            'enrollments.olympist_detail.school.province.departament',
+            'enrollments.category_level.area_level_olympiad.area')
+                ->where('status', 'PAGADO')
+                ->where('id_olympiad', $id)
                 ->get();
         $data = [];
         foreach ($lists as $list) {
-            // Acceder al olimpista relacionado (asumiendo que hay una relación definida en el modelo)
-            $enrollments = $list->inscripciones;
+            $enrollments = $list->enrollments;
             foreach ($enrollments as $enrollment) {
-                $olimpista = $enrollment -> detalleOlimpista;
-                $persona = $olimpista -> olimpista;
-                $grado = $olimpista -> grado;
-                $colegio = $olimpista-> colegio;
-                $provincia = $colegio -> provincia;
-                $departamento = $provincia -> departamento ?? null;
-                $nivel = $enrollment -> nivel;
-                $area = $nivel -> asociaciones -> first() -> area;
+                $olympist = $enrollment -> olympist_detail;
+                $person = $olympist -> olympist;
+                $grade = $olympist -> grade;
+                $colegio = $olympist-> school;
+                $province = $colegio -> province;
+                $departament = $province -> departament ?? null;
+                $level = $enrollment -> level;
+                $area = $level -> area_level_olympiad -> first() -> area;
     
                 $data[] = [
-                    'apellidos' => $persona->apellidos,
-                    'nombres' => $persona->nombres,
-                    'ci' => $persona -> ci_persona,
-                    'colegio' => $colegio->nombre_colegio,
-                    'grado' => $grado -> nombre_grado,
-                    'departamento' => $departamento->nombre_departamento,
-                    'provincia' => $provincia-> nombre_provincia,
-                    'area' => $area->nombre,
-                    'nivel' => $nivel->nombre,
+                    'surnames' => $person->surnames,
+                    'names' => $person->names,
+                    'ci' => $person -> ci_person,
+                    'school' => $colegio->school_name,
+                    'grade' => $grade -> grade_name,
+                    'departament' => $departament->departament_name,
+                    'province' => $provincia-> province_name,
+                    'area' => $area->name,
+                    'level' => $level->name,
                 ];
             }
         }
-
-        // 3. Devolver la respuesta en JSON
         return response()->json([
             'success' => true,
             'data' => $data,
