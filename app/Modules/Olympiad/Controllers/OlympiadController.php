@@ -12,7 +12,12 @@ class OlympiadController extends Controller
         $olympiads = Olympiad::all();
         return response()->json($olympiads, 200);
     }
-
+    public function upcoming()
+    {
+        $today = Carbon::now();
+        $olympiads = Olympiad::where('start-date', '>', $today)->get();
+        return response()->json($olympiads, 200);
+    }
     public function store(Request $request)
     {
         try {
@@ -22,7 +27,7 @@ class OlympiadController extends Controller
                 'start_date' => 'required|date',
                 'end_date' => 'required|date',
                 'max_olympic_categories' => 'required|integer',
-                'olympiad_name' => 'required|string|max:255', // este campo existe en la tabla
+                'olympiad_name' => 'required|string|max:255',
             ]);
 
             $olympiad = Olympiad::create($validated);

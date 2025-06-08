@@ -5,6 +5,8 @@ use App\Modules\Olympiads\Controllers\OlympiadController;
 Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
     Route::post('/', [OlympiadController::class, 'store']);
     Route::get('/', [OlympiadController::class, 'index']);
+    Route::get('/upcoming', [OlympiadController::class, 'upcoming']);
+
 });
 
 Route::prefix('levels')->middleware('throttle:100,1')->group(function () {

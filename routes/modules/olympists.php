@@ -3,6 +3,7 @@
 use App\Modules\Olympists\Controllers\OlympistController;
 use App\Modules\Olympists\Controllers\PersonController;
 use App\Modules\Olympists\Controllers\DepartamentController;
+use App\Modules\Olympists\Controllers\EnrollmentController;
 
 Route::prefix('olympists')->middleware('throttle:100,1')->group(function () {
     Route::get('/{ci_olympist}/enrollments', [OlympistController::class, 'enrollments']);
@@ -29,13 +30,14 @@ Route::prefix('excel')->middleware('throttle:100,1')->group(function () {
 });
 
 Route::prefix('enrrolments')->middleware('throttle:100,1')->group(function () {
-    Route::get('/enrrolments/participants/{id}',[EnrollmentListController::class, 'getById']);
-    Route::get('/enrollments/{ci}/{estado}', [EnrollmentListController::class, 'obtenerPorResponsable'])
+    Route::get('/', [EnrollmentListController::class, 'index']);
+    Route::get('/{ci}/{estado}', [EnrollmentListController::class, 'obtenerPorResponsable'])
+    Route::get('/participants/{id}',[EnrollmentListController::class, 'getById'])
         ->where('status', 'PENDIENTE|PAGADO|TODOS');
-    Route::get('/enrollments/pending/{ci}', [EnrollmentListController::class, 'listasPagoPendiente']);
-    Route::get('/enrollments', [EnrollmentListController::class, 'index']);
+    Route::get('/pending/{ci}', [EnrollmentListController::class, 'listasPagoPendiente']);
 });
 
-Route::get('/receipts/individual/{id}', [EnrollmentListController::class, 'individual']);
-
-Route::get('/receipts/group/{id}', [EnrollmentListController::class, 'grupal']);
+Route::prefix('receipts')->middleware('throttle:100,1')->group(function () {
+    Route::get('/individual/{id}', [EnrollmentListController::class, 'individual']);
+    Route::get('/group/{id}', [EnrollmentListController::class, 'grupal']);
+});
