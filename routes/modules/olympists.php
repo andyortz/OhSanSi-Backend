@@ -22,3 +22,20 @@ Route::prefix('province')->middleware('throttle:100,1')->group(function () {
     Route::get('/', [DepartamentController::class, 'index']);
     Route::get('/{id_departament}', [DepartamentController::class, 'getDepartaments']);
 });
+
+Route::prefix('excel')->middleware('throttle:100,1')->group(function () {
+    Route::post('/data', [ExcelImportController::class, 'import']);
+    Route::post('/registration', [ExcelDataController::class, 'cleanDates']);
+});
+
+Route::prefix('enrrolments')->middleware('throttle:100,1')->group(function () {
+    Route::get('/enrrolments/participants/{id}',[EnrollmentListController::class, 'getById']);
+    Route::get('/enrollments/{ci}/{estado}', [EnrollmentListController::class, 'obtenerPorResponsable'])
+        ->where('status', 'PENDIENTE|PAGADO|TODOS');
+    Route::get('/enrollments/pending/{ci}', [EnrollmentListController::class, 'listasPagoPendiente']);
+    Route::get('/enrollments', [EnrollmentListController::class, 'index']);
+});
+
+Route::get('/receipts/individual/{id}', [EnrollmentListController::class, 'individual']);
+
+Route::get('/receipts/group/{id}', [EnrollmentListController::class, 'grupal']);
