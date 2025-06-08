@@ -83,24 +83,16 @@ class OlympistController extends Controller
             ], 500);
         }
     }
-    // public function getAreasNivelesInscripcion($ci): JsonResponse
-    // {
-    //     try {
-    //         $data = $this->repo->getAreasNiveles($ci);
-    //         return response()->json($data);
-    //     } catch (\Throwable $e) {
-    //         return response()->json(['error' => $e->getMessage()], 404);
-    //     }
-    // }
-    // public function areasLevels($ci): JsonResponse
-    // {
-    //     try {
-    //         $data = $this->repo->areasLevels($ci);
-    //         return response()->json($data);
-    //     } catch (\Throwable $e) {
-    //         return response()->json(['error' => $e->getMessage()], 404);
-    //     }
-    // }
+
+    public function areasLevels($ci): JsonResponse
+    {
+        try {
+            $data = $this->repo->areasLevels($ci);
+            return response()->json($data);
+        } catch (\Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
+        }
+    }
 
     public function store(Request $request): JsonResponse
     {

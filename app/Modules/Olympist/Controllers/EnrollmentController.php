@@ -55,10 +55,10 @@ class EnrollmentController extends Controller
                 
                 'enrollments' => $enrollments->map(function ($enrollment) {
                     // Filtrar solo asociaciones válidas (no null)
-                    $validAssociation = $enrollment->level->asociaciones->firstWhere('area', '!=', null);
+                    $validAssociation = $enrollment->level->area_level_olympiad->firstWhere('area', '!=', null);
                     
                     return [
-                        'id_inscripcion' => $enrollment->id_enrollment,
+                        'id_enrollment' => $enrollment->id_enrollment,
                         'level' => $enrollment->level ? [
                             'id_level' => $enrollment->level->id_level,
                             'name' => $enrollment->level->name
@@ -79,7 +79,7 @@ class EnrollmentController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error al obtener inscripciones',
+                'message' => 'failed fetching enrollments',
                 'error' => $e->getMessage()
             ], 500);
         }

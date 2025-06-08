@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
-
 use App\Modules\Olympist\Models\EnrollmentList;
 use App\Modules\Olympiad\Models\AreaLevelOlympiad;
 use App\Modules\Olympist\Models\Payment;
@@ -32,7 +30,7 @@ class EnrollmentListController extends Controller
                 if ($enrollment) {
                     // Cargar todas las relaciones necesarias en una sola consulta
                     $enrollment->load([
-                        'level.associations.area',  // Relación a área a través de nivel
+                        'level.area_level_olympiad.area',  // Relación a área a través de nivel
                         'olympicDetail.olympist',   // Nombre del olimpista
                         'olympicDetail.school'    // Nombre del colegio
                     ]);
@@ -42,7 +40,7 @@ class EnrollmentListController extends Controller
                         'level' => [
                             'id' => $enrollment->id_level,
                             'nome' => $enrollment->level->name ?? null,
-                            'area' => $enrollment->level->associations->area->name ?? null
+                            'area' => $enrollment->level->area_level_olympiad->area->name ?? null
                         ],
                         'olympist' => [
                             'ci' => $enrollment->olympistDetail->ci_olympic ?? null,
@@ -72,41 +70,40 @@ class EnrollmentListController extends Controller
         }
         return response()->json(['data' => $answer], 200);
     }
-
-    private function formatoIndividual($enrollments)
+    private function individualFormat($enrollments)
     {
-        $olimpista = $enrollments->first()->detalleOlimpista->olimpista;
-        
-        return [
-            'tipo' => 'individual',
-            'cantidad_inscripciones' => $enrollments->count(),
-            'olimpista' => [
-                'ci' => $olimpista->ci_persona,
-                'nombres' => $olimpista->nombres,
-                'apellidos' => $olimpista->apellidos
-            ],
-            'niveles' => $enrollments->map(function ($insc) {
-                return [
-                    'id' => $insc->nivel->id_nivel,
-                    'nombre' => $insc->nivel->nombre,
-                    'area' => $insc->nivel->asociaciones->first()->area->nombre ?? 'Sin área'
-                ];
-            })->unique('id')->values()->toArray()
-        ];
+    $olympist = $enrollments->first()->olympistDetail->olympist;
+
+    return [
+        'type' => 'individual',
+        'enrollment_count' => $enrollments->count(),
+        'olympist' => [
+            'id' => $olympist->ci_person,
+            'names' => $olympist->names,
+            'surnames' => $olympist->surnames
+        ],
+        'levels' => $enrollments->map(function ($enrollment) {
+            return [
+                'id' => $enrollment->category_level->id_level,
+                'name' => $enrollment->category_level->name,
+                'area' => $enrollment->category_level->area_level_olympiad->first()->area->name ?? 'No area'
+            ];
+        })->unique('id')->values()->toArray()
+    ];
     }
 
-    private function formatoGrupal($enrollments)
+    private function groupFormat($enrollments)
     {
-        return [
-            'tipo' => 'grupal',
-            'cantidad_estudiantes' => $enrollments->groupBy('id_detalle_olimpista')->count(),
-            'cantidad_inscripciones' => $enrollments->count()
-        ];
+    return [
+        'type' => 'group',
+        'student_count' => $enrollments->groupBy('id_olympist_detail')->count(),
+        'enrollment_count' => $enrollments->count()
+    ];
     }
     public function getByResponsible($ci, $status)
     {
         $responsible = Person::where('ci_person', $ci)
-            ->first(['nombres', 'apellidos', 'ci_persona']);
+            ->first(['names', 'surnames', 'ci_person']);
         if ($status !== 'TODOS') {
             $lists = EnrollmentList::with([
                 'enrollments.olympicDetail..olympist:names,surnames,ci_person',
@@ -128,30 +125,30 @@ class EnrollmentListController extends Controller
                 404 // Not Found
             );
         }
-        //Desgloce
+
         $answer = [];
         foreach ($lists as $list) {
             // Primero: Todos los campos de la lista
-            $enrollments = $list->inscripciones;
+            $enrollments = $list->enrollments;
 
-            $allSameDetalle = $enrollments->count() > 0 && 
+            $allSameDetail = $enrollments->count() > 0 && 
             $enrollments->every(function ($insc) use ($enrollments) {
-                return $insc->id_detalle_olimpista === $enrollments->first()->id_detalle_olimpista;
+                return $insc->id_olympist_detail === $enrollments->first()->id_olympist_detail;
             });
             $item = [
-                'id_lista' => $list->id_lista,
-                'estado' => $list->estado,
-                'detalle' => $allSameDetalle ? $this->formatoIndividual($enrollments) : $this->formatoGrupal($enrollments)
+                'id_list' => $list->id_list,
+                'status' => $list->status,
+                'detail' => $allSameDetail ? $this->individualFormat($enrollments) : $this->groupFormat($enrollments)
             ];
             $answer[] = $item;
         }
         return response()->json([
-        'responsable' => [
-            'ci' => $responsable->ci_persona,
-            'nombres' => $responsable->nombres,
-            'apellidos' => $responsable->apellidos
+        'responsible' => [
+            'ci' => $responsible->ci_person,
+            'nombres' => $responsible->names,
+            'apellidos' => $responsible->surnames
         ],
-        'listas' => $answer
+        'lists' => $answer
         ], 200);
     }
 

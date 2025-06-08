@@ -35,13 +35,13 @@ class AreaController extends Controller
 
         if ($areas->isEmpty()) {
             return response()->json([
-                'message' => 'No se encontraron áreas para la olimpiada especificada.',
+                'message' => 'No areas were found for the specified Olympiad.',
                 'areas' => []
             ], 404);
         }
 
         return response()->json([
-            'message' => 'Áreas encontradas exitosamente.',
+            'message' => 'Areas found successfully.',
             'areas' => $areas
         ], 200);
     }

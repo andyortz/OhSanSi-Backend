@@ -73,4 +73,10 @@ class OlympistDetail extends Model
 	{
 		return $this->hasMany(Enrollment::class, 'id_olympist_detail');
 	}
+
+	public function olympist()
+    {
+        return $this->belongsTo(Person::class, 'ci_olympist', 'ci_person');
+    }
+
 }

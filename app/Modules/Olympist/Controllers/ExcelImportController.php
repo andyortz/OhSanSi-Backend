@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Imports\InscripcionesImport;
+use App\Imports\EnrollmentsImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ExcelImportController extends Controller
@@ -15,7 +15,7 @@ class ExcelImportController extends Controller
         ]);
 
         try {
-            $import = new InscripcionesImport();
+            $import = new EnrollmentsImport();
             $import->import($request->file('file'));
 
             return response()->json([
