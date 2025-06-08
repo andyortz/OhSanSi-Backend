@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+// namespace App\Http\Controllers;
+namespace App\Modules\Olympiad\Controllers;
+
 
 use Illuminate\Http\Request;
 use App\Imports\InscripcionesImport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ExcelImportController extends Controller
+class ExcelImportController
 {
     public function import(Request $request)
     {

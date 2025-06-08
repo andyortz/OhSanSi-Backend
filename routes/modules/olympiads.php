@@ -1,6 +1,11 @@
 <?php
 
 use App\Modules\Olympiads\Controllers\OlympiadController;
+use App\Modules\Olympiad\Controllers\AreaController;
+use App\Modules\Olympiad\Controllers\OlympiadYearController;
+use App\Modules\Olympiad\Controllers\OlympiadRegistrationController;
+use App\Modules\Olympiad\Controllers\CategoryLevelController;
+use App\Modules\Olympiad\Controllers\GradeController;
 
 Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
     Route::post('/', [OlympiadController::class, 'store']);

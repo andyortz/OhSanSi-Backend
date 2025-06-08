@@ -3,36 +3,35 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\CategoryLevelController;
-use App\Http\Controllers\AreaController;
-use App\Http\Controllers\GradosController;
-use App\Http\Controllers\InscripcionAreaController;
+use  App\Modules\Olympiad\Controllers\CategoryLevelController;
+use  App\Modules\Olympiad\Controllers\AreaController;
+use  App\Modules\Olympiad\Controllers\GradesController;
+// use App\Http\Controllers\InscripcionAreaController;
+
 use App\Modules\Olympist\Controllers\TutorsController;
-use App\Http\Controllers\OlympiadRegistrationController;
-use App\Http\Controllers\DepartamentController;
+use App\Modules\Olympiad\Controllers\OlympiadRegistrationController;
+use App\Modules\Olympist\Controllers\DepartamentController;
+
 use App\Http\Controllers\ProvinciaController;
-use App\Http\Controllers\OlympiadYearController;
+use App\Modules\Olympist\Controllers\ProvinceController;
+use App\Modules\Olympiad\Controllers\OlympiadYearController;
 // use App\Http\Controllers\AreasFiltroController;
-use App\Http\Controllers\colegiosController;
+use App\Modules\Olympist\Controllers\SchoolController;
 // use App\Http\Controllers\OlimpistaController;
-use App\Http\Controllers\VincularController;
-use App\Http\Controllers\EstructuraOlimpiadaController;
-use App\Http\Controllers\OlimpiadaController;
-use App\Http\Controllers\EnrollmentController;
-use App\Http\Controllers\LevelEnrollmentController;
-use App\Http\Controllers\EnrollmentListController;
-use App\Http\Controllers\ExcelImportController;
-use App\Http\Controllers\ExcelDataController;
+// use App\Http\Controllers\VincularController;
+use App\Modules\Olympiad\Controllers\OlympiadStructureController;
+use App\Modules\Olympiad\Controllers\OlypimpiadController;
+use App\Modules\Olympist\Controllers\EnrollmentController;
+use App\Modules\Olympist\Controllers\LevelEnrollmentController;
+use App\Modules\Olympist\Controllers\EnrollmentListController;
+use App\Modules\Olympiad\Controllers\ExcelImportController;
+use App\Modules\Olympiad\Controllers\ExcelDataController;
 use App\Modules\Olympist\Controllers\PersonController;
-use App\Http\Controllers\PaymentSlipController;;
-use App\Http\Controllers\TestPreprocessorController;
-use App\Http\Controllers\PagoValidacionController;
-use App\Http\Controllers\PaymentInquiryController;
+use App\Modules\Olympist\Controllers\PaymentSlipController;;
+use App\Http\Controllers\TestPreprocessorController; //ojito con este 
+use App\Http\Controllers\PagoValidacionController;  //ojito con este
+use App\Modules\Olympist\Controllers\PaymentInquiryController;
 use App\Modules\Olympist\Controllers\OlympistController;
-
-
-use App\Imports\OlimpistaImport;
-use App\Imports\TutoresImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 Route::get('/user', function (Request $request) {
@@ -40,7 +39,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::post('/pago/verificar', [PagoValidacionController::class, 'verificar']);
+// Route::post('/pago/verificar', [PagoValidacionController::class, 'verificar']);
 //Excel
 Route::post('/excel/data', [ExcelImportController::class, 'import']);
 Route::post('/excel/registration', [ExcelDataController::class, 'cleanDates']);

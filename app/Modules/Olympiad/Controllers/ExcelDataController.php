@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+// namespace App\Http\Controllers;
+namespace App\Modules\Olympiad\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\Persona;
 use App\Modules\Olympist\Models\Person;
 use App\Services\ImportHelpers\TutorResolver;
 use App\Services\ImportHelpers\OlympiadParticipantResolver;
@@ -13,10 +13,10 @@ use App\Services\ImportHelpers\TeacherResolver;
 use App\Services\Excel\TutorsProcessor;
 use App\Services\Excel\OlimpystsProcessor;
 use App\Services\Excel\TeachersProcessor;
-use App\Services\Excel\InscripcionesProcessor;
-use App\Services\Registers\ListaInscripcionService;
+use App\Services\Excel\EnrollmentProcessor;
+use App\Services\Registers\EnrollmentListService;
 
-class ExcelDataController extends Controller
+class ExcelDataController
 {
     public function cleanDates(Request $request)
     {
