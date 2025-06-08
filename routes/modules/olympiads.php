@@ -3,6 +3,7 @@
 use App\Modules\Olympiads\Controllers\OlympiadController;
 use App\Modules\Olympiads\Controllers\AreaController;
 use App\Modules\Olympiads\Controllers\CategoryLevelController;
+use App\Modules\Olympiads\Controllers\GradesController;
 
 Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
     Route::post('/', [OlympiadController::class, 'store']);
