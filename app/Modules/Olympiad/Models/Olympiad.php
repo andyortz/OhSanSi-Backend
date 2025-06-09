@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Modules\Olympiad\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,14 +28,6 @@ class Olympiad extends Model
 	protected $table = 'olympiad';
 	protected $primaryKey = 'id_olympiad';
 	public $timestamps = false;
-
-	protected $casts = [
-		'year' => 'int',
-		'cost' => 'float',
-		'start_date' => 'datetime',
-		'end_date' => 'datetime',
-		'max_olympic_categories' => 'int'
-	];
 
 	protected $fillable = [
 		'year',

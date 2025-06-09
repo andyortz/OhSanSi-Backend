@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Modules\Olympist\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Modules\Olympist\Models\EnrollmentList;
 use App\Modules\Olympiad\Models\AreaLevelOlympiad;
 use App\Modules\Olympist\Models\Payment;

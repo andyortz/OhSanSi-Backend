@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Modules\Olympist\Controllers;
 
-
+use App\Http\Controllers\Controller;
 use App\Modules\Olympist\Models\School;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

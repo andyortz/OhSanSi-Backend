@@ -1,6 +1,6 @@
 <?php
 
-use App\Modules\Olympiads\Controllers\OlympiadController;
+use App\Modules\Olympiad\Controllers\OlympiadController;
 use App\Modules\Olympiad\Controllers\AreaController;
 use App\Modules\Olympiad\Controllers\OlympiadYearController;
 use App\Modules\Olympiad\Controllers\OlympiadRegistrationController;

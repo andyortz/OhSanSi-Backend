@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
-//REVISAR!!!
+namespace App\Modules\Olympiad\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Modules\Olympist\Models\EnrollmentList;
 use App\Modules\Olympist\Models\Person;
 use App\Modules\Olympiad\Models\Enrollment;

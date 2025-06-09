@@ -1,9 +1,9 @@
 <?php
 
 // namespace App\Http\Controllers;
-namespace App\Modules\Olympiad\Controllers;
+namespace App\Modules\Olympist\Controllers;
 
-
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Imports\EnrollmentsImport;
 use Maatwebsite\Excel\Facades\Excel;
