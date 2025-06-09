@@ -122,3 +122,4 @@ Route::get('/tutors/{ci}',[TutoresControllator::class,'buscarPorCi']);
 Route::post('/payment/verification', [PagoValidacionController::class, 'verificar']);
 
 Route::get('/levels-areas/{id}', [NivelCategoriaController::class, 'getByNivelesById']);
+Route::post('/login', [AuthController::class, 'login']);
