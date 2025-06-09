@@ -20,7 +20,7 @@ class StorePersonRequest extends FormRequest
             'ci_person' => 'required|integer|unique:person,ci_person',
             'phone' => 'nullable|string|max:20',
             'email' => 'required|email:rfc,dns|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|max:100',
-            'birthdate' => 'date|before_or_equal:today',
+            'birthdate' => 'nullable|date|before_or_equal:today',
         ];
     }
 
