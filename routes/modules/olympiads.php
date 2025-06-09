@@ -26,8 +26,8 @@ Route::prefix('excel')->middleware('throttle:100,1')->group(function () {
 Route::prefix('levels')->middleware('throttle:100,1')->group(function () {
     Route::get('/', [CategoryLevelController::class, 'index']);
     Route::post('/', [CategoryLevelController::class, 'store']);
-    Route::get('/{id}', [CategoryLevelController::class, 'show']);
     Route::get('/areas/{id}', [CategoryLevelController::class, 'getByNivelesById']);    
+    Route::get('/{id}', [CategoryLevelController::class, 'show']);
 });
 
 Route::prefix('areas')->middleware('throttle:100,1')->group(function () {

@@ -362,7 +362,7 @@ class CategoryLevelController extends Controller
         $levels = CategoryLevel::where('id_level', '>', 12)->get();
         
         return response()->json([
-            'message' => 'Lista de niveles cargada correctamente. (a partir del id 13).',
+            'message' => 'Level list loaded successfully. (starting at id 13).',
             'levels' => $levels
         ], 200);
     }
