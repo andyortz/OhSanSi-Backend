@@ -11,11 +11,11 @@ Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
     Route::post('/', [OlympiadController::class, 'store']);
     Route::get('/', [OlympiadController::class, 'index']);
     Route::get('/now', [OlympiadController::class, 'upcoming']);
-    Route::get('/{year}', [OlympiadController::class, 'getByYear']);
     Route::get('/max-categories', [OlympiadController::class, 'getMaxCategories']);
     Route::get('/{id}/max-categories', [OlympiadController::class, 'maxCategoriesOlympiad']);
     Route::get('/{id}/levels-areas', [OlympiadController::class, 'getAreasWithLevels']);
     Route::get('/{id}/areas', [AreaController::class, 'areasByOlympiad']);
+    Route::get('/{year}', [OlympiadController::class, 'getByYear']);
 });
 
 Route::prefix('levels')->middleware('throttle:100,1')->group(function () {
