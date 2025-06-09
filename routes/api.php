@@ -94,6 +94,8 @@ Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
     Route::get('/{id}/max-categories', [OlimpiadaAreaController::class, 'maxCategorias']);
     Route::get('/{id}/levels-areas', [OlimpiadaController::class, 'getAreasConNiveles']);
     Route::get('/{id}/areas', [AreasController::class, 'areasPorOlimpiada']);
+    Route::get('/{year}/statistic', [OlimpiadaController::class, 'getStatistics']);
+    Route::get('/{year}/management', [OlimpiadaGestionController::class, 'show']);
 });
 Route::prefix('excel')->middleware('throttle:100,1')->group(function () {
     Route::post('/data', [ExcelImportController::class, 'import']);
