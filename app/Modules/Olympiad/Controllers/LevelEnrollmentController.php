@@ -161,7 +161,7 @@ class LevelEnrollmentController extends Controller
         try {
             DB::beginTransaction();
             $olympist = OlympistDetail::firstOrCreate(
-                ['ci_olympist' => $request->ci]
+                ['ci_olympic' => $request->ci]
             );
             // Crear inscripciones para cada nivel
             $list = EnrollmentList::create([
