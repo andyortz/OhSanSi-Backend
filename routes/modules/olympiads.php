@@ -17,7 +17,10 @@ Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
     Route::get('/{id}/levels-areas', [OlympiadController::class, 'getAreasWithLevels']);
     Route::get('/{id}/areas', [AreaController::class, 'areasByOlympiad']);
 });
-
+Route::prefix('excel')->middleware('throttle:100,1')->group(function () {
+    Route::post('/data', [ExcelImportController::class, 'import']);
+    Route::post('/registration', [ExcelDataController::class, 'cleanDates']);
+});
 Route::prefix('levels')->middleware('throttle:100,1')->group(function () {
     Route::get('/', [CategoryLevelController::class, 'index']);
     Route::post('/', [CategoryLevelController::class, 'store']);

@@ -7,6 +7,8 @@
 namespace App\Modules\Olympiad\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Modules\Olympist\Models\Person;
+use App\Modules\Olympist\Models\OlympistDetail;
 
 /**
  * Class Enrollment

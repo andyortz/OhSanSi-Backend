@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Modules\Olympist\Controllers\OlympistController;
 use App\Modules\Olympist\Controllers\PersonController;
 use App\Modules\Olympist\Controllers\DepartamentController;
+use App\Modules\Olympist\Controllers\ProvinceController;
 use App\Modules\Olympiad\Controllers\EnrollmentController;
+use App\Modules\Olympiad\Controllers\EnrollmentListController;
 use App\Modules\Olympist\Controllers\ExcelImportController;
 use App\Modules\Olympist\Controllers\ExcelDataController;
 use App\Modules\Olympist\Controllers\SchoolController;
@@ -16,9 +18,9 @@ Route::prefix('olympists')->middleware('throttle:100,1')->group(function () {
     Route::post('/', [OlympistController::class, 'store']);
     Route::get('/{ci}', [OlympistController::class, 'getByCedula']);
     Route::get('/{ci}/enrollments', [EnrollmentController::class, 'getEnrollmentsByCi']);
-    Route::get('/{ci}/areas-levels', [OlympistController::class, 'areasLevels']);
+    Route::get('/{ci}/areas-levels', [OlympistController::class, 'areasLevels']); //ojito con este
     
-    Route::post('/{id}/upload-payment', [OlympistController::class, 'uploadPayment']);
+    Route::post('/{id}/upload-payment', [OlympistController::class, 'uploadPayment']); //???
 });
 
 Route::prefix('person')->middleware('throttle:100,1')->group(function () {
@@ -28,23 +30,18 @@ Route::prefix('person')->middleware('throttle:100,1')->group(function () {
 
 Route::prefix('province')->middleware('throttle:100,1')->group(function () {
     Route::get('/', [ProvinceController::class, 'index']); 
-    Route::get('/{id}', [ProvinciaController::class, 'byDepartment']);
+    Route::get('/{id}', [ProvinceController::class, 'byDepartment']);
 });
 
 Route::prefix('departament')->middleware('throttle:100,1')->group(function () {
     Route::get('/', [DepartamentController::class, 'index']);
 });
 
-Route::prefix('excel')->middleware('throttle:100,1')->group(function () {
-    Route::post('/data', [ExcelImportController::class, 'import']);
-    Route::post('/registration', [ExcelDataController::class, 'cleanDates']);
-});
-
-Route::prefix('enrrolments')->middleware('throttle:100,1')->group(function () {
-    Route::get('/', [EnrollmentListController::class, 'index']);
-    Route::get('/{ci}/{estado}', [EnrollmentListController::class, 'getByResponsible'])
+Route::prefix('enrollments')->middleware('throttle:100,1')->group(function () {
+    Route::get('/', [EnrollmentListController::class, 'index']); // NO
+    Route::get('/{ci}/{status}', [EnrollmentListController::class, 'getByResponsible'])
         ->where('status', 'PENDIENTE|PAGADO|TODOS');
-    Route::post('/with-tutor', [LevelEnrollmentController::class, 'storeWithTutor']);
+    Route::post('/with-tutor', [LevelEnrollmentController::class, 'storeWithTutor']); //NO
     Route::get('/participants/{id}',[EnrollmentListController::class, 'getById']);
     Route::get('/pending/{ci}', [EnrollmentListController::class, 'pendingPaymentLists']);
 });

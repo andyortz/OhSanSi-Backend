@@ -15,11 +15,11 @@ class ProvinceController extends Controller
 
     public function byDepartment($id)
     {
-        $provinces = Province::where('id_department', $id)->get();
+        $provinces = Province::where('id_departament', $id)->get();
 
         if ($provinces->isEmpty()) {
             return response()->json([
-                'message' => 'No provinces found for this department.',
+                'message' => 'No se encontraron provincias para el departamento especificado.',
                 'status' => 404
             ], 404);
         }

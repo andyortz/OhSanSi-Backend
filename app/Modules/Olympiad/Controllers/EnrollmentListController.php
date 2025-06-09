@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Modules\Olympist\Controllers;
+namespace App\Modules\Olympiad\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Olympist\Models\EnrollmentList;
+use App\Modules\Olympiad\Models\EnrollmentList;
 use App\Modules\Olympiad\Models\AreaLevelOlympiad;
 use App\Modules\Olympist\Models\Payment;
 use App\Modules\Olympist\Models\Person;
@@ -73,33 +73,33 @@ class EnrollmentListController extends Controller
     }
     private function individualFormat($enrollments)
     {
-    $olympist = $enrollments->first()->olympistDetail->olympist;
+        $olympist = $enrollments->first()->olympistDetail->olympist;
 
-    return [
-        'type' => 'individual',
-        'enrollment_count' => $enrollments->count(),
-        'olympist' => [
-            'id' => $olympist->ci_person,
-            'names' => $olympist->names,
-            'surnames' => $olympist->surnames
-        ],
-        'levels' => $enrollments->map(function ($enrollment) {
-            return [
-                'id' => $enrollment->category_level->id_level,
-                'name' => $enrollment->category_level->name,
-                'area' => $enrollment->category_level->area_level_olympiad->first()->area->name ?? 'No area'
-            ];
-        })->unique('id')->values()->toArray()
-    ];
+        return [
+            'type' => 'individual',
+            'enrollment_count' => $enrollments->count(),
+            'olympist' => [
+                'id' => $olympist->ci_person,
+                'names' => $olympist->names,
+                'surnames' => $olympist->surnames
+            ],
+            'levels' => $enrollments->map(function ($enrollment) {
+                return [
+                    'id' => $enrollment->category_level->id_level,
+                    'name' => $enrollment->category_level->name,
+                    'area' => $enrollment->category_level->area_level_olympiad->first()->area->name ?? 'No area'
+                ];
+            })->unique('id')->values()->toArray()
+        ];
     }
 
     private function groupFormat($enrollments)
     {
-    return [
-        'type' => 'group',
-        'student_count' => $enrollments->groupBy('id_olympist_detail')->count(),
-        'enrollment_count' => $enrollments->count()
-    ];
+        return [
+            'type' => 'group',
+            'student_count' => $enrollments->groupBy('id_olympist_detail')->count(),
+            'enrollment_count' => $enrollments->count()
+        ];
     }
     public function getByResponsible($ci, $status)
     {
@@ -107,13 +107,13 @@ class EnrollmentListController extends Controller
             ->first(['names', 'surnames', 'ci_person']);
         if ($status !== 'TODOS') {
             $lists = EnrollmentList::with([
-                'enrollments.olympicDetail..olympist:names,surnames,ci_person',
-                'enrollments.nivel.enrollments.area:name,id_area'
+                'enrollments.olympist_detail.olympist:names,surnames,ci_person',
+                'enrollments.category_level.area_level_olympiad.area:name,id_area'
             ])->where('ci_enrollment_responsible', $ci)->where('status', $status)->get(['id_list', 'status', 'ci_enrollment_responsible']);
         } else {
             $lists = EnrollmentList::with([
-                'enrollments.olympicDetail..olympist:names,surnames,ci_person',
-                'enrollments.nivel.enrollments.area:name,id_area'
+                'enrollments.olympist_detail.olympist:names,surnames,ci_person',
+                'enrollments.category_level.area_level_olympiad.area:name,id_area'
             ])->where('ci_enrollment_responsible', $ci)->get(['id_list', 'status', 'ci_enrollment_responsible']);
         }
 
@@ -332,7 +332,7 @@ class EnrollmentListController extends Controller
     }
 
     public function getById($id){
-        $lists = ListaInscripcion::with(
+        $lists = EnrollmentList::with(
             'enrollments.olympist_detail.olympist',
             'enrollments.olympist_detail.grade',
             'enrollments.olympist_detail.school.province.departament',
