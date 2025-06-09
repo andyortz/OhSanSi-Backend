@@ -3,15 +3,26 @@
 namespace App\Modules\Olympiad\Controllers;
 
 use App\Http\Controllers\Controller;
-use app\Modules\Olympiad\Models\Area;
-use app\Modules\Olympiad\Requests\StoreAreaRequest;
-use Illuminate\Http\Request\Request;
+use App\Modules\Olympiad\Models\Area;
+use App\Modules\Olympiad\Requests\StoreAreaRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 // use App\Models\NivelAreaOlimpiada;
 use App\Modules\Olympiad\Models\AreaLevelOlympiad;
 
 class AreaController extends Controller
 {
+    public function store(StoreAreaRequest $request)
+    {
+        $area = Area::create([
+            'name' => $request->name
+        ]);
+    
+        return response()->json([
+            'message' => 'Area created successfully',
+            'data' => $area
+        ], 201);
+    }
     public function index()
     {
         $areas = Area::all();
@@ -39,17 +50,6 @@ class AreaController extends Controller
         ], 200);
     }
 
-    public function store(StoreAreaRequest $request)
-    {
-        Area::create([
-            'name' => $request->nombre,
-        ]);
-
-        return response()->json([
-            'message' => 'Successfully registered area',
-            'status' => 201
-        ], 201);
-    }
 
     /**
      * Obtain all areas with their levels and grades  REVISAR!!!
