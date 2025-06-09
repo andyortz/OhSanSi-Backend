@@ -14,6 +14,13 @@ class TutorsProcessor
     {
         foreach ($tutorsData as $tutor) {
             try {
+                if(!is_numeric($tutor['ci'])){
+                    $answerFinal['tutors_errors'][] = [
+                        'message' => ['La cédula debe ser un número'],
+                        'row' => $tutor['row'] + 2
+                    ];
+                    continue;
+                }
                 if (Person::where('ci_person', $tutor['ci'])->exists()) {
                     $answerFinal['tutors_omitted'][] = [
                         'ci' => $tutor['ci'],
