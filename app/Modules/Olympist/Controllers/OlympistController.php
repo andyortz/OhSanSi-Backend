@@ -29,7 +29,7 @@ class OlympistController
     public function enrollments($ci)
     {
         try {
-            $olympistDetail = OlympistDetail::where('ci_olympist', $ci)->first();
+            $olympistDetail = OlympistDetail::where('ci_olympic', $ci)->first();
             if (!$olympistDetail) {
                 return response()->json([
                     'success' => false,

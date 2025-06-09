@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Modules\Olympiad\Models\Olympiad;
 use App\Modules\Olympiad\Models\Grade;
 use App\Modules\Olympiad\Models\Enrollment;
+use App\Modules\Olympist\Models\Person;
 
 
 /**
