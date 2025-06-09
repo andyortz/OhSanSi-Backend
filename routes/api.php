@@ -86,7 +86,7 @@ Route::post('/ocr', [BoletaController::class, 'procesar']);
 Route::get('/payment/{ci}', [ConsultaPagoController::class, 'verificarPorCi']);
 
 Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
-    Route::post('/', [OlimpiadaGestionController::class, 'store']);
+    Route::post('/', [OlympiadRegistrationController::class, 'store']);
     Route::get('/', [OlimpiadaGestionController::class, 'index']);
     Route::get('/now', [OlimpiadaGestionController::class, 'index2']);
     Route::get('/max-categories', [OlimpiadaController::class, 'getMaxCategorias']);
