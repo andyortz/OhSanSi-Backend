@@ -63,12 +63,12 @@ Route::prefix('departaments')->middleware('throttle:100,1')->group(function () {
 });
 
 Route::prefix('enrollments')->middleware('throttle:100,1')->group(function () {
-    Route::get('/{ci}/{status}', [ListaInscripcionController::class, 'obtenerPorResponsable'])
-    ->where('estado', 'PENDIENTE|PAGADO|TODOS');
     Route::post('/with-tutor', [InscripcionNivelesController::class, 'storeWithTutor']); //NO
+    Route::post('/one', [InscripcionNivelesController::class, 'storeOne']);
     Route::get('/participants/{id}',[ListaInscripcionController::class, 'getById']);
     Route::get('/pending/{ci}', [ListaInscripcionController::class, 'listasPagoPendiente']);
-    Route::post('/one', [InscripcionNivelesController::class, 'storeOne']);
+    Route::get('/{ci}/{status}', [ListaInscripcionController::class, 'obtenerPorResponsable'])
+    ->where('estado', 'PENDIENTE|PAGADO|TODOS');
 });
 
 Route::prefix('receipts')->middleware('throttle:100,1')->group(function () {
@@ -113,8 +113,8 @@ Route::prefix('areas')->middleware('throttle:100,1')->group(function () {
 
 Route::prefix('grades')->middleware('throttle:100,1')->group(function () {
     Route::get('/', [GradosController::class, 'index']);
-    Route::get('/levels/{id}', [NivelCategoriaController::class, 'getById']);
     Route::post('/levels', [NivelCategoriaController::class,'asociarGrados']);
+    Route::get('/levels/{id}', [NivelCategoriaController::class, 'getById']);
 });
 Route::post('/tutors', [TutoresControllator::class, 'store']);
 Route::get('/tutors/{ci}',[TutoresControllator::class,'buscarPorCi']);
