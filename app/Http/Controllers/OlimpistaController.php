@@ -43,7 +43,7 @@ class OlimpistaController extends Controller
                 'fecha_nacimiento' => 'required|date',
                 'unidad_educativa' => 'required|integer',
                 'id_grado' => 'required|exists:grado,id_grado', 
-                'celular' => 'nullable|string|max:8',
+                'celular' => 'nullable|string|max:15',
                 'ci_tutor' => 'required',
             ]);
 
