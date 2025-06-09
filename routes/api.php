@@ -96,6 +96,8 @@ Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
     Route::get('/{id}/areas', [AreasController::class, 'areasPorOlimpiada']);
     Route::get('/{year}/statistic', [OlimpiadaController::class, 'getStatistics']);
     Route::get('/{year}/management', [OlimpiadaGestionController::class, 'show']);
+    Route::get('/{id}/statistics', [OlimpiadaController::class, 'getStatistics']);
+    Route::get('/{year}', [OlimpiadaGestionController::class, 'show']);
 });
 Route::prefix('excel')->middleware('throttle:100,1')->group(function () {
     Route::post('/data', [ExcelImportController::class, 'import']);
