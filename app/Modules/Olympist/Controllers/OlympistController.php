@@ -103,7 +103,7 @@ class OlympistController
         try {
             $validated = $request->validate([
                 'names' => 'required|string|max:100',
-                'surname' => 'required|string|max:100',
+                'surnames' => 'required|string|max:100',
                 'ci' => 'required|integer|unique:person,ci_person',
                 'email' => 'required|email|max:100',
                 'birthdate' => 'required|date',

@@ -20,7 +20,7 @@ class TutorResolver
             'email' => $row[13],  // Columna 14 (Correo electrónico del tutor)
             'rol_parentesco' => 'Madre',
             // 'fila' => $fila,
-            'row' => $row[21]
+            'row' => $row['row']
         ];
     }
 }

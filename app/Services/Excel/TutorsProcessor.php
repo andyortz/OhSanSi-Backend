@@ -26,7 +26,7 @@ class TutorsProcessor
                 $filteredTutor = [
                     'names' => $tutor['names'],
                     'surnames' => $tutor['surnames'],
-                    'ci' => $tutor['ci'],
+                    'ci_person' => $tutor['ci'],
                     'phone' => $tutor['phone'],
                     'email' => $tutor['email'],
                     // 'rol_parentesco' => $tutor['rol_parentesco'],

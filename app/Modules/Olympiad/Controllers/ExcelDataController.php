@@ -1,7 +1,7 @@
 <?php
 
 // namespace App\Http\Controllers;
-namespace App\Modules\Olympist\Controllers;
+namespace App\Modules\Olympiad\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -12,9 +12,9 @@ use App\Services\ImportHelpers\OlympiadParticipantResolver;
 use App\Services\ImportHelpers\AreaResolver;
 use App\Services\ImportHelpers\TeacherResolver;
 use App\Services\Excel\TutorsProcessor;
-use App\Services\Excel\OlimpystsProcessor;
+use App\Services\Excel\OlympistsProcessor;
 use App\Services\Excel\TeachersProcessor;
-use App\Services\Excel\EnrollmentProcessor;
+use App\Services\Excel\InscripcionesProcessor;
 use App\Services\Registers\EnrollmentListService;
 
 class ExcelDataController
@@ -40,7 +40,7 @@ class ExcelDataController
 
         $answerFinal = [
             'tutors_saved' => [], 'tutors_omitted' => [], 'tutors_errors' => [],
-            'olimpysts_saved' => [], 'olimpysts_errors' => [],
+            'olympists_saved' => [], 'olympists_errors' => [],
             'teachers_saved' => [], 'teachers_errors' => [],
             'registrations_saved' => [], 'registrations_errors' => [],
         ];
@@ -63,7 +63,7 @@ class ExcelDataController
             // Guardar primero tutores, profesores y olimpistas
             TutorsProcessor::save($tutorsData, $answerFinal);
             TeachersProcessor::save($teachersData, $answerFinal);
-            OlimpystsProcessor::save($olimpystsData, $answerFinal);
+            OlympistsProcessor::save($olimpystsData, $answerFinal);
 
             //Verify if the responsible person is registered
             if (!Person::where('ci_person', $ci_responsible)->exists()) {
@@ -75,7 +75,7 @@ class ExcelDataController
 
             if (
                 !empty($answerFinal['tutors_errors']) ||
-                !empty($answerFinal['olimpysts_errors']) ||
+                !empty($answerFinal['olympists_errors']) ||
                 !empty($answerFinal['registrations_errors']) ||
                 !empty($answerFinal['teachers_errors']) 
             ) {

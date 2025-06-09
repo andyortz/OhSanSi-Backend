@@ -4,7 +4,7 @@ namespace App\Services\Excel;
 
 use App\Services\Registers\EnrollmentService;
 use Illuminate\Support\Facades\DB;
-use App\Modules\Oylimpist\Models\OlympicDetail;
+use App\Modules\Olympist\Models\OlympistDetail;
 use Illuminate\Support\Carbon;
 use App\Services\Registers\EnrollmentListService;
 use App\Services\ImportHelpers\LevelResolver;
@@ -71,7 +71,7 @@ class InscripcionesProcessor
                     );
                     // continue;
                 }
-                $detail = OlympicDetail::where('ci_olympic', $data['ci'])->first();
+                $detail = OlympistDetail::where('ci_olympic', $data['ci'])->first();
                 if ($detail == null) {
                     self::addRegistrationError(
                         $answerFinal,
@@ -89,9 +89,9 @@ class InscripcionesProcessor
                         ->first();
 
                     $areasregistered = DB::table('enrollment')
-                        ->join('olympic_detail', 'enrollment.id_olympic_detail', 'olympic_detail.id_olympic_detail')
+                        ->join('olympist_detail', 'enrollment.id_olympist_detail', 'olympist_detail.id_olympist_detail')
                         ->join('area_level_olympiad', 'enrollment.id_level', 'area_level_olympiad.id_level')
-                        ->where('olympic_detail.ci_olympic', $data['ci'])
+                        ->where('olympist_detail.ci_olympic', $data['ci'])
                         ->select('area_level_olympiad.id_area')
                         ->distinct()
                         ->count();
@@ -107,8 +107,8 @@ class InscripcionesProcessor
                     }
                     //Verificamos que no se inscriba a una mismo nivel
                     $existingLevel = DB::table('enrollment')
-                        ->join('olympic_detail', 'enrollment.id_olympic_detail', 'olympic_detail.id_olympic_detail')
-                        ->where('olympic_detail.ci_olympic', $data['ci'])
+                        ->join('olympist_detail', 'enrollment.id_olympist_detail', 'olympist_detail.id_olympist_detail')
+                        ->where('olympist_detail.ci_olympic', $data['ci'])
                         ->where('enrollment.id_level', $data['level'])
                         ->pluck('enrollment.id_level')
                         ->first();

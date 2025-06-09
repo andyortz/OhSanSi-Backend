@@ -8,8 +8,7 @@ use App\Modules\Olympist\Controllers\DepartamentController;
 use App\Modules\Olympist\Controllers\ProvinceController;
 use App\Modules\Olympiad\Controllers\EnrollmentController;
 use App\Modules\Olympiad\Controllers\EnrollmentListController;
-use App\Modules\Olympist\Controllers\ExcelImportController;
-use App\Modules\Olympist\Controllers\ExcelDataController;
+
 use App\Modules\Olympist\Controllers\SchoolController;
 use App\Modules\Olympist\Controllers\PaymentSlipController;
 use App\Modules\Olympist\Controllers\PaymentInquiryController;

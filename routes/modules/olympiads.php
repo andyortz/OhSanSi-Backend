@@ -6,6 +6,8 @@ use App\Modules\Olympiad\Controllers\OlympiadYearController;
 use App\Modules\Olympiad\Controllers\OlympiadRegistrationController;
 use App\Modules\Olympiad\Controllers\CategoryLevelController;
 use App\Modules\Olympiad\Controllers\GradeController;
+use App\Modules\Olympiad\Controllers\ExcelImportController;
+use App\Modules\Olympiad\Controllers\ExcelDataController;
 
 Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
     Route::post('/', [OlympiadController::class, 'store']);

@@ -20,7 +20,7 @@ class OlympiadParticipantResolver
         $school =$row[7];
 
         // Procesar la fecha de nacimiento
-        $birthdate = self::normalizeDate($row[3], $row[21]);
+        $birthdate = self::normalizeDate($row[3], $row['row']);
 
         return [
             'names' => $row[0],
@@ -33,7 +33,7 @@ class OlympiadParticipantResolver
             'school' => $school,
             'id_grade' => $row[8],
             'ci_tutor' => $row[11],
-            'row' => $row[21],
+            'row' => $row['row'],
         ];
     }
 

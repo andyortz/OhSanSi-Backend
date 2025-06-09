@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class OlympistService
 {
-    public function register(array $data): Persona
+    public function register(array $data): Person
     {
         return DB::transaction(function () use ($data) {
             // 1. Guardar al olimpista
@@ -17,7 +17,7 @@ class OlympistService
             $person->names = $data['names'];
             $person->surnames = $data['surnames'];
             $person->email = $data['email'];
-            $person->bithdate = $data['birthdate'];
+            $person->birthdate = $data['birthdate'];
             $person->phone = $data['phone'] ?? null;
             $person->save();
 
@@ -29,7 +29,7 @@ class OlympistService
 
             OlympistDetail::create([
                 'id_olympiad' => $data['id_olympiad'] ?? 1,
-                'id_olympic' => $person->ci_person,
+                'ci_olympic' => $person->ci_person,
                 'id_grade' => $data['id_grade'],
                 'id_school' => $data['school'],
                 'ci_legal_guardian' => $ciTutor

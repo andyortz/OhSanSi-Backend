@@ -6,7 +6,7 @@ namespace App\Services\Excel;
 
 
 use App\Modules\Olympist\Models\Person;
-use App\Http\Requests\StorePersonRequest;
+use App\Modules\Olympist\Requests\StorePersonRequest;
 use App\Services\Registers\PersonService;
 use Illuminate\Support\Facades\Validator;
 
@@ -50,7 +50,7 @@ class TeachersProcessor
                     $filteredTeacher = [
                         'names' => $teacher['names'],
                         'surnames' => $teacher['surnames'],
-                        'ci' => $teacher['ci'],
+                        'ci_person' => $teacher['ci'],
                         'phone' => $teacher['phone'],
                         'email' => $teacher['email'],
                         // 'rol_parentesco' => $teacher['rol_parentesco'],

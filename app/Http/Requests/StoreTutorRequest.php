@@ -25,7 +25,7 @@ class StoreTutorRequest extends FormRequest
         return [
             'names' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
             'surnames' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
-            'ci' => 'required|integer|unique:person,ci_person',
+            'ci_person' => 'required|integer|unique:person,ci_person',
             'phone' => 'nullable|string|max:20',
             'email' => 'required|email:rfc,dns|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|max:100',
         ];

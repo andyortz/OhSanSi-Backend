@@ -2,7 +2,7 @@
 
 namespace App\Services\Excel;
 
-use App\Modules\Olympist\Controllers\OlimpystController;
+use App\Modules\Olympist\Controllers\OlympistController;
 // use App\Http\Requests\StoreOlympiadParticipantRequest;
 use App\Modules\Olympist\Requests\StoreOlympiadParticipantRequest;
 use Illuminate\Support\Facades\Validator;
@@ -15,11 +15,11 @@ use Illuminate\Http\Request;
 
 class OlympistsProcessor
 {
-    public static function save(array $olimpystsData, array &$answerFinal)
+    public static function save(array $olympistsData, array &$answerFinal)
     {
         $controller = app(OlympistController::class);
 
-        foreach ($olimpystsData as $olimpyst) {
+        foreach ($olympistsData as $olimpyst) {
             try {
                 
                 //Validación tipo de dato cédula de identidad
@@ -27,7 +27,7 @@ class OlympistsProcessor
                     
                     //validación de cédula de identidad única
                     if(Person::where('ci_person', $olimpyst['ci'])->exists()){
-                        $answerFinal['olimpysts_saved'][] = [
+                        $answerFinal['olympists_saved'][] = [
                             'ci' => $olimpyst['ci'],
                             'message' => 'La cédula de identidad "'.$olimpyst['ci'].'" ya está registrada',
                             'row' => $olimpyst['row'] + 2
@@ -37,7 +37,7 @@ class OlympistsProcessor
                     
 
                     //Verify if the department exists in the database
-                    if(!Departament::where('departament_name', $olimpyst['departament'])->exists()){
+                    if(!Departament::where('departament_name', [strtoupper($olimpyst['departament'])])->exists()){
                         self::addOlympistError(
                             $answerFinal,
                             $olimpyst['ci'],
@@ -60,7 +60,7 @@ class OlympistsProcessor
                             $answerFinal,
                             $olimpyst['ci'],
                             'La unidad educativa "'.$olimpyst['unidad_educativa'].'" no es válida',
-                            $olimpyst['fila'] + 2
+                            $olimpyst['row'] + 2
                         );
                         $olimpyst['school'] = 1;
                     }else{
@@ -77,7 +77,7 @@ class OlympistsProcessor
                         );
                         $olimpyst['id_grade'] = null; // Asignar null si no es válido
                     } else {
-                        $grado = Grade::where('grade_name', $olimpyst['id_grade'])->first();
+                        $grade = Grade::where('grade_name', $olimpyst['id_grade'])->first();
                         $olimpyst['id_grade'] = $grade->id_grade;
                     }
                     
@@ -109,7 +109,7 @@ class OlympistsProcessor
                     }
 
                     if ($response->getStatusCode() === 201) {
-                        $answerFinal['olimpysts_saved'][] = $olimpyst;
+                        $answerFinal['olympists_saved'][] = $olimpyst;
                     } else {
                         $answerFinal['olympists_errors'][] = [
                             'ci' => $olimpyst['ci'],
@@ -129,7 +129,7 @@ class OlympistsProcessor
                 
                 
             } catch (\Throwable $e) {
-                $answerFinal['olympist_errors'][] = [
+                $answerFinal['olympists_errors'][] = [
                     'ci' => $olimpyst['ci'] ?? 'desconocido',
                     'message' => json_encode(['error' => $e->getMessage()]),
                     'row' => $olimpyst['row'] + 2
@@ -141,8 +141,8 @@ class OlympistsProcessor
     {
         // Buscar si ya hay un error con ese CI y fila
         $index = null;
-        foreach ($answerFinal['olympist_errors'] as $i => $error) {
-            if ($error['ci'] == $ci && $error['fila'] == $row) {
+        foreach ($answerFinal['olympists_errors'] as $i => $error) {
+            if ($error['ci'] == $ci && $error['row'] == $row) {
                 $index = $i;
                 break;
             }
@@ -150,23 +150,23 @@ class OlympistsProcessor
 
         if ($index !== null) {
             // Ya existe, agregar nuevo mensaje
-            if (!isset($answerFinal['olympist_errors'][$index]['message'])) {
-                $answerFinal['olympist_errors'][$index]['message'] = [];
-                if (isset($answerFinal['olympist_errors'][$index]['message'])) {
+            if (!isset($answerFinal['olympists_errors'][$index]['message'])) {
+                $answerFinal['olympists_errors'][$index]['message'] = [];
+                if (isset($answerFinal['olympists_errors'][$index]['message'])) {
                     // Migrar error plano si existe
-                    $answerFinal['olympist_errors'][$index]['message'][] = $answerFinal['olympist_errors'][$index]['message'];
-                    unset($answerFinal['olympist_errors'][$index]['message']);
+                    $answerFinal['olympists_errors'][$index]['message'][] = $answerFinal['olympists_errors'][$index]['message'];
+                    unset($answerFinal['olympists_errors'][$index]['message']);
                 }
-                if (isset($answerFinal['olympist_errors'][$index]['message'])) {
-                    $answerFinal['olympist_errors'][$index]['errores'][] = $answerFinal['olympist_errors'][$index]['message'];
-                    unset($answerFinal['olympist_errors'][$index]['message']);
+                if (isset($answerFinal['olympists_errors'][$index]['message'])) {
+                    $answerFinal['olympists_errors'][$index]['errores'][] = $answerFinal['olympists_errors'][$index]['message'];
+                    unset($answerFinal['olympists_errors'][$index]['message']);
                 }
             }
 
-            $answerFinal['olympist_errors'][$index]['message'][] = $message;
+            $answerFinal['olympists_errors'][$index]['message'][] = $message;
         } else {
             // No existe, crear nuevo
-            $answerFinal['olympist_errors'][] = [
+            $answerFinal['olympists_errors'][] = [
                 'ci' => $ci,
                 'message' => [$message],
                 'row' => $row
