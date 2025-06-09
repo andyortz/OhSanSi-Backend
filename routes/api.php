@@ -113,6 +113,8 @@ Route::get('/olimpiadas-actuales', [OlimpiadaGestionController::class, 'index2']
 Route::post('/olympiad-registration', [OlympiadRegistrationController::class, 'store']);
 Route::get('/olympiad-registration', [OlympiadRegistrationController::class, 'index']);
 Route::get('/olympiad/{gestion}', [OlimpiadaGestionController::class, 'show']);
+Route::get('olimpiadas/{id}/statistics', [OlimpiadaController::class, 'getStatistics']);
+
 
 //Olimpista Regitro
 //Route::post('/student-registration', [StudentRegistrationController::class, 'store']);

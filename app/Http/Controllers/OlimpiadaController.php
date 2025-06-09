@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Olimpiada;
 use App\Models\NivelAreaOlimpiada;
+use App\Models\ListaInscripcion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -142,6 +143,27 @@ class OlimpiadaController extends Controller
 
         return response()->json(array_values($agrupado), 200);
     }
+    public function getStatistics($id_olimpiada)
+    {
+        $total_areas = NivelAreaOlimpiada::where('id_olimpiada', $id_olimpiada)
+            ->distinct('id_area')
+            ->count('id_area');
+
+        $total_niveles = NivelAreaOlimpiada::where('id_olimpiada', $id_olimpiada)
+            ->distinct('id_nivel')
+            ->count('id_nivel');
+
+        $total_inscritos = ListaInscripcion::where('id_olimpiada', $id_olimpiada)
+        ->where('estado', 'PAGADO')
+        ->count();
+
+        return [
+            'total_areas' => $total_areas,
+            'total_niveles' => $total_niveles,
+            'total_inscritos' => $total_inscritos,
+        ];
+    }
+
 
 
 }
