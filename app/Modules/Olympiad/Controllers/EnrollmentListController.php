@@ -155,8 +155,8 @@ class EnrollmentListController extends Controller
 
     public function pendingPaymentLists($id)
     {
-        $responsiblePerson = Person::where('id_person', $id)
-            ->first(['names', 'surnames', 'id_person']);
+        $responsiblePerson = Person::where('ci_person', $id)
+            ->first(['names', 'surnames', 'ci_person']);
 
         if (!$responsiblePerson) {
             return response()->json([
@@ -178,7 +178,7 @@ class EnrollmentListController extends Controller
 
         if (empty($listIds)) {
             return response()->json([
-                'message' => 'No lists with pending payments found for this responsible person.',
+                'message' => 'No se ha encontrado ninguna lista de inscripción con pagos pendientes para este CI.',
                 'searched_id' => $id
             ], 404);
         }
