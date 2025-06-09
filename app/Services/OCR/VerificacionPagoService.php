@@ -17,7 +17,7 @@ class VerificacionPagoService
         if (!$comprobante || !$ci || !$monto || !$idListaSolicitado) {
             return [
                 'verificado' => false,
-                'mensaje' => 'Faltan datos para verificar: comprobante, documento, monto o id_lista.',
+                'mensaje' => 'Faltan datos para verificar: N° de comprobante y/o ci documento.',
                 'faltantes' => [
                     'comprobante' => $comprobante ? null : 'No proporcionado',
                     'documento' => $ci ? null : 'No proporcionado',
