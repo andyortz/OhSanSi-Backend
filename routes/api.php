@@ -64,10 +64,11 @@ Route::prefix('departaments')->middleware('throttle:100,1')->group(function () {
 
 Route::prefix('enrollments')->middleware('throttle:100,1')->group(function () {
     Route::get('/{ci}/{status}', [ListaInscripcionController::class, 'obtenerPorResponsable'])
-        ->where('estado', 'PENDIENTE|PAGADO|TODOS');
+    ->where('estado', 'PENDIENTE|PAGADO|TODOS');
     Route::post('/with-tutor', [InscripcionNivelesController::class, 'storeWithTutor']); //NO
     Route::get('/participants/{id}',[ListaInscripcionController::class, 'getById']);
     Route::get('/pending/{ci}', [ListaInscripcionController::class, 'listasPagoPendiente']);
+    Route::post('/one', [InscripcionNivelesController::class, 'storeOne']);
 });
 
 Route::prefix('receipts')->middleware('throttle:100,1')->group(function () {
@@ -119,6 +120,4 @@ Route::post('/tutors', [TutoresControllator::class, 'store']);
 Route::get('/tutors/{ci}',[TutoresControllator::class,'buscarPorCi']);
 Route::post('/payment/verification', [PagoValidacionController::class, 'verificar']);
 
-
-Route::get('/get-niveles-areas/{id}', [NivelCategoriaController::class, 'getByNivelesById']);
-Route::post('/inscripcionesOne', [InscripcionNivelesController::class, 'storeOne']);
+Route::get('/levels-areas/{id}', [NivelCategoriaController::class, 'getByNivelesById']);
