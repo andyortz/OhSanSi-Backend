@@ -16,7 +16,9 @@ class OlympiadController extends Controller
     public function upcoming()
     {
         $today = Carbon::now();
-        $olympiads = Olympiad::where('start_date', '>', $today)->get();
+        $olympiads = Olympiad::where('start_date', '<', $today)
+        ->where('end_date', '>', $today)
+        ->get();
         return response()->json($olympiads, 200);
     }
     public function getByYear($year)
