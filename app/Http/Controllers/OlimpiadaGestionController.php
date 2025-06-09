@@ -31,9 +31,9 @@ class OlimpiadaGestionController extends Controller
      */
     public function show($gestion)
     {
-        $olimpiada = Olimpiada::where('gestion', $gestion)->first();
+        $olimpiada = Olimpiada::where('gestion', $gestion)->get();
 
-        if (!$olimpiada) {
+        if ($olimpiada->isEmpty()) {
             return response()->json([
                 'message' => "No se encontró una olimpiada para la gestión $gestion."
             ], 404);
