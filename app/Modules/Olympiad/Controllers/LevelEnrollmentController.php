@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Modules\Olympiad\Controllers;
 //REVISAR!!!
 
 use App\Modules\Olympist\Models\EnrollmentList;

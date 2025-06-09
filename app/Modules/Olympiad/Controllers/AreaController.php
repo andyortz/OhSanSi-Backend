@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Modules\Olympiad\Controllers;
 
 use app\Modules\Olympiad\Models\Area;
 use app\Modules\Olympiad\Requests\StoreAreaRequest;

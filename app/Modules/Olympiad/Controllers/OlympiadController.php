@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Modules\Olympiad\Controllers;
 
 use App\Modules\Olympiad\Models\Olympiad;
 use Illuminate\Http\Request;

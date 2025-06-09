@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Modules\Olympist\Controllers;
 
 use App\Modules\Olympist\Models\EnrollmentList;
 use App\Modules\Olympiad\Models\AreaLevelOlympiad;

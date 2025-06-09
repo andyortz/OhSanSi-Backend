@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $birthdate
  * @property string|null $phone
  * 
- * @property Collection|OlympicDetail[] $olympic_details
+ * @property Collection|OlympistDetail[] $olympic_details
  * @property Collection|EnrollmentList[] $enrollment_lists
  * @property Collection|Enrollment[] $enrollments
  *
@@ -46,10 +46,10 @@ class Person extends Model
 		'birthdate',
 		'phone'
 	];
-
-	public function olympic_details()
+	//olympic_details
+	public function olympist_details()
 	{
-		return $this->hasMany(OlympicDetail::class, 'ci_legal_guardian');
+		return $this->hasMany(OlympistDetail::class, 'ci_legal_guardian');
 	}
 
 	public function enrollment_lists()
@@ -62,8 +62,9 @@ class Person extends Model
 		return $this->hasMany(Enrollment::class, 'ci_academic_advisor');
 	}
 
-	public function olympicDetail()
+	//olympicDetail
+	public function olympistDetail()
     {
-        return $this->hasOne(OlympicDetail::class, 'ci_olympic', 'ci_person');
+        return $this->hasOne(OlympistDetail::class, 'ci_olympic', 'ci_person');
     }
 }

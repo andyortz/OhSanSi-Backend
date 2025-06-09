@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Modules\Olympist\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\OCR\ConsultaPagoService;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Modules\Olympist\Controllers;
 
 use App\Models\Persona;
 use App\Modules\Models\Olympist\Person;
