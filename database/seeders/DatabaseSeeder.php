@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             PersonasSeeder::class,
             NivelesAreasOlimpiadasSeeder::class,
             DetalleOlimpistaSeeder::class,
+            UserSeeder::class,
             //InscripcionSeeder::class,
             //PagoSeeder::class,
         ]);
