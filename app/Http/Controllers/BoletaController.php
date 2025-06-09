@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Services\Ocr\OcrService;
+use App\Services\OCR\OcrService;
 use App\Services\OCR\VerificacionPagoService;
 use Symfony\Component\HttpFoundation\Response;
-use App\Services\Ocr\OcrTextoParser;
+use App\Services\OCR\OcrTextoParser;
 use Illuminate\Support\Facades\Log;
 
 class BoletaController extends Controller

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Ocr;
+namespace App\Services\OCR;
 
 class OcrExtractors
 {

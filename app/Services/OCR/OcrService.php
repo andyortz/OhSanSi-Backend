@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Ocr;
+namespace App\Services\OCR;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
