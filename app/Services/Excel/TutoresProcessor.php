@@ -13,6 +13,14 @@ class TutoresProcessor
     {
         foreach ($tutorsData as $tutor) {
             try {
+                if(!is_numeric($tutor['ci'])){
+                    $resultado['tutores_errores'][] = [
+                        'ci' => $tutor['ci'],
+                        'message' => 'El campo "ci" debe ser numérico',
+                        'fila' => $tutor['fila'] + 2
+                    ];
+                    continue;
+                }
                 if (Persona::where('ci_persona', $tutor['ci'])->exists()) {
                     $resultado['tutores_omitidos'][] = [
                         'ci' => $tutor['ci'],
