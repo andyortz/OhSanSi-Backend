@@ -2,6 +2,7 @@
 
 namespace App\Modules\Olympiad\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Modules\Olympiad\Models\Olympiad;
 use Illuminate\Http\Request;
 

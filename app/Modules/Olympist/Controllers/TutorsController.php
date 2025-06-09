@@ -2,6 +2,7 @@
 
 namespace App\Modules\Olympist\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Persona;
 use App\Modules\Models\Olympist\Person;
 use App\Services\Registers\PersonService;

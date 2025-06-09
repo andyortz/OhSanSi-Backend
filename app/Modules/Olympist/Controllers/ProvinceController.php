@@ -2,6 +2,7 @@
 
 namespace App\Modules\Olympist\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Modules\Olympist\Models\Province;
 
 class ProvinceController extends Controller
