@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Modules\Olympiad\Controllers;
+//REVISAR!!!
 
 use App\Http\Controllers\Controller;
 use App\Modules\Olympist\Models\EnrollmentList;
@@ -160,7 +161,7 @@ class LevelEnrollmentController extends Controller
         try {
             DB::beginTransaction();
             $olympist = OlympistDetail::firstOrCreate(
-                ['ci_olympist' => $request->ci]
+                ['ci_olympic' => $request->ci]
             );
             // Crear inscripciones para cada nivel
             $list = EnrollmentList::create([

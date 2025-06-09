@@ -4,10 +4,15 @@
  * Created by Reliese Model.
  */
 
-namespace App\Modules\Olympiad\Models;
+namespace App\Modules\Olympist\Models;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use App\Modules\Olympiad\Models\Olympiad;
+use App\Modules\Olympiad\Models\Grade;
+use App\Modules\Olympiad\Models\Enrollment;
+use App\Modules\Olympist\Models\Person;
+
 
 /**
  * Class OlympicDetail
@@ -35,7 +40,7 @@ class OlympistDetail extends Model
 
 	protected $casts = [
 		'id_olympiad' => 'int',
-		'ci_olympist' => 'int',
+		'ci_olympic' => 'int',
 		'id_grade' => 'int',
 		'id_school' => 'int',
 		'ci_legal_guardian' => 'int'
@@ -43,7 +48,7 @@ class OlympistDetail extends Model
 
 	protected $fillable = [
 		'id_olympiad',
-		'ci_olympist',
+		'ci_olympic',
 		'id_grade',
 		'id_school',
 		'ci_legal_guardian'
@@ -76,7 +81,7 @@ class OlympistDetail extends Model
 
 	public function olympist()
     {
-        return $this->belongsTo(Person::class, 'ci_olympist', 'ci_person');
+        return $this->belongsTo(Person::class, 'ci_olympic', 'ci_person');
     }
 
 }

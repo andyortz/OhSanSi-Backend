@@ -12,6 +12,8 @@ use App\Repositories\OlympistRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
+
 
 class OlympistController
 {
@@ -27,7 +29,7 @@ class OlympistController
     public function enrollments($ci)
     {
         try {
-            $olympistDetail = OlympistDetail::where('ci_olympist', $ci)->first();
+            $olympistDetail = OlympistDetail::where('ci_olympic', $ci)->first();
             if (!$olympistDetail) {
                 return response()->json([
                     'success' => false,
@@ -106,7 +108,7 @@ class OlympistController
                 'email' => 'required|email|max:100',
                 'birthdate' => 'required|date',
                 'school' => 'required|integer',
-                'id_grade' => 'required|exists:gradE,id_gradE', 
+                'id_grade' => 'required|exists:grade,id_grade', 
                 'phone' => 'nullable|string|max:8',
                 'ci_tutor' => 'required',
             ]);
@@ -135,7 +137,7 @@ class OlympistController
 
     public function getByCedula($ID): JsonResponse
     {
-        $person = Person::with(['olympicDetail.grade', 'olympicDetail.school.province.departament'])
+        $person = Person::with(['olympistDetail.grade', 'olympistDetail.school.province.departament'])
             ->where('ci_person', $ID)
             ->first();
 
@@ -144,18 +146,18 @@ class OlympistController
         }
 
         $response = [
-            'ci_person' => $person->ci_persona,
-            'names' => $person->nombres,
-            'surnames' => $person->apellidos,
-            'birthdate' => $person->fecha_nacimiento,
-            'email' => $person->correo_electronico,
-            'phone' => $person->celular,
-            'ci_tutor_guardia' => $person->detalleOlimpista->ci_tutor_legal ?? null,
-            'id_departament' => $person->detalleOlimpista->colegio->provincia->id_departamento ?? null,
-            'id_province' => $person->detalleOlimpista->colegio->id_provincia ?? null,
-            'id_school' => $person->detalleOlimpista->unidad_educativa ?? null,
-            'id_grade' => $person->detalleOlimpista->id_grado ?? null,
-            'id_olympiad' => $person->detalleOlimpista->id_olimpiada ?? null,
+            'ci_person' => $person->ci_person,
+            'names' => $person->names,
+            'surnames' => $person->surnames,
+            'birthdate' => $person->birthdate,
+            'email' => $person->email,
+            'phone' => $person->phone,
+            'ci_legal_guardian' => $person->olympistDetail->ci_legal_guardian ?? null,
+            'id_departament' => $person->olympistDetail->school->province->id_departament ?? null,
+            'id_province' => $person->olympistDetail->school->id_province ?? null,
+            'id_school' => $person->olympistDetail->id_school ?? null,
+            'id_grade' => $person->olympistDetail->id_grade ?? null,
+            'id_olympiad' => $person->olympistDetail->id_olympiad ?? null,
         ];
 
         return response()->json($response);

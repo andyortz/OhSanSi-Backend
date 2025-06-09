@@ -2,7 +2,7 @@
 
 namespace App\Modules\Olympiad\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Modules\Olympiad\Controllers\Controller;
 use App\Modules\Olympiad\Models\Grade;
 use Illuminate\Http\Request;
 

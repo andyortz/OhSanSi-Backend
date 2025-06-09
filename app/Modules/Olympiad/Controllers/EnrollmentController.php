@@ -19,7 +19,7 @@ class EnrollmentController extends Controller
     {
         try {
             // 1. Buscar el detalle olimpista
-            $detail = OlympistDetail::where('ci_olympist', $ci)->first();
+            $detail = OlympistDetail::where('ci_olympic', $ci)->first();
 
             if (!$detail) {
                 return response()->json([
@@ -27,7 +27,7 @@ class EnrollmentController extends Controller
                     'message' => 'Olympist not found'
                 ], 404);
             }
-            $currentOlympiad = Olimpiad::whereDate('start_date', '<=', now())
+            $currentOlympiad = Olympiad::whereDate('start_date', '<=', now())
                 ->whereDate('end_date', '>=', now())
                 ->first();
             if (!$currentOlympiad) {
