@@ -5,7 +5,7 @@ namespace App\Modules\Olympiad\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Olympiad\Models\Olympiad;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Carbon;
 class OlympiadController extends Controller
 {
     public function index()
@@ -74,7 +74,7 @@ class OlympiadController extends Controller
     {
         $today = Carbon::now();
         $olympiad = Olympiad::where('start_date', '<=', $today)
-            ->where('fecha_fin', '>=', $today)
+            ->where('end_date', '>=', $today)
             ->first();
 
         if (!$olympiad) {
