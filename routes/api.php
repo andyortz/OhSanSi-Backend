@@ -96,11 +96,11 @@ Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
 });
 Route::prefix('excel')->middleware('throttle:100,1')->group(function () {
     Route::post('/data', [ExcelImportController::class, 'import']);
-    Route::post('/registration', [ExcelDataController::class, 'cleanDates']);
+    Route::post('/registration', [DatosExcelController::class, 'cleanDates']);
 });
 Route::prefix('levels')->middleware('throttle:100,1')->group(function () {
     Route::get('/', [NivelCategoriaController::class, 'index3']);
-    Route::post('/', [NivelCategoriaController::class, 'store']);
+    Route::post('/', [NivelCategoriaController::class, 'newCategoria']);
     Route::get('/areas/{id}', [NivelCategoriaController::class, 'nivelesPorArea']);    
     Route::get('/{id}', [NivelCategoriaController::class, 'index4']);
 });
