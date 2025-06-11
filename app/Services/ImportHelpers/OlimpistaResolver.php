@@ -61,13 +61,13 @@ class OlimpistaResolver
         'fila' => $fila + 2
     ];
 
-    return "0000-00-00"; // Valor por defecto para no romper la lógica
+    return "00-00-0000"; // Valor por defecto para no romper la lógica
 }
 
 
     private static function excelDateToDateString(int $excelDate): string
     {
-        $carbonDate = Carbon::createFromFormat('Y-m-d', '1900-01-01')->addDays($excelDate - 2);
-        return $carbonDate->format('Y-m-d');
+        $carbonDate = Carbon::createFromFormat('d-m-Y', '01-01-1900')->addDays($excelDate - 2);
+        return $carbonDate->format('d-m-Y');
     }
 }

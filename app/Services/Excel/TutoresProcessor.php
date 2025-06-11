@@ -13,23 +13,6 @@ class TutoresProcessor
     {
         foreach ($tutorsData as $tutor) {
             try {
-                if(!is_numeric($tutor['ci'])){
-                    $resultado['tutores_errores'][] = [
-                        'ci' => $tutor['ci'],
-                        'message' => 'El campo "ci" debe ser numérico',
-                        'fila' => $tutor['fila'] + 2
-                    ];
-                    continue;
-                }
-                if (Persona::where('ci_persona', $tutor['ci'])->exists()) {
-                    $resultado['tutores_omitidos'][] = [
-                        'ci' => $tutor['ci'],
-                        'message' => 'El tutor ya se encuentra registrado en el sistema',
-                        'fila'=>$tutor['fila']+2
-                    ];
-                    continue;
-                }
-
                 $filteredTutor = [
                     'nombres' => $tutor['nombres'],
                     'apellidos' => $tutor['apellidos'],
@@ -38,7 +21,6 @@ class TutoresProcessor
                     'correo_electronico' => $tutor['correo_electronico'],
                     'rol_parentesco' => $tutor['rol_parentesco'],
                 ];
-
                 // Validación manual utilizando las reglas y mensajes del FormRequest
                 $formRequest = new StoreTutorRequest();
                 $validator = Validator::make(
@@ -46,12 +28,22 @@ class TutoresProcessor
                     $formRequest->rules(),
                     $formRequest->messages()
                 );
+                
 
+                
+                // Validamos si existe errores, sino continuamos a ver si el tutor ya existe
                 if ($validator->fails()) {
                     $resultado['tutores_errores'][] = [
                         'ci' => $tutor['ci'] ?? 'Desconocido',
                         'message' => $validator->errors()->all(),
                         'fila' => $tutor['fila'] + 2
+                    ];
+                    continue;
+                }else if (Persona::where('ci_persona', $tutor['ci'])->exists()) {
+                    $resultado['tutores_omitidos'][] = [
+                        'ci' => $tutor['ci'],
+                        'message' => 'El tutor ya se encuentra registrado en el sistema',
+                        'fila'=>$tutor['fila']+2
                     ];
                     continue;
                 }

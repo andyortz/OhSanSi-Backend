@@ -49,8 +49,9 @@ class StorePersonaRequest extends FormRequest
             'celular.max' => 'El campo "celular" no puede exceder los 20 caracteres.',
             
             'correo_electronico.required' => 'El campo "correo electrónico" es obligatorio.',
-            'correo_electronico.regex' => 'El campo correo electrónico no tiene un formato válido.',
+            'correo_electronico.regex' => 'El campo "correo electrónico" no tiene un formato válido.',
             'correo_electronico.max' => 'El campo "correo electrónico" no puede exceder los 100 caracteres.',
+            'correo_electronico.email' => 'El campo "correo electrónico" debe ser una dirección de correo válida.',
         ];
     }
 }

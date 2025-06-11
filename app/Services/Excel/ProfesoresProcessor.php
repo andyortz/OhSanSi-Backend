@@ -37,15 +37,6 @@ class ProfesoresProcessor
                     );
                     continue;
                 }else if(count($llenos) == 5){
-                    if (is_numeric($profesor['ci']) && Persona::where('ci_persona', $profesor['ci'])->exists()) {
-                        $resultado['profesores_omitidos'][] = [
-                            'ci' => $profesor['ci'],
-                            'message' => 'El profesor ya se encuentra registrado en el sistema',
-                            'fila'=>$profesor['fila']+2
-                        ];
-                        continue;
-                    }
-                    
                     $filteredProfesor = [
                         'nombres' => $profesor['nombres'],
                         'apellidos' => $profesor['apellidos'],
@@ -54,13 +45,20 @@ class ProfesoresProcessor
                         'correo_electronico' => $profesor['correo_electronico'],
                         'rol_parentesco' => $profesor['rol_parentesco'],
                     ];
-
                     $formRequest = new StorePersonaRequest();
                     $validator = Validator::make(
                         $filteredProfesor,
                         $formRequest->rules(),
                         $formRequest->messages()
                     );
+                    // if (is_numeric($profesor['ci']) && Persona::where('ci_persona', $profesor['ci'])->exists()) {
+                    //     $resultado['profesores_omitidos'][] = [
+                    //         'ci' => $profesor['ci'],
+                    //         'message' => 'El profesor ya se encuentra registrado en el sistema',
+                    //         'fila'=>$profesor['fila']+2
+                    //     ];
+                    //     continue;
+                    // }
                     
                     if ($validator->fails()) {
                         foreach($validator -> errors()->all() as $mensaje){
@@ -71,6 +69,13 @@ class ProfesoresProcessor
                                 $profesor['fila'] + 2
                             );
                         }
+                        continue;
+                    }else if(Persona::where('ci_persona', $profesor['ci'])->exists()) {
+                        $resultado['profesores_omitidos'][] = [
+                            'ci' => $profesor['ci'],
+                            'message' => 'El profesor ya se encuentra registrado en el sistema',
+                            'fila'=>$profesor['fila']+2
+                        ];
                         continue;
                     }
                     // Registro si la validación fue exitosa
