@@ -16,27 +16,27 @@ class DataImport implements ToCollection, WithHeadingRow
     public function collection(Collection $collection)
     {
         $expected = [
-            'nombres' => ['nombre', 'nombres', 'nombre_s', 'nombre__s'],
-            'apellidos' => ['apellido', 'apellidos', 'apellido_s', 'apellido__s'],
-            'ci_olimpista' => ['ci', 'ci_olimpista'],
-            'fecha_de_nacimiento' => ['fecha_de_nacimiento', 'fecha_de_nacimiento', 'fecha_nacimiento'],
-            'correo_electronico' => ['correo', 'correo_electronico', 'email'],
-            'departamento' => ['departamento'],
-            'provincia' => ['provincia'],
-            'unidad_educativa' => ['unidad_educativa', 'colegio'],
-            'grado' => ['grado'],
-            'nombre_tutor' => ['nombre_tutor_legal', 'nombre_s_tutor_legal', 'nombre_tutor', 'nombre__s_tutor', 'nombre_tutor_legal'],
-            'apellido_tutor' => ['apellido_tutor_legal', 'apellido_s_tutor_legal', 'apellido_tutor', 'apellido__s_tutor', 'apellido_tutor_legal'],
-            'ci_tutor' => ['ci_tutor_legal', 'ci_tutor'],
-            'celular_tutor' => ['celular', 'celular_tutor_legal', 'celular_tutor', 'telefono_tutor'],
-            'correo_tutor' => ['correo_electronico_tutor_legal', 'correo_tutor_legal', 'correo_tutor', 'email_tutor'],
-            'area' => ['area'],
-            'nivel' => ['nivel', 'nivel_categoria'],
-            'nombre_profesor' => ['nombre(s)_profesor','nombre_profesor', 'nombre_docente'],
-            'apellido_profesor' => ['apellido(s)_profesor','apellido_profesor', 'apellido_docente'],
-            'ci_profesor' => ['ci_profesor'],
-            'celular_profesor' => ['celular_profesor', 'telefono_profesor'],
-            'correo_profesor' => ['correo_electronico_profesor','correo_profesor', 'email_profesor']
+            'Nombres' => ['nombre', 'nombres'],
+            'Apellidos' => ['apellido', 'apellidos'],
+            'CI de olimpista' => ['Ci', 'ci_olimpista'],
+            'Fecha de Nacimiento' => ['fecha_de_nacimiento', 'fecha_nacimiento'],
+            'Correo electronico' => ['correo', 'correo_electronico', 'email'],
+            'Departamento' => ['departamento'],
+            'Provincia' => ['provincia'],
+            'Unidad Educativa' => ['unidad_educativa', 'colegio'],
+            'Grado' => ['grado'],
+            'Nombre de tutor' => ['nombre_tutor', 'nombre_tutor_legal'],
+            'Apellido de tutor' => ['apellido_tutor_legal', 'apellido_tutor'],
+            'CI del tutor' => ['ci_tutor_legal', 'ci_tutor'],
+            'Celular del tutor' => ['celular', 'celular_tutor_legal', 'celular_tutor', 'telefono_tutor'],
+            'Correo del tutor' => ['correo_electronico_tutor_legal', 'correo_tutor_legal', 'correo_tutor', 'email_tutor'],
+            'Area' => ['area'],
+            'Nivel' => ['nivel', 'nivel_categoria'],
+            'Nombre del profesor' => ['nombre(s)_profesor','nombre_profesor', 'nombre_docente'],
+            'Apellido del profesor' => ['apellido(s)_profesor','apellido_profesor', 'apellido_docente'],
+            'CI del profesor' => ['ci_profesor'],
+            'Celular del profesor' => ['celular_profesor', 'telefono_profesor'],
+            'Correo del profesor' => ['correo_electronico_profesor','correo_profesor', 'email_profesor']
         ];
         
         
@@ -62,11 +62,11 @@ class DataImport implements ToCollection, WithHeadingRow
                     break;
                 }
             }
-    
+            $clean = fn($text) => Str::title(str_replace('_', ' ', $text));
             if (!$matched) {
                 throw ValidationException::withMessages([
-                    'formato' => ["Falta una columna válida para '$key'. Encabezados aceptados: " . implode(', ', $aliases)],
-                    'recibidos' => $actualHeaders
+                    'formato' => ["Falta una columna válida para '$key'. Encabezados aceptados: " . implode(', ', array_map($clean, $aliases))],
+                    'recibidos' => array_map($clean, $actualHeaders)
                 ]);
             }
         }
