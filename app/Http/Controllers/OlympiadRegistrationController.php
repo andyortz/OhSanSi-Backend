@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Olimpiada;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class OlympiadRegistrationController extends Controller
 {
@@ -22,8 +23,10 @@ class OlympiadRegistrationController extends Controller
                 'fecha_inicio' => 'required|date',
                 'fecha_fin' => 'required|date',
                 'max_categorias_olimpista' => 'required|integer',
-                'nombre_olimpiada' => 'required|string|max:255', // este campo existe en la tabla
+                'nombre_olimpiada' => 'required|string|max:255',
             ]);
+
+            $validated['creado_en'] = \Carbon\Carbon::now('UTC');
 
             $olimpiada = Olimpiada::create($validated);
 
@@ -39,4 +42,5 @@ class OlympiadRegistrationController extends Controller
             ], 500);
         }
     }
+
 }
