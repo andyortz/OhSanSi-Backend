@@ -126,15 +126,4 @@ class DatosExcelController extends Controller
             ], 500);
         }
     }
-
-    private function columnaLetra($index)
-    {
-        $letra = '';
-        while ($index >= 0) {
-            $letra = chr($index % 26 + 65) . $letra;
-            $index = intdiv($index, 26) - 1;
-        }
-        return $letra;
-    }
-
 }
