@@ -53,6 +53,7 @@ class StoreTutorRequest extends FormRequest
             'correo_electronico.required' => 'El campo correo electrónico de tutor es obligatorio.',
             'correo_electronico.max' => 'El campo correo electrónico de tutor no puede exceder los 100 caracteres.',
             'correo_electronico.regex' => 'El campo correo electrónico de tutor no tiene un formato válido.',
+            'correo_electronico.email' => 'El campo correo electrónico de tutor debe ser una dirección de correo válida.',
         ];
     }
 }
