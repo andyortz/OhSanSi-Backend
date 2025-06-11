@@ -30,7 +30,7 @@ class InscripcionesImport
 
             // Convertir fecha si viene como número serial
             if (isset($rowArray[3]) && is_numeric($rowArray[3])) {
-                $rowArray[3] = Date::excelToDateTimeObject($rowArray[3])->format('Y-m-d');
+                $rowArray[3] = Date::excelToDateTimeObject($rowArray[3])->format('d-m-Y');
             }
 
             $this->rawRows[] = $rowArray;

@@ -24,7 +24,7 @@ class StorePersonaRequest extends FormRequest
             'nombres' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
             'apellidos' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
             'ci' => 'required|integer|unique:persona,ci_persona',
-            'celular' => 'nullable|string|max:20',
+            'celular' => 'nullable|integer',
             'correo_electronico' => 'required|email:rfc,dns|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|max:100',
         ];
     }
@@ -45,8 +45,7 @@ class StorePersonaRequest extends FormRequest
             'ci.integer' => 'El campo "CI" debe ser un número entero.',
             'ci.unique' => 'El "CI" ya está registrado en la base de datos.',
             
-            'celular.string' => 'El campo "celular" debe ser un texto.',
-            'celular.max' => 'El campo "celular" no puede exceder los 20 caracteres.',
+            'celular.integer' => 'El campo "celular" debe ser un número entero.',
             
             'correo_electronico.required' => 'El campo "correo electrónico" es obligatorio.',
             'correo_electronico.regex' => 'El campo "correo electrónico" no tiene un formato válido.',

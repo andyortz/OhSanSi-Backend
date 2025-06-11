@@ -26,7 +26,7 @@ class StoreTutorRequest extends FormRequest
             'nombres' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
             'apellidos' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
             'ci' => 'required|integer|unique:persona,ci_persona',
-            'celular' => 'nullable|string|max:20',
+            'celular' => 'nullable|integer',
             'correo_electronico' => 'required|email:rfc,dns|max:100',
         ];
     }
@@ -48,7 +48,6 @@ class StoreTutorRequest extends FormRequest
             'ci.unique' => 'El CI de tutor ya está registrado en la base de datos.',
             
             'celular.string' => 'El campo celular de tutor debe ser un texto.',
-            'celular.max' => 'El campo celular de tutor no puede exceder los 20 caracteres.',
             
             'correo_electronico.required' => 'El campo correo electrónico de tutor es obligatorio.',
             'correo_electronico.max' => 'El campo correo electrónico de tutor no puede exceder los 100 caracteres.',
