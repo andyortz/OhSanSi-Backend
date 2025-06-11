@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Olimpiada;
 use App\Models\NivelAreaOlimpiada;
 use App\Models\ListaInscripcion;
+use App\Models\Inscripcion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -143,6 +144,7 @@ class OlimpiadaController extends Controller
 
         return response()->json(array_values($agrupado), 200);
     }
+
     public function getStatistics($id_olimpiada)
     {
         $total_areas = NivelAreaOlimpiada::where('id_olimpiada', $id_olimpiada)
@@ -153,9 +155,16 @@ class OlimpiadaController extends Controller
             ->distinct('id_nivel')
             ->count('id_nivel');
 
-        $total_inscritos = ListaInscripcion::where('id_olimpiada', $id_olimpiada)
-        ->where('estado', 'PAGADO')
-        ->count();
+        
+        // PASO 1: Buscar los id_lista con estado 'PAGADO'
+        $listas_pagadas = ListaInscripcion::where('id_olimpiada', $id_olimpiada)
+            ->where('estado', 'PAGADO')
+            ->pluck('id_lista');
+
+        // PASO 2: Cuenta los id_detalle_olimpista únicos en inscripcion para esas listas
+        $total_inscritos = Inscripcion::whereIn('id_lista', $listas_pagadas)
+            ->distinct('id_detalle_olimpista')
+            ->count('id_detalle_olimpista');
 
         return [
             'total_areas' => $total_areas,
