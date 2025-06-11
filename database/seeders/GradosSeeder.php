@@ -10,18 +10,18 @@ class GradosSeeder extends Seeder
     public function run(): void
     {
         $grados = [
-            ['nombre_grado' => '1ro Primaria'],
-            ['nombre_grado' => '2do Primaria'],
-            ['nombre_grado' => '3ro Primaria'],
-            ['nombre_grado' => '4to Primaria'],
-            ['nombre_grado' => '5to Primaria'],
-            ['nombre_grado' => '6to Primaria'],
-            ['nombre_grado' => '1ro Secundaria'],
-            ['nombre_grado' => '2do Secundaria'],
-            ['nombre_grado' => '3ro Secundaria'],
-            ['nombre_grado' => '4to Secundaria'],
-            ['nombre_grado' => '5to Secundaria'],
-            ['nombre_grado' => '6to Secundaria'],
+            ['nombre_grado' => '1RO PRIMARIA'],
+            ['nombre_grado' => '2DO PRIMARIA'],
+            ['nombre_grado' => '3RO PRIMARIA'],
+            ['nombre_grado' => '4TO PRIMARIA'],
+            ['nombre_grado' => '5TO PRIMARIA'],
+            ['nombre_grado' => '6TO PRIMARIA'],
+            ['nombre_grado' => '1RO SECUNDARIA'],
+            ['nombre_grado' => '2DO SECUNDARIA'],
+            ['nombre_grado' => '3RO SECUNDARIA'],
+            ['nombre_grado' => '4TO SECUNDARIA'],
+            ['nombre_grado' => '5TO SECUNDARIA'],
+            ['nombre_grado' => '6TO SECUNDARIA'],
         ];
 
         DB::table('grado')->insert($grados);

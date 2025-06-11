@@ -13,17 +13,17 @@ class ProvinciasSeeder extends Seeder
 
         $provincias = [
             // CHUQUISACA
-            ['nombre_provincia' => 'Belisario Boeto', 'id_departamento' => $departamentos['Chuquisaca']],
-            ['nombre_provincia' => 'Hernando Siles', 'id_departamento' => $departamentos['Chuquisaca']],
-            ['nombre_provincia' => 'Jaime Zudáñez', 'id_departamento' => $departamentos['Chuquisaca']],
-            ['nombre_provincia' => 'Juana Azurduy de Padilla', 'id_departamento' => $departamentos['Chuquisaca']],
-            ['nombre_provincia' => 'Luis Calvo', 'id_departamento' => $departamentos['Chuquisaca']],
-            ['nombre_provincia' => 'Nor Cinti', 'id_departamento' => $departamentos['Chuquisaca']],
-            ['nombre_provincia' => 'Oropeza', 'id_departamento' => $departamentos['Chuquisaca']],
-            ['nombre_provincia' => 'Sud Cinti', 'id_departamento' => $departamentos['Chuquisaca']],
-            ['nombre_provincia' => 'Tomina', 'id_departamento' => $departamentos['Chuquisaca']],
-            ['nombre_provincia' => 'Yamparáez', 'id_departamento' => $departamentos['Chuquisaca']],
-            ['nombre_provincia' => 'Otro', 'id_departamento' => $departamentos['Chuquisaca']],
+            ['nombre_provincia' => 'Belisario Boeto', 'id_departamento' => $departamentos['CHUQUISACA']],
+            ['nombre_provincia' => 'Hernando Siles', 'id_departamento' => $departamentos['CHUQUISACA']],
+            ['nombre_provincia' => 'Jaime Zudáñez', 'id_departamento' => $departamentos['CHUQUISACA']],
+            ['nombre_provincia' => 'Juana Azurduy de Padilla', 'id_departamento' => $departamentos['CHUQUISACA']],
+            ['nombre_provincia' => 'Luis Calvo', 'id_departamento' => $departamentos['CHUQUISACA']],
+            ['nombre_provincia' => 'Nor Cinti', 'id_departamento' => $departamentos['CHUQUISACA']],
+            ['nombre_provincia' => 'Oropeza', 'id_departamento' => $departamentos['CHUQUISACA']],
+            ['nombre_provincia' => 'Sud Cinti', 'id_departamento' => $departamentos['CHUQUISACA']],
+            ['nombre_provincia' => 'Tomina', 'id_departamento' => $departamentos['CHUQUISACA']],
+            ['nombre_provincia' => 'Yamparáez', 'id_departamento' => $departamentos['CHUQUISACA']],
+            ['nombre_provincia' => 'Otro', 'id_departamento' => $departamentos['CHUQUISACA']],
             // COCHABAMBA
             ['nombre_provincia' => 'Arani', 'id_departamento' => $departamentos['Cochabamba']],
             ['nombre_provincia' => 'Arque', 'id_departamento' => $departamentos['Cochabamba']],
