@@ -25,8 +25,8 @@ class DataImport implements ToCollection, WithHeadingRow
             'Provincia' => ['provincia'],
             'Unidad Educativa' => ['unidad_educativa', 'colegio'],
             'Grado' => ['grado'],
-            'Nombre de tutor' => ['nombre_tutor', 'nombre_tutor_legal'],
-            'Apellido de tutor' => ['apellido_tutor_legal', 'apellido_tutor'],
+            'Nombre de tutor' => ['nombres_tutor','nombre_tutor', 'nombres_tutor_legal'],
+            'Apellido de tutor' => ['apellidos_tutor_legal', 'apellidos_tutor'],
             'CI del tutor' => ['ci_tutor_legal', 'ci_tutor'],
             'Celular del tutor' => ['celular', 'celular_tutor_legal', 'celular_tutor', 'telefono_tutor'],
             'Correo del tutor' => ['correo_electronico_tutor_legal', 'correo_tutor_legal', 'correo_tutor', 'email_tutor'],
@@ -52,7 +52,7 @@ class DataImport implements ToCollection, WithHeadingRow
 
     
         $normalized = fn($value) => trim(strtolower(Str::slug($value, ' ')));
-    
+        $clean = fn($text) => Str::title(str_replace('_', ' ', $text));
         foreach ($expected as $key => $aliases) {
             $matched = false;
     
@@ -62,7 +62,7 @@ class DataImport implements ToCollection, WithHeadingRow
                     break;
                 }
             }
-            $clean = fn($text) => Str::title(str_replace('_', ' ', $text));
+            
             if (!$matched) {
                 throw ValidationException::withMessages([
                     'formato' => ["Falta una columna válida para '$key'. Encabezados aceptados: " . implode(', ', array_map($clean, $aliases))],
