@@ -74,7 +74,7 @@ Route::prefix('enrollments')->middleware('throttle:100,1')->group(function () {
 
 Route::prefix('receipts')->middleware('throttle:100,1')->group(function () {
     Route::get('/individual/{id}', [ListaInscripcionController::class, 'individual']);    
-    Route::get('/group/{id}', [ListaInscripcionController::class, 'groupal']);
+    Route::get('/group/{id}', [ListaInscripcionController::class, 'grupal']);
 });
 
 Route::prefix('schools')->middleware('throttle:100,1')->group(function () {
