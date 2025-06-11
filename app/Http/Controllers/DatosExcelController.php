@@ -73,30 +73,7 @@ class DatosExcelController extends Controller
 
         foreach ($datos as $index => $row) {
             if (empty(array_filter($row, fn($value) => trim($value) !== ''))) continue;
-            //departamento
-            // $departamento = Departamento::where('nombre_departamento', $row[5])->first();
-            // if (!$departamento){$this->errorFila('Departamento', $row[5], $index, $resultadoFinal); continue;}
-            // $row[5] = $departamento->id_departamento;
-
-            //Provincia
-            // $provincia = ProvinciaResolver::resolve($row[6], $row[5]);
-            // if (!$provincia){$this->errorFila('Provincia', $row[6], $index, $resultadoFinal); continue;}
-            // $row[6] = $provincia;}
-
-            //Colegio
-            // $colegio = ColegioResolver::resolve($row[6]);
-            // if (!$colegio){$this->errorFila('Unidad educativa', $row[7], $index, $resultadoFinal);}
-            // $row[7] = $colegio;
-
-            //Grado
-            // $grado = GradoResolver::resolve($row[8]);
-            // if (!$grado){$this->errorFila('Grado', $row[8], $index, $resultadoFinal);}
-            // $row[8] = $grado;
-
-            // Nivel
-            // $nivel = NivelResolver::resolve($row[15]);
-            // if (!$nivel){$this->errorFila('Nivel', $row[15], $index, $resultadoFinal);}
-            // $row[15] = $nivel;
+            
             $row['fila'] = $index;
             $tutorsData[$row[11]] = TutorResolver::extractTutorData($row, $index);
             $olimpistasData[$row[2]] = OlimpistaResolver::extractOlimpistaData($row, $index, $resultadoFinal);
@@ -127,12 +104,7 @@ class DatosExcelController extends Controller
                 !empty($resultadoFinal['tutores_errores']) ||
                 !empty($resultadoFinal['olimpistas_errores']) ||
                 !empty($resultadoFinal['inscripciones_errores']) ||
-                !empty($resultadoFinal['profesores_errores']) //||
-                // !empty($resultadoFinal['Departamento_errores']) ||
-                // !empty($resultadoFinal['Provincia_errores']) || 
-                // !empty($resultadoFinal['Colegio_errores']) ||
-                // !empty($resultadoFinal['Grado_errores']) ||
-                // !empty($resultadoFinal['Nivel_errores'])
+                !empty($resultadoFinal['profesores_errores'])
             ) {
                 throw new \Exception("Se encontraron errores en los datos. No se guardó nada.");
             }
@@ -154,15 +126,6 @@ class DatosExcelController extends Controller
             ], 500);
         }
     }
-
-    // private function errorFila($campo, $valor, $fila, &$resultado)
-    // {
-    //     $resultado[$campo."_errores"][] = [
-    //         // 'ci' => $tutor['ci'] ?? 'Desconocido',
-    //         'error' => "$campo inválido o no encontrado.",
-    //         'fila' => $fila + 2
-    //     ];
-    // }
 
     private function columnaLetra($index)
     {
