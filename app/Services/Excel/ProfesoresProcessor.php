@@ -5,7 +5,7 @@ namespace App\Services\Excel;
 // use App\Http\Controllers\ProfesorController;
 
 use App\Models\Persona;
-use App\Http\Requests\StorePersonaRequest;
+use App\Http\Requests\StoreProfesorRequest;
 use App\Services\Registers\PersonaService;
 use Illuminate\Support\Facades\Validator;
 
@@ -45,20 +45,12 @@ class ProfesoresProcessor
                         'correo_electronico' => $profesor['correo_electronico'],
                         'rol_parentesco' => $profesor['rol_parentesco'],
                     ];
-                    $formRequest = new StorePersonaRequest();
+                    $formRequest = new StoreProfesorRequest();
                     $validator = Validator::make(
                         $filteredProfesor,
                         $formRequest->rules(),
                         $formRequest->messages()
                     );
-                    // if (is_numeric($profesor['ci']) && Persona::where('ci_persona', $profesor['ci'])->exists()) {
-                    //     $resultado['profesores_omitidos'][] = [
-                    //         'ci' => $profesor['ci'],
-                    //         'message' => 'El profesor ya se encuentra registrado en el sistema',
-                    //         'fila'=>$profesor['fila']+2
-                    //     ];
-                    //     continue;
-                    // }
                     
                     if ($validator->fails()) {
                         foreach($validator -> errors()->all() as $mensaje){
