@@ -2,7 +2,7 @@
 
 namespace App\Modules\Persons\Controllers;
 
-use App\Modules\Persons\Models\Persona;
+use App\Modules\Persons\Models\Person;
 
 class PersonaController
 {

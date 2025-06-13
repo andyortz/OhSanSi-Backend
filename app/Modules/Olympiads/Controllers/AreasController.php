@@ -6,7 +6,7 @@ use App\Modules\Olympiads\Models\Area;
 use App\Modules\Olympiads\Requests\StoreAreaRequest;
 use Illuminate\Http\Request\Request;
 use Illuminate\Support\Facades\DB;
-use App\Modules\Olympiads\Models\NivelAreaOlimpiada;
+use App\Modules\Olympiads\Models\OlympiadAreaLevel;
 
 class AreasController
 {

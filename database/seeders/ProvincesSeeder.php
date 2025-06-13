@@ -1,0 +1,150 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class ProvincesSeeder extends Seeder
+{
+    public function run(): void
+    {
+        $departments = DB::table('departments')->pluck('department_id', 'department_name');
+
+        $provinces = [
+            // CHUQUISACA
+            ['province_name' => 'Belisario Boeto', 'department_id' => $departments['Chuquisaca']],
+            ['province_name' => 'Hernando Siles', 'department_id' => $departments['Chuquisaca']],
+            ['province_name' => 'Jaime Zudáñez', 'department_id' => $departments['Chuquisaca']],
+            ['province_name' => 'Juana Azurduy de Padilla', 'department_id' => $departments['Chuquisaca']],
+            ['province_name' => 'Luis Calvo', 'department_id' => $departments['Chuquisaca']],
+            ['province_name' => 'Nor Cinti', 'department_id' => $departments['Chuquisaca']],
+            ['province_name' => 'Oropeza', 'department_id' => $departments['Chuquisaca']],
+            ['province_name' => 'Sud Cinti', 'department_id' => $departments['Chuquisaca']],
+            ['province_name' => 'Tomina', 'department_id' => $departments['Chuquisaca']],
+            ['province_name' => 'Yamparáez', 'department_id' => $departments['Chuquisaca']],
+            ['province_name' => 'Otro', 'department_id' => $departments['Chuquisaca']],
+            // COCHABAMBA
+            ['province_name' => 'Arani', 'department_id' => $departments['Cochabamba']],
+            ['province_name' => 'Arque', 'department_id' => $departments['Cochabamba']],
+            ['province_name' => 'Ayopaya', 'department_id' => $departments['Cochabamba']],
+            ['province_name' => 'Bolívar', 'department_id' => $departments['Cochabamba']],
+            ['province_name' => 'Capinota', 'department_id' => $departments['Cochabamba']],
+            ['province_name' => 'Carrasco', 'department_id' => $departments['Cochabamba']],
+            ['province_name' => 'Cercado', 'department_id' => $departments['Cochabamba']],
+            ['province_name' => 'Chapare', 'department_id' => $departments['Cochabamba']],
+            ['province_name' => 'Esteban Arce', 'department_id' => $departments['Cochabamba']],
+            ['province_name' => 'Germán Jordán', 'department_id' => $departments['Cochabamba']],
+            ['province_name' => 'Mizque', 'department_id' => $departments['Cochabamba']],
+            ['province_name' => 'Narciso Campero', 'department_id' => $departments['Cochabamba']],
+            ['province_name' => 'Punata', 'department_id' => $departments['Cochabamba']],
+            ['province_name' => 'Quillacollo', 'department_id' => $departments['Cochabamba']],
+            ['province_name' => 'Tapacarí', 'department_id' => $departments['Cochabamba']],
+            ['province_name' => 'Tiraque', 'department_id' => $departments['Cochabamba']],
+            ['province_name' => 'Otro', 'department_id' => $departments['Cochabamba']],
+            // BENI
+            ['province_name' => 'Cercado', 'department_id' => $departments['Beni']],
+            ['province_name' => 'Iténez', 'department_id' => $departments['Beni']],
+            ['province_name' => 'José Ballivián', 'department_id' => $departments['Beni']],
+            ['province_name' => 'Mamoré', 'department_id' => $departments['Beni']],
+            ['province_name' => 'Marbán', 'department_id' => $departments['Beni']],
+            ['province_name' => 'Moxos', 'department_id' => $departments['Beni']],
+            ['province_name' => 'Vaca Díez', 'department_id' => $departments['Beni']],
+            ['province_name' => 'Yacuma', 'department_id' => $departments['Beni']],
+            ['province_name' => 'Otro', 'department_id' => $departments['Beni']],
+            // LA PAZ 38-58
+            ['province_name' => 'Abel Iturralde', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'Aroma', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'Bautista Saavedra', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'Caranavi', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'Eliodoro Camacho', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'Franz Tamayo', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'Gualberto Villarroel', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'Ingavi', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'Inquisivi', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'José Manuel Pando', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'José Ramón Loayza', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'Larecaja', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'Los Andes', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'Manco Kapac', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'Muñecas', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'Nor Yungas', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'Omasuyos', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'Pacajes', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'Pedro Domingo Murillo', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'Sud Yungas', 'department_id' => $departments['La Paz']],
+            ['province_name' => 'Otro', 'department_id' => $departments['La Paz']],
+            // ORURO 59-75
+            ['province_name' => 'Atahuallpa', 'department_id' => $departments['Oruro']],
+            ['province_name' => 'Carangas', 'department_id' => $departments['Oruro']],
+            ['province_name' => 'Cercado', 'department_id' => $departments['Oruro']],
+            ['province_name' => 'Eduardo Avaroa', 'department_id' => $departments['Oruro']],
+            ['province_name' => 'Ladislao Cabrera', 'department_id' => $departments['Oruro']],
+            ['province_name' => 'Sabaya', 'department_id' => $departments['Oruro']],
+            ['province_name' => 'Nor Carangas', 'department_id' => $departments['Oruro']],
+            ['province_name' => 'Pantaleón Dalence', 'department_id' => $departments['Oruro']],
+            ['province_name' => 'Poopó', 'department_id' => $departments['Oruro']],
+            ['province_name' => 'Puerto de Mejillones', 'department_id' => $departments['Oruro']],
+            ['province_name' => 'Sajama', 'department_id' => $departments['Oruro']],
+            ['province_name' => 'San Pedro de Totora', 'department_id' => $departments['Oruro']],
+            ['province_name' => 'Saucarí', 'department_id' => $departments['Oruro']],
+            ['province_name' => 'Sebastián Pagador', 'department_id' => $departments['Oruro']],
+            ['province_name' => 'Sud Carangas', 'department_id' => $departments['Oruro']],
+            ['province_name' => 'Tomas Barrón', 'department_id' => $departments['Oruro']],
+            ['province_name' => 'Otro', 'department_id' => $departments['Oruro']],
+            // PANDO 76-81
+            ['province_name' => 'Abuná', 'department_id' => $departments['Pando']],
+            ['province_name' => 'Federico Román', 'department_id' => $departments['Pando']],
+            ['province_name' => 'Madre de Dios', 'department_id' => $departments['Pando']],
+            ['province_name' => 'Manuripi', 'department_id' => $departments['Pando']],
+            ['province_name' => 'Nicolás Suárez', 'department_id' => $departments['Pando']],
+            ['province_name' => 'Otro', 'department_id' => $departments['Pando']],
+            // POTOSÍ 82-98
+            ['province_name' => 'Alonso de Ibáñez', 'department_id' => $departments['Potosí']],
+            ['province_name' => 'Antonio Quijarro', 'department_id' => $departments['Potosí']],
+            ['province_name' => 'Bernardino Bilbao', 'department_id' => $departments['Potosí']],
+            ['province_name' => 'Charcas', 'department_id' => $departments['Potosí']],
+            ['province_name' => 'Chayanta', 'department_id' => $departments['Potosí']],
+            ['province_name' => 'Cornelio Saavedra', 'department_id' => $departments['Potosí']],
+            ['province_name' => 'Daniel Campos', 'department_id' => $departments['Potosí']],
+            ['province_name' => 'Enrique Baldivieso', 'department_id' => $departments['Potosí']],
+            ['province_name' => 'José María Linares', 'department_id' => $departments['Potosí']],
+            ['province_name' => 'Modesto Omiste', 'department_id' => $departments['Potosí']],
+            ['province_name' => 'Nor Chichas', 'department_id' => $departments['Potosí']],
+            ['province_name' => 'Nor Lípez', 'department_id' => $departments['Potosí']],
+            ['province_name' => 'Rafael Bustillo', 'department_id' => $departments['Potosí']],
+            ['province_name' => 'Sud Chichas', 'department_id' => $departments['Potosí']],
+            ['province_name' => 'Sud Lípez', 'department_id' => $departments['Potosí']],
+            ['province_name' => 'Tomás Frías', 'department_id' => $departments['Potosí']],
+            ['province_name' => 'Otro', 'department_id' => $departments['Potosí']],
+            // SANTA CRUZ 99-114
+            ['province_name' => 'Andres Ibañez', 'department_id' => $departments['Santa Cruz']],
+            ['province_name' => 'Ángel Sandoval', 'department_id' => $departments['Santa Cruz']],
+            ['province_name' => 'Chiquitos', 'department_id' => $departments['Santa Cruz']],
+            ['province_name' => 'Cordillera', 'department_id' => $departments['Santa Cruz']],
+            ['province_name' => 'Florida', 'department_id' => $departments['Santa Cruz']],
+            ['province_name' => 'Germán Busch', 'department_id' => $departments['Santa Cruz']],
+            ['province_name' => 'Guarayos', 'department_id' => $departments['Santa Cruz']],
+            ['province_name' => 'Ichilo', 'department_id' => $departments['Santa Cruz']],
+            ['province_name' => 'Ignacio Warnes', 'department_id' => $departments['Santa Cruz']],
+            ['province_name' => 'José Miguel de Velasco', 'department_id' => $departments['Santa Cruz']],
+            ['province_name' => 'Manuel María Caballero', 'department_id' => $departments['Santa Cruz']],
+            ['province_name' => 'Ñuflo de Chávez', 'department_id' => $departments['Santa Cruz']],
+            ['province_name' => 'Obispo Santistevan', 'department_id' => $departments['Santa Cruz']],
+            ['province_name' => 'Sara', 'department_id' => $departments['Santa Cruz']],
+            ['province_name' => 'Vallegrande', 'department_id' => $departments['Santa Cruz']],
+            ['province_name' => 'Otro', 'department_id' => $departments['Santa Cruz']],
+            // TARIJA 115-121
+            ['province_name' => 'Aniceto Arce', 'department_id' => $departments['Tarija']],
+            ['province_name' => 'Burdet O’Connor', 'department_id' => $departments['Tarija']],
+            ['province_name' => 'Cercado', 'department_id' => $departments['Tarija']],
+            ['province_name' => 'Eustaquio Méndez', 'department_id' => $departments['Tarija']],
+            ['province_name' => 'Gran Chaco', 'department_id' => $departments['Tarija']],
+            ['province_name' => 'José María Avilés', 'department_id' => $departments['Tarija']],
+            ['province_name' => 'Otro', 'department_id' => $departments['Tarija']],
+
+        ];
+
+        DB::table('provincia')->insert($provinces);
+    }
+}

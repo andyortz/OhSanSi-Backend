@@ -2,8 +2,8 @@
 
 namespace App\Services\Registers;
 
-use App\Modules\Persons\Models\Persona;
-use App\Modules\Persons\Models\DetalleOlimpista;
+use App\Modules\Persons\Models\Person;
+use App\Modules\Persons\Models\OlympistDetail;
 use Illuminate\Support\Facades\DB;
 
 class OlimpistaService

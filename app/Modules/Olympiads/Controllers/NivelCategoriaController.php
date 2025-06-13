@@ -2,11 +2,11 @@
 
 namespace App\Modules\Olympiads\Controllers;
 
-use App\Modules\Olympiads\Models\NivelCategoria;
-use App\Modules\Olympiads\Models\Grado;
-use App\Modules\Olympiads\Models\NivelGrado;
-use App\Modules\Olympiads\Models\NivelAreaOlimpiada;
-use App\Modules\Olympiads\Models\Olimpiada;
+use App\Modules\Olympiads\Models\CategoryLevel;
+use App\Modules\Olympiads\Models\Grade;
+use App\Modules\Olympiads\Models\LevelGrade;
+use App\Modules\Olympiads\Models\OlympiadAreaLevel;
+use App\Modules\Olympiads\Models\Olympiad;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

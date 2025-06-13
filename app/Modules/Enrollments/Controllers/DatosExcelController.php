@@ -4,8 +4,8 @@ namespace App\Modules\Enrollments\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Modules\Olympiads\Models\Departamento;
-use App\Modules\Persons\Models\Persona;
+use App\Modules\Olympiads\Models\Department;
+use App\Modules\Persons\Models\Person;
 use App\Services\ImportHelpers\ProvinciaResolver;
 use App\Services\ImportHelpers\ColegioResolver;
 use App\Services\ImportHelpers\GradoResolver;

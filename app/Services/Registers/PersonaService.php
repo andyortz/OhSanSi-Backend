@@ -2,7 +2,7 @@
 
 namespace App\Services\Registers;
 
-use App\Modules\Persons\Models\Persona;
+use App\Modules\Persons\Models\Person;
 use Illuminate\Support\Facades\DB;
 
 class PersonaService

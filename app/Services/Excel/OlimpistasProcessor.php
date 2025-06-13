@@ -5,11 +5,11 @@ namespace App\Services\Excel;
 use App\Modules\Persons\Controllers\OlimpistaController;
 use App\Modules\Persons\Requests\StoreOlimpistaRequest;
 use Illuminate\Support\Facades\Validator;
-use App\Modules\Persons\Models\Persona;
-use App\Modules\Olympiads\Models\Departamento;
-use App\Modules\Olympiads\Models\Provincia;
-use App\Modules\Olympiads\Models\Colegio;
-use App\Modules\Olympiads\Models\Grado;
+use App\Modules\Persons\Models\Person;
+use App\Modules\Olympiads\Models\Department;
+use App\Modules\Olympiads\Models\Province;
+use App\Modules\Olympiads\Models\School;
+use App\Modules\Olympiads\Models\Grade;
 use Illuminate\Http\Request;
 
 class OlimpistasProcessor

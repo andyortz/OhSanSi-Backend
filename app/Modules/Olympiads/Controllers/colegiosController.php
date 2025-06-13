@@ -2,7 +2,7 @@
 
 namespace App\Modules\Olympiads\Controllers;
 
-use App\Modules\Olympiads\Models\Colegio;
+use App\Modules\Olympiads\Models\School;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 

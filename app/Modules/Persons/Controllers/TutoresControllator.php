@@ -2,7 +2,7 @@
 
 namespace App\Modules\Persons\Controllers;
 
-use App\Modules\Persons\Models\Persona;
+use App\Modules\Persons\Models\Person;
 use App\Services\Registers\PersonaService;
 use App\Modules\Persons\Requests\StorePersonaRequest;
 use Illuminate\Http\Request;

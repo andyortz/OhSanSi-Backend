@@ -4,7 +4,7 @@ namespace App\Services\Excel;
 
 // use App\Modules\Persons\Controllers\ProfesorController
 
-use App\Modules\Persons\Models\Persona;
+use App\Modules\Persons\Models\Person;
 use App\Modules\Persons\Requests\StoreProfesorRequest;
 use App\Services\Registers\PersonaService;
 use Illuminate\Support\Facades\Validator;

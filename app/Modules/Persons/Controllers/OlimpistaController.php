@@ -3,7 +3,7 @@
 namespace App\Modules\Persons\Controllers;
 
 
-use App\Modules\Persons\Models\Persona;
+use App\Modules\Persons\Models\Person;
 use App\Repositories\OlimpistaRepository;
 use App\Services\Registers\OlimpistaService;
 use Illuminate\Http\Request;

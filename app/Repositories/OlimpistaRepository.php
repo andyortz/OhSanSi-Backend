@@ -2,9 +2,9 @@
 namespace App\Repositories;
 
 use App\Modules\Olympiads\Models\Area;
-use App\Modules\Persons\Models\DetalleOlimpista;
-use App\Modules\Olympiads\Models\NivelGrado;
-use App\Modules\Olympiads\Models\Olimpiada;
+use App\Modules\Persons\Models\OlympistDetail;
+use App\Modules\Olympiads\Models\LevelGrade;
+use App\Modules\Olympiads\Models\Olympiad;
 
 class OlimpistaRepository
 {

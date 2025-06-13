@@ -2,7 +2,7 @@
 
 namespace App\Modules\Olympiads\Controllers;
 
-use App\Modules\Olympiads\Models\Provincia;
+use App\Modules\Olympiads\Models\Province;
 
 class ProvinciaController
 {

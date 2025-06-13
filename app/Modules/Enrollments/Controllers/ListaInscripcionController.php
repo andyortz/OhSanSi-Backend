@@ -2,11 +2,11 @@
 
 namespace App\Modules\Enrollments\Controllers;
 
-use App\Modules\Enrollments\Models\ListaInscripcion;
-use App\Modules\Olympiads\Models\NivelAreaOlimpiada;
+use App\Modules\Enrollments\Models\EnrollmentList;
+use App\Modules\Olympiads\Models\OlympiadAreaLevel;
 use App\Modules\Enrollments\Models\Pago;
-use App\Modules\Persons\Models\Persona;
-use App\Modules\Enrollments\Models\Inscripcion;
+use App\Modules\Persons\Models\Person;
+use App\Modules\Enrollments\Models\Enrollment;
 
 use Illuminate\Http\Request\Request;
 use Illuminate\Support\Facades\DB;

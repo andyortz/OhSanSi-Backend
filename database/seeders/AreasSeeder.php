@@ -15,15 +15,15 @@ class AreasSeeder extends Seeder
     {
         //
         $areas =[
-            ['nombre'=>'MATEMÁTICAS'],
-            ['nombre'=>'BIOLOGÍA'],
-            ['nombre'=>'ASTRONOMÍA - ASTROFÍSICA'],
-            ['nombre'=>'ROBÓTICA'],
-            ['nombre'=>'INFORMÁTICA'],
-            ['nombre'=>'QUÍMICA'],
-            ['nombre'=>'FÍSICA'],
+            ['area_name'=>'MATEMÁTICAS'],
+            ['area_name'=>'BIOLOGÍA'],
+            ['area_name'=>'ASTRONOMÍA - ASTROFÍSICA'],
+            ['area_name'=>'ROBÓTICA'],
+            ['area_name'=>'INFORMÁTICA'],
+            ['area_name'=>'QUÍMICA'],
+            ['area_name'=>'FÍSICA'],
         ];
 
-        DB::table('area_competencia')->insert($areas);
+        DB::table('areas')->insert($areas);
     }
 }

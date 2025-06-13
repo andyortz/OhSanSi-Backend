@@ -2,9 +2,9 @@
 
 namespace App\Modules\Olympiads\Controllers;
 
-use App\Modules\Enrollments\Models\Inscripcion;
+use App\Modules\Enrollments\Models\Enrollment;
 use App\Models\Pagos;
-use App\Modules\Olympiads\Models\NivelCategoria;
+use App\Modules\Olympiads\Models\CategoryLevel;
 use App\Models\Area;
 use App\Http\Requests\StoreInscripcionRequest;
 use Illuminate\Support\Facades\DB;

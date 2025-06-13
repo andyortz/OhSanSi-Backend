@@ -6,21 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Area extends Model
 {
-    protected $table = 'area_competencia';
-    protected $primaryKey = 'id_area';
+    protected $table = 'areas';
+    protected $primaryKey = 'area_id';
     public $timestamps = false;
 
     protected $fillable = [
-        'nombre',
+        'area_name',
     ];
 
-    public function setNombreAttribute($value)
+    public function setNameAttribute($value)
     {
-        $this->attributes['nombre'] = strtoupper($value);
+        $this->attributes['area_name'] = strtoupper($value);
     }
 
     public function asociaciones()
     {
-        return $this->hasMany(NivelAreaOlimpiada::class, 'id_area');
+        return $this->hasMany(OlympiadAreaLevel::class, 'id_area');
     }
 }
