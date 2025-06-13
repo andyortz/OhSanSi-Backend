@@ -81,8 +81,8 @@ Route::prefix('schools')->middleware('throttle:100,1')->group(function () {
     Route::get('/provinces/{id}', [colegiosController::class, 'porProvincia']);//si
 });
 
-Route::post('/ocr', [BoletaController::class, 'procesar']);
-Route::get('/payment/{ci}', [ConsultaPagoController::class, 'verificarPorCi']);
+Route::post('/ocr', [BoletaController::class, 'procesar']); //si
+Route::get('/payment/{ci}', [ConsultaPagoController::class, 'verificarPorCi']); //si
 
 Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
     Route::post('/', [OlympiadRegistrationController::class, 'store']); //si
