@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Olimpiada extends Model
 {
+
     protected $table = 'olimpiada';
-    protected $primaryKey = 'id_olimpiada';
     public $timestamps = false;
+    protected $primaryKey = 'id_olimpiada';
 
     protected $fillable = [
         'gestion',
