@@ -96,6 +96,7 @@ class OlimpistaController
 
         return response()->json($response);
     }
+    
     public function getByEmail($email): JsonResponse
     {
         $persona = Persona::where('correo_electronico', $email)->first();

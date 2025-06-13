@@ -4,6 +4,7 @@ namespace App\Modules\Olympiads\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+
 class NivelAreaOlimpiada extends Model
 {
     protected $table = 'nivel_area_olimpiada';

@@ -2,6 +2,8 @@
 
 namespace App\Modules\Persons\Models;
 
+use App\Modules\Enrollments\Models\Inscripcion;
+use App\Modules\Enrollments\Models\Pago;
 use Illuminate\Database\Eloquent\Model;
 
 class Persona extends Model

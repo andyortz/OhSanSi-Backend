@@ -1,9 +1,9 @@
 <?php
 namespace App\Repositories;
 
-use App\Models\Area;
+use App\Modules\Olympiads\Models\Area;
 use App\Modules\Persons\Models\DetalleOlimpista;
-use App\Models\NivelGrado;
+use App\Modules\Olympiads\Models\NivelGrado;
 use App\Modules\Olympiads\Models\Olimpiada;
 
 class OlimpistaRepository

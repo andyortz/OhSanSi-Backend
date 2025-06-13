@@ -3,7 +3,7 @@
 namespace App\Modules\Enrollments\Controllers;
 
 use App\Modules\Enrollments\Models\ListaInscripcion;
-use App\Models\NivelAreaOlimpiada;
+use App\Modules\Olympiads\Models\NivelAreaOlimpiada;
 use App\Modules\Enrollments\Models\Pago;
 use App\Modules\Persons\Models\Persona;
 use App\Modules\Enrollments\Models\Inscripcion;
@@ -217,10 +217,8 @@ class ListaInscripcionController
         ], 200);
     }
 
-
-
-
-    public function individual($id){
+    public function individual($id)
+    {
         try {
             $lista = ListaInscripcion::with([
                 'olimpiada:costo,id_olimpiada',
@@ -286,7 +284,9 @@ class ListaInscripcionController
             ], 400);
         }
     }
-    public function grupal($id){
+    
+    public function grupal($id)
+    {
         try {
             $lista = ListaInscripcion::with([
                 'inscripciones',
@@ -341,7 +341,9 @@ class ListaInscripcionController
         }
     
     }
-    public function getById($id){
+    
+    public function getById($id)
+    {
         $listas = ListaInscripcion::with(
             'inscripciones.detalleOlimpista.olimpista',
             'inscripciones.detalleOlimpista.grado',

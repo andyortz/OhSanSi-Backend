@@ -3,7 +3,7 @@
 namespace App\Modules\Olympiads\Controllers;
 
 use App\Modules\Olympiads\Models\Olimpiada;
-use App\Models\NivelAreaOlimpiada;
+use App\Modules\Olympiads\Models\NivelAreaOlimpiada;
 use App\Modules\Enrollments\Models\ListaInscripcion;
 use App\Modules\Enrollments\Models\Inscripcion;
 use Illuminate\Http\Request;

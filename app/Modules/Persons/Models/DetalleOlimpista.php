@@ -3,6 +3,10 @@
 namespace App\Modules\Persons\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Modules\Olympiads\Models\Olimpiada;
+use App\Modules\Olympiads\Models\Grado;
+use App\Modules\Enrollments\Models\Inscripcion;
+use App\Modules\Olympiads\Models\Colegio;
 
 class DetalleOlimpista extends Model
 {

@@ -6,7 +6,7 @@ use App\Modules\Olympiads\Models\Area;
 use App\Modules\Olympiads\Requests\StoreAreaRequest;
 use Illuminate\Http\Request\Request;
 use Illuminate\Support\Facades\DB;
-use App\Modules\Olympiad\Models\NivelAreaOlimpiada;
+use App\Modules\Olympiads\Models\NivelAreaOlimpiada;
 
 class AreasController
 {
@@ -25,9 +25,9 @@ class AreasController
     public function areasPorOlimpiada($id_olimpiada)
     {
         $areas = NivelAreaOlimpiada::where('id_olimpiada', $id_olimpiada)
-            ->join('areas_competencia', 'niveles_areas_olimpiadas.id_area', '=', 'areas_competencia.id_area')
-            ->select('areas_competencia.id_area', 'areas_competencia.nombre')
-            ->groupBy('areas_competencia.id_area', 'areas_competencia.nombre')
+            ->join('area_competencia', 'nivel_area_olimpiada.id_area', '=', 'area_competencia.id_area')
+            ->select('area_competencia.id_area', 'area_competencia.nombre')
+            ->groupBy('area_competencia.id_area', 'area_competencia.nombre')
             ->get();
 
         if ($areas->isEmpty()) {

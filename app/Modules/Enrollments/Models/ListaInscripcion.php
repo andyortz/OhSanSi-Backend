@@ -3,6 +3,8 @@
 namespace App\Modules\Enrollments\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Modules\Olympiads\Models\Olimpiada;
+use App\Modules\Persons\Models\Persona;
 
 class ListaInscripcion extends Model
 {

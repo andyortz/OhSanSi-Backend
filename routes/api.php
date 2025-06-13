@@ -41,71 +41,70 @@ Route::get('/user', function (Request $request) {
 
 
 Route::prefix('olympists')->middleware('throttle:100,1')->group(function () {
-    Route::post('/', [OlimpistaController::class, 'store']);
-    Route::get('/{ci}', [OlimpistaController::class, 'getByCedula']);
-    Route::get('/{ci}/enrollments', [VerificarInscripcionController::class, 'getInscripcionesPorCI']);
-    Route::get('/{ci}/areas-levels', [OlimpistaController::class, 'getAreasNivelesInscripcion']); 
+    Route::post('/', [OlimpistaController::class, 'store']); //si
+    Route::get('/{ci}', [OlimpistaController::class, 'getByCedula']);//si
+    Route::get('/{ci}/enrollments', [VerificarInscripcionController::class, 'getInscripcionesPorCI']);//si
+    Route::get('/{ci}/areas-levels', [OlimpistaController::class, 'getAreasNivelesInscripcion']); //si
 });
 
-Route::prefix('person')->middleware('throttle:100,1')->group(function () {
-    Route::post('/', [PersonaController::class, 'store']);
-    Route::get('/{ci}', [PersonaController::class, 'getByCi']);
+Route::prefix('person')->middleware('throttle:100,1')->group(function () { 
+    Route::post('/', [PersonaController::class, 'store']); //no existe
+    Route::get('/{ci}', [PersonaController::class, 'getByCi']); //si
 });
 
 Route::prefix('provinces')->middleware('throttle:100,1')->group(function () {
-    Route::get('/', [ProvinciaController::class, 'index']); 
-    Route::get('/{id}', [ProvinciaController::class, 'porDepartamento']);
+    Route::get('/', [ProvinciaController::class, 'index']); //si
+    Route::get('/{id}', [ProvinciaController::class, 'porDepartamento']);//si
 });
 
 Route::prefix('departaments')->middleware('throttle:100,1')->group(function () {
-    Route::get('/', [DepartamentoController::class, 'index']);
+    Route::get('/', [DepartamentoController::class, 'index']);  //si
 });
 
 Route::prefix('enrollments')->middleware('throttle:100,1')->group(function () {
-    Route::post('/with-tutor', [InscripcionNivelesController::class, 'storeWithTutor']); //NO
-    Route::post('/one', [InscripcionNivelesController::class, 'storeOne']);
-    Route::get('/participants/{id}',[ListaInscripcionController::class, 'getById']);
-    Route::get('/pending/{ci}', [ListaInscripcionController::class, 'listasPagoPendiente']);
-    Route::get('/{ci}/{status}', [ListaInscripcionController::class, 'obtenerPorResponsable'])
+    Route::post('/with-tutor', [InscripcionNivelesController::class, 'storeWithTutor']); //si
+    // Route::post('/one', [InscripcionNivelesController::class, 'storeOne']);  //no se usa
+    Route::get('/participants/{id}',[ListaInscripcionController::class, 'getById']); //si
+    Route::get('/pending/{ci}', [ListaInscripcionController::class, 'listasPagoPendiente']); //mmm
+    Route::get('/{ci}/{status}', [ListaInscripcionController::class, 'obtenerPorResponsable'])//si
     ->where('estado', 'PENDIENTE|PAGADO|TODOS');
 });
 
 Route::prefix('receipts')->middleware('throttle:100,1')->group(function () {
-    Route::get('/individual/{id}', [ListaInscripcionController::class, 'individual']);    
-    Route::get('/group/{id}', [ListaInscripcionController::class, 'grupal']);
+    Route::get('/individual/{id}', [ListaInscripcionController::class, 'individual']);   //si 
+    Route::get('/group/{id}', [ListaInscripcionController::class, 'grupal']);   //si
 });
 
 Route::prefix('schools')->middleware('throttle:100,1')->group(function () {
-    Route::get('/', [colegiosController::class, 'index']);
-    Route::get('/names', [colegiosController::class, 'soloNombres']); 
-    Route::get('/provinces/{id}', [colegiosController::class, 'porProvincia']);
+    Route::get('/', [colegiosController::class, 'index']); //si
+    Route::get('/names', [colegiosController::class, 'soloNombres']); //si
+    Route::get('/provinces/{id}', [colegiosController::class, 'porProvincia']);//si
 });
 
 Route::post('/ocr', [BoletaController::class, 'procesar']);
 Route::get('/payment/{ci}', [ConsultaPagoController::class, 'verificarPorCi']);
 
 Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
-    Route::post('/', [OlympiadRegistrationController::class, 'store']);
-    Route::get('/', [OlimpiadaGestionController::class, 'index']);
-    Route::get('/now', [OlimpiadaGestionController::class, 'index2']);
-    Route::get('/max-categories', [OlimpiadaController::class, 'getMaxCategorias']);
-    Route::get('/{id}/max-categories', [OlimpiadaAreaController::class, 'maxCategorias']);
-    Route::get('/{id}/levels-areas', [OlimpiadaController::class, 'getAreasConNiveles']);
-    Route::get('/{id}/areas', [AreasController::class, 'areasPorOlimpiada']);
-    Route::get('/{year}/statistic', [OlimpiadaController::class, 'getStatistics']);
-    Route::get('/{year}/management', [OlimpiadaGestionController::class, 'show']);
-    Route::get('/{id}/statistics', [OlimpiadaController::class, 'getStatistics']);
-    Route::get('/{year}', [OlimpiadaGestionController::class, 'show']);
+    Route::post('/', [OlympiadRegistrationController::class, 'store']); //si
+    Route::get('/', [OlimpiadaGestionController::class, 'index']); //si
+    Route::get('/now', [OlimpiadaGestionController::class, 'index2']); //si
+    Route::get('/max-categories', [OlimpiadaController::class, 'getMaxCategorias']); //si
+    Route::get('/{id}/max-categories', [OlimpiadaAreaController::class, 'maxCategorias']); //si
+    Route::get('/{id}/levels-areas', [OlimpiadaController::class, 'getAreasConNiveles']); //si
+    Route::get('/{id}/areas', [AreasController::class, 'areasPorOlimpiada']); //si
+    Route::get('/{id}/management', [OlimpiadaGestionController::class, 'show']); //si cambié id -> year
+    Route::get('/{year}/statistics', [OlimpiadaController::class, 'getStatistics']); //si
+    Route::get('/{year}', [OlimpiadaGestionController::class, 'show']); //si
 });
 Route::prefix('excel')->middleware('throttle:100,1')->group(function () {
-    Route::post('/data', [ExcelImportController::class, 'import']);
-    Route::post('/registration', [DatosExcelController::class, 'cleanDates']);
+    Route::post('/data', [ExcelImportController::class, 'import']); //si
+    Route::post('/registration', [DatosExcelController::class, 'cleanDates']); //si
 });
 Route::prefix('levels')->middleware('throttle:100,1')->group(function () {
-    Route::get('/', [NivelCategoriaController::class, 'index3']);
-    Route::post('/', [NivelCategoriaController::class, 'newCategoria']);
-    Route::get('/areas/{id}', [NivelCategoriaController::class, 'nivelesPorArea']);  //no da   
-    Route::get('/{id}', [NivelCategoriaController::class, 'index4']);
+    Route::get('/', [NivelCategoriaController::class, 'index3']); //si
+    Route::post('/', [NivelCategoriaController::class, 'newCategoria']); //si
+    Route::get('/areas/{id}', [NivelCategoriaController::class, 'nivelesPorArea']);  //no da, no sale resultados
+    Route::get('/{id}', [NivelCategoriaController::class, 'index4']); //si
 });
 
 Route::prefix('areas')->middleware('throttle:100,1')->group(function () {

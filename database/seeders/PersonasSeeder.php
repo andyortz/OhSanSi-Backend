@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Olimpista;
+use App\Modules\Persons\Models\Olimpista;
 use Illuminate\Support\Facades\DB;
 
 class PersonasSeeder extends Seeder

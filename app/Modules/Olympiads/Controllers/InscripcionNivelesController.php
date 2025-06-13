@@ -6,6 +6,7 @@ use App\Modules\Enrollments\Models\ListaInscripcion;
 use App\Modules\Persons\Models\Persona;
 use App\Modules\Enrollments\Models\Inscripcion;
 use App\Modules\Persons\Models\DetalleOlimpista;
+use App\Modules\Enrollments\Models\Pago;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +14,8 @@ use Carbon\Carbon;
 
 class InscripcionNivelesController
 {
-    public function storeOne(Request $request){
+    public function storeOne(Request $request)
+    {
         $data = $request->validate([
             'ci' => 'required|integer|exists:persona,ci_persona',
             'nivel' => 'required|integer',
@@ -78,6 +80,7 @@ class InscripcionNivelesController
             ], 500);
         } 
     }
+
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -141,6 +144,7 @@ class InscripcionNivelesController
             ], 500);
         }
     }
+
     public function storeWithTutor(Request $request)
     {
         
@@ -194,6 +198,7 @@ class InscripcionNivelesController
             ], 500);
         }
     }
+
     public function registrarVarios(Request $request)
     {
         $request->validate([
@@ -242,6 +247,7 @@ class InscripcionNivelesController
             ], 500);
         }
     }
+
     public function registrarMultiplesConTutor(Request $request)
     {
         $data = $request->validate([

@@ -2,6 +2,9 @@
 
 namespace App\Modules\Enrollments\Models;
 
+use App\Modules\Persons\Models\DetalleOlimpista;
+use App\Modules\Persons\Models\Persona;
+use App\Modules\Olympiads\Models\NivelCategoria;
 use Illuminate\Database\Eloquent\Model;
 
 class Inscripcion extends Model
