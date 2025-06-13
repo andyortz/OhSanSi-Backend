@@ -2,7 +2,7 @@
 
 namespace App\Services\ImportHelpers;
 
-use App\Models\NivelCategoria;
+use App\Modules\Olympiads\Models\NivelCategoria;
 
 class NivelResolver
 {

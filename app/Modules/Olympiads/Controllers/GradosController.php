@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Modules\Olympiads\Controllers;
-use App\Models\Grado;
+use App\Modules\Olympiads\Models\Grado;
 use Illuminate\Http\Request;
 
 class GradosController

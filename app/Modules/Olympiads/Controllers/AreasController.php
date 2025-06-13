@@ -2,11 +2,11 @@
 
 namespace App\Modules\Olympiads\Controllers;
 
-use App\Models\Area;
-use App\Http\Requests\StoreAreaRequest;
+use App\Modules\Olympiads\Models\Area;
+use App\Modules\Olympiads\Requests\StoreAreaRequest;
 use Illuminate\Http\Request\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\NivelAreaOlimpiada;
+use App\Modules\Olympiad\Models\NivelAreaOlimpiada;
 
 class AreasController
 {

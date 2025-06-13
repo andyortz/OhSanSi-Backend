@@ -2,7 +2,7 @@
 
 namespace App\Modules\Olympiads\Controllers;
 
-use App\Models\Departamento;
+use App\Modules\Olympiads\Models\Departamento;
 
 class DepartamentoController
 {

@@ -2,10 +2,10 @@
 
 namespace App\Modules\Olympiads\Controllers;
 
-use App\Models\NivelCategoria;
-use App\Models\Grado;
-use App\Models\NivelGrado;
-use App\Models\NivelAreaOlimpiada;
+use App\Modules\Olympiads\Models\NivelCategoria;
+use App\Modules\Olympiads\Models\Grado;
+use App\Modules\Olympiads\Models\NivelGrado;
+use App\Modules\Olympiads\Models\NivelAreaOlimpiada;
 use App\Modules\Olympiads\Models\Olimpiada;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
@@ -237,12 +237,12 @@ class NivelCategoriaController
         }
         $niveles = NivelCategoria::whereHas('nivelGradoPivot', function($query) use ($idOlimpiada) {
             $query->where('id_olimpiada', $idOlimpiada)
-                  ->orWhereNull('id_olimpiada');
+                ->orWhereNull('id_olimpiada');
         })
         ->with(['grados' => function($query) use ($idOlimpiada) {
             $query->whereHas('nivelGradoPivot', function($q) use ($idOlimpiada) {
                 $q->where('id_olimpiada', $idOlimpiada)
-                  ->orWhereNull('id_olimpiada');
+                ->orWhereNull('id_olimpiada');
             });
         }])
         ->get();
@@ -346,32 +346,7 @@ class NivelCategoriaController
 
         return response()->json($response);
     }
-
-    // public function index()
-    // {
-    //     $niveles = NivelCategoria::whereHas('grados')
-    //         ->with(['grados' => function($query) {
-    //             $query->withPivot('id_olimpiada');
-    //         }, 'nivelGradoPivot.olimpiada'])
-    //         ->get();
-
-    //     $response = $niveles->map(function ($nivel) {
-    //         return [
-    //             'id_nivel' => $nivel->id_nivel,
-    //             'nombre_nivel' => $nivel->nombre,
-    //             'nombre_olimpiada' => optional($nivel->nivelGradoPivot->first()->olimpiada)->nombre_olimpiada ?? null,
-    //             'grados' => $nivel->grados->map(function ($grado) {
-    //                 return [
-    //                     'id_grado' => $grado->id_grado,
-    //                     'nombre_grado' => $grado->nombre_grado
-    //                 ];
-    //             })->unique('id_grado')->values()
-    //         ];
-    //     });
-
-    //     return response()->json($response);
-    // }
-
+    
     public function index2()
     {
         $niveles = NivelCategoria::all();

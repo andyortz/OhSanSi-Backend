@@ -4,7 +4,7 @@ namespace App\Modules\Olympiads\Controllers;
 
 use App\Modules\Enrollments\Models\Inscripcion;
 use App\Models\Pagos;
-use App\Models\NivelCategoria;
+use App\Modules\Olympiads\Models\NivelCategoria;
 use App\Models\Area;
 use App\Http\Requests\StoreInscripcionRequest;
 use Illuminate\Support\Facades\DB;

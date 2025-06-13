@@ -48,7 +48,7 @@ Route::prefix('olympists')->middleware('throttle:100,1')->group(function () {
 });
 
 Route::prefix('person')->middleware('throttle:100,1')->group(function () {
-    Route::post('/', [PersonController::class, 'store']);
+    Route::post('/', [PersonaController::class, 'store']);
     Route::get('/{ci}', [PersonaController::class, 'getByCi']);
 });
 
@@ -76,9 +76,9 @@ Route::prefix('receipts')->middleware('throttle:100,1')->group(function () {
 });
 
 Route::prefix('schools')->middleware('throttle:100,1')->group(function () {
-    Route::get('/', [ColegiosController::class, 'index']);
-    Route::get('/names', [ColegiosController::class, 'soloNombres']); 
-    Route::get('/provinces/{id}', [ColegiosController::class, 'porProvincia']);
+    Route::get('/', [colegiosController::class, 'index']);
+    Route::get('/names', [colegiosController::class, 'soloNombres']); 
+    Route::get('/provinces/{id}', [colegiosController::class, 'porProvincia']);
 });
 
 Route::post('/ocr', [BoletaController::class, 'procesar']);
@@ -104,24 +104,24 @@ Route::prefix('excel')->middleware('throttle:100,1')->group(function () {
 Route::prefix('levels')->middleware('throttle:100,1')->group(function () {
     Route::get('/', [NivelCategoriaController::class, 'index3']);
     Route::post('/', [NivelCategoriaController::class, 'newCategoria']);
-    Route::get('/areas/{id}', [NivelCategoriaController::class, 'nivelesPorArea']);    
+    Route::get('/areas/{id}', [NivelCategoriaController::class, 'nivelesPorArea']);  //no da   
     Route::get('/{id}', [NivelCategoriaController::class, 'index4']);
 });
 
 Route::prefix('areas')->middleware('throttle:100,1')->group(function () {
-    Route::get('/', [AreasController::class, 'index']);
-    Route::post('/', [AreasController::class, 'store']);
-    Route::post('/association', [NivelCategoriaController::class, 'asociarNivelesPorArea']);
-});
+    Route::get('/', [AreasController::class, 'index']);//si
+    Route::post('/', [AreasController::class, 'store']);//si
+    Route::post('/association', [NivelCategoriaController::class, 'asociarNivelesPorArea']); //Masomenos
+}); 
 
 Route::prefix('grades')->middleware('throttle:100,1')->group(function () {
-    Route::get('/', [GradosController::class, 'index']);
-    Route::post('/levels', [NivelCategoriaController::class,'asociarGrados']);
-    Route::get('/levels/{id}', [NivelCategoriaController::class, 'getById']);
+    Route::get('/', [GradosController::class, 'index']);//si
+    Route::post('/levels', [NivelCategoriaController::class,'asociarGrados']);//si
+    Route::get('/levels/{id}', [NivelCategoriaController::class, 'getById']);//si
 });
-Route::post('/tutors', [TutoresControllator::class, 'store']);
-Route::get('/tutors/{ci}',[TutoresControllator::class,'buscarPorCi']);
+Route::post('/tutors', [TutoresControllator::class, 'store']); //si
+Route::get('/tutors/{ci}',[TutoresControllator::class,'buscarPorCi']); //si
 Route::post('/payment/verification', [PagoValidacionController::class, 'verificar']);
 
-Route::get('/levels-areas/{id}', [NivelCategoriaController::class, 'getByNivelesById']);
+Route::get('/levels-areas/{id}', [NivelCategoriaController::class, 'getByNivelesById']);//si
 Route::post('/login', [AuthController::class, 'login']);
