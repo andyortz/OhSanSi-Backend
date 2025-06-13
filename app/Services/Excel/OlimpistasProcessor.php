@@ -2,10 +2,10 @@
 
 namespace App\Services\Excel;
 
-use App\Http\Controllers\OlimpistaController;
+use App\Modules\Persons\Controllers\OlimpistaController;
 use App\Http\Requests\StoreOlimpistaRequest;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Persona;
+use App\Modules\Persons\Models\Persona;
 use App\Models\Departamento;
 use App\Models\Provincia;
 use App\Models\Colegio;

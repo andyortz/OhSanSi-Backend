@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Inscripcion;
-use App\Models\Pago;
+use App\Modules\Enrollments\Models\Inscripcion;
+use App\Modules\Enrollments\Models\Pago;
 use Illuminate\Support\Facades\DB;
 
 class InscripcionSeeder extends Seeder

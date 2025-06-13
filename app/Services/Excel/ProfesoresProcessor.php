@@ -2,9 +2,9 @@
 
 namespace App\Services\Excel;
 
-// use App\Http\Controllers\ProfesorController;
+// use App\Modules\Persons\Controllers\ProfesorController
 
-use App\Models\Persona;
+use App\Modules\Persons\Models\Persona;
 use App\Http\Requests\StoreProfesorRequest;
 use App\Services\Registers\PersonaService;
 use Illuminate\Support\Facades\Validator;

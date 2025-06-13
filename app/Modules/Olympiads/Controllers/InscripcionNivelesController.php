@@ -2,10 +2,10 @@
 
 namespace App\Modules\Olympiads\Controllers;
 
-use App\Models\ListaInscripcion;
-use App\Models\Persona;
-use App\Models\Inscripcion;
-use App\Models\DetalleOlimpista;
+use App\Modules\Enrollments\Models\ListaInscripcion;
+use App\Modules\Persons\Models\Persona;
+use App\Modules\Enrollments\Models\Inscripcion;
+use App\Modules\Persons\Models\DetalleOlimpista;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;

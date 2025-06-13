@@ -5,7 +5,7 @@ namespace App\Modules\Enrollments\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Departamento;
-use App\Models\Persona;
+use App\Modules\Persons\Models\Persona;
 use App\Services\ImportHelpers\ProvinciaResolver;
 use App\Services\ImportHelpers\ColegioResolver;
 use App\Services\ImportHelpers\GradoResolver;

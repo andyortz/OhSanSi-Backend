@@ -2,9 +2,9 @@
 
 namespace App\Services\Registers;
 
-use App\Models\DetalleOlimpista;
-use App\Models\Inscripcion;
-use App\Models\Persona;
+use App\Modules\Persons\Models\DetalleOlimpista;
+use App\Modules\Enrollments\Models\Inscripcion;
+use App\Modules\Persons\Models\Persona;
 use Illuminate\Support\Facades\DB;
 
 class InscripcionService

@@ -2,7 +2,7 @@
 
 namespace App\Modules\Olympiads\Controllers;
 
-use App\Models\Olimpiada;
+use App\Modules\Olympiads\Models\Olimpiada;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 

@@ -2,8 +2,8 @@
 
 namespace App\Services\OCR;
 
-use App\Models\ListaInscripcion;
-use App\Models\Pago;
+use App\Modules\Enrollments\Models\ListaInscripcion;
+use App\Modules\Enrollments\Models\Pago;
 
 class VerificacionPagoService
 {

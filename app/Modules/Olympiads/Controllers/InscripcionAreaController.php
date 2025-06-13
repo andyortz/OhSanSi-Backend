@@ -2,7 +2,7 @@
 
 namespace App\Modules\Olympiads\Controllers;
 
-use App\Models\Inscripcion;
+use App\Modules\Enrollments\Models\Inscripcion;
 use App\Models\Pagos;
 use App\Models\NivelCategoria;
 use App\Models\Area;

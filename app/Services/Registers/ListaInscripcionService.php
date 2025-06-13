@@ -2,7 +2,7 @@
 
 namespace App\Services\Registers;
 
-use App\Models\ListaInscripcion;
+use App\Modules\Enrollments\Models\ListaInscripcion;
 use Illuminate\Support\Facades\DB;
 
 class ListaInscripcionService

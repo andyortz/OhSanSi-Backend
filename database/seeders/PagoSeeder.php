@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Pago;
-use App\Models\Persona;
+use App\Modules\Enrollments\Models\Pago;
+use App\Modules\Persons\Models\Persona;
 use Illuminate\Support\Facades\DB;
 
 class PagoSeeder extends Seeder

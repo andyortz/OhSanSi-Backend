@@ -6,7 +6,7 @@ use App\Models\NivelCategoria;
 use App\Models\Grado;
 use App\Models\NivelGrado;
 use App\Models\NivelAreaOlimpiada;
-use App\Models\Olimpiada;
+use App\Modules\Olympiads\Models\Olimpiada;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

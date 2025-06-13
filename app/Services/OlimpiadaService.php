@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Olimpiada;
+use App\Modules\Olympiads\Models\Olimpiada;
 use Illuminate\Support\Carbon;
 
 class OlimpiadaService

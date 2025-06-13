@@ -4,11 +4,11 @@ namespace App\Services\Excel;
 
 use App\Services\Registers\InscripcionService;
 use Illuminate\Support\Facades\DB;
-use App\Models\DetalleOlimpista;
+use App\Modules\Persons\Models\DetalleOlimpista;
 use Illuminate\Support\Carbon;
 use App\Services\Registers\ListaInscripcionService;
 use App\Services\ImportHelpers\NivelResolver;
-use App\Models\Olimpiada;
+use App\Modules\Olympiads\Models\Olimpiada;
 
 class InscripcionesProcessor
 {

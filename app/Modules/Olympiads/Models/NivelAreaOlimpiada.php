@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Modules\Olympiads\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
