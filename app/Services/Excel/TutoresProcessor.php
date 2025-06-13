@@ -3,7 +3,7 @@
 namespace App\Services\Excel;
 
 use App\Modules\Persons\Models\Persona;
-use App\Http\Requests\StoreTutorRequest;
+use App\Modules\Persons\Requests\StoreTutorRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Services\Registers\PersonaService;
 

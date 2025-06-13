@@ -3,14 +3,13 @@
 namespace App\Services\Excel;
 
 use App\Modules\Persons\Controllers\OlimpistaController;
-use App\Http\Requests\StoreOlimpistaRequest;
+use App\Modules\Persons\Requests\StoreOlimpistaRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Modules\Persons\Models\Persona;
-use App\Models\Departamento;
-use App\Models\Provincia;
-use App\Models\Colegio;
-use App\Models\Grado;
-use App\Models\Nivel;
+use App\Modules\Olympiads\Models\Departamento;
+use App\Modules\Olympiads\Models\Provincia;
+use App\Modules\Olympiads\Models\Colegio;
+use App\Modules\Olympiads\Models\Grado;
 use Illuminate\Http\Request;
 
 class OlimpistasProcessor
