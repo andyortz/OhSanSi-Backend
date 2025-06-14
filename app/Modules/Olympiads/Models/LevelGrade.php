@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LevelGrade extends Model
 {
-    protected $table = 'level_grades';
+    protected $table = 'level_grade';
     public $timestamps = false;
 
     public $incrementing = false;

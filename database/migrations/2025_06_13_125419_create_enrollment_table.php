@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('enrollments', function (Blueprint $table) {
+        Schema::create('enrollment', function (Blueprint $table) {
             $table->id('enrollment_id');
             $table->unsignedBigInteger('olympist_detail_id');
             $table->unsignedBigInteger('academic_tutor_ci')->nullable();
@@ -20,19 +20,19 @@ return new class extends Migration
             // Foreign keys
             $table->foreign('olympist_detail_id')
                 ->references('olympist_detail_id')
-                ->on('olympist_details')
+                ->on('olympist_detail')
                 ->onDelete('cascade');
             $table->foreign('level_id')
                 ->references('level_id')
-                ->on('category_levels')
+                ->on('category_level')
                 ->onDelete('cascade');
             $table->foreign('academic_tutor_ci')
                 ->references('person_ci')
-                ->on('persons')
+                ->on('person')
                 ->onDelete('set null');
             $table->foreign('list_id')
                 ->references('list_id')
-                ->on('enrollment_lists')
+                ->on('enrollment_list')
                 ->onDelete('set null');
         });
     }
@@ -42,12 +42,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('enrollments', function (Blueprint $table) {
+        Schema::table('enrollment', function (Blueprint $table) {
             $table->dropForeign(['olympist_detail_id']);
             $table->dropForeign(['academic_tutor_ci']);
             $table->dropForeign(['level_id']);
             $table->dropForeign(['list_id']);
         });
-        Schema::dropIfExists('enrollments');
+        Schema::dropIfExists('enrollment');
     }
 };

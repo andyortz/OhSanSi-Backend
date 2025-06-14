@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Enrollment extends Model
 {
-    protected $table = 'enrollments';
+    protected $table = 'enrollment';
     protected $primaryKey = 'enrollment_id';
     protected $keyType = 'int';
     public $timestamps = false;

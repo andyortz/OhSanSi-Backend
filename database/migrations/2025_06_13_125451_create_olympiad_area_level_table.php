@@ -11,22 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('olympiad_area_levels', function (Blueprint $table) {
+        Schema::create('olympiad_area_level', function (Blueprint $table) {
             $table->unsignedMediumInteger('olympiad_id');//olympiad_id
             $table->unsignedMediumInteger('area_id');//area_id
             $table->unsignedMediumInteger('level_id');//level_ides_categoria
 
             $table->foreign('olympiad_id')
                 ->references('olympiad_id')
-                ->on('olympiads')
+                ->on('olympiad')
                 ->onDelete('cascade');
             $table->foreign('area_id')
                 ->references('area_id')
-                ->on('areas')
+                ->on('area')
                 ->onDelete('cascade');
             $table->foreign('level_id')
                 ->references('level_id')
-                ->on('category_levels')
+                ->on('category_level')
                 ->onDelete('cascade');
         });
     }
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('olympiad_area_levels');
+        Schema::dropIfExists('olympiad_area_level');
     }
 };

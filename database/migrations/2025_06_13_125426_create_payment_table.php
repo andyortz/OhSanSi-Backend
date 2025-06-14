@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payments', function (Blueprint $table) {
+        Schema::create('payment', function (Blueprint $table) {
             $table->id('payment_id');
             $table->string('voucher', 255);
             $table->timestamp('payment_date',6)->useCurrent();
@@ -23,7 +23,7 @@ return new class extends Migration
 
             $table->foreign('list_id')
                 ->references('list_id')
-                ->on('enrollment_lists')
+                ->on('enrollment_list')
                 ->onDelete('cascade');
         });
     }
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('payments');
+        Schema::dropIfExists('payment');
     }
 };

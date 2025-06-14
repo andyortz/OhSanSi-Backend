@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('provinces', function (Blueprint $table) {
+        Schema::create('province', function (Blueprint $table) {
             $table->smallIncrements('province_id'); // int2
             $table->string('province_name', 50);
 
@@ -19,7 +19,7 @@ return new class extends Migration
 
             $table ->foreign(department_id)
                 ->references('department_id')
-                ->on('departmetns')
+                ->on('department')
                 ->onDelete('cascade');
         });
     }

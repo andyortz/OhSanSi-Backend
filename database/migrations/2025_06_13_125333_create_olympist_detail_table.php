@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('olympist_details', function (Blueprint $table) {
+        Schema::create('olympist_detail', function (Blueprint $table) {
             $table->id('olympist_detail_id');
             
             $table->unsignedBigInteger('olympiad_id');
@@ -23,23 +23,23 @@ return new class extends Migration
             // Foreign keys
             $table->foreign('olympiad_id')
                 ->references('olympiad_id')
-                ->on('olympiads')
+                ->on('olympiad')
                 ->onDelete('cascade');
             $table->foreign('olympist_ci')
                 ->references('person_ci')
-                ->on('persons')
+                ->on('person')
                 ->onDelete('cascade');
             $table->foreign('grade_id')
                 ->references('grade_id')
-                ->on('grades')
+                ->on('grade')
                 ->onDelete('cascade');
             $table->foreign('school')
                 ->references('school_id')
-                ->on('schools')
+                ->on('school')
                 ->onDelete('cascade');
             $table->foreign('guardian_legal_ci')
                 ->references('person_ci')
-                ->on('persons')
+                ->on('person')
                 ->onDelete('cascade');
         });
     }
@@ -49,7 +49,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('olympist_details', function (Blueprint $table) {
+        Schema::table('olympist_detail', function (Blueprint $table) {
             $table->dropForeign(['olympiad_id']);
             $table->dropForeign(['olympist_ci']);
             $table->dropForeign(['grade_id']);
@@ -57,6 +57,6 @@ return new class extends Migration
             $table->dropForeign(['guardian_legal_ci']);
         });
 
-        Schema::dropIfExists('olympist_details');
+        Schema::dropIfExists('olympist_detail');
     }
 };

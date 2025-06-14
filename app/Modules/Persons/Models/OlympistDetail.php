@@ -10,7 +10,7 @@ use App\Modules\Olympiads\Models\School;
 
 class OlympistDetail extends Model
 {
-    protected $table = 'olympist_details';
+    protected $table = 'olympist_detail';
     protected $primaryKey = 'olympist_detail_id';
     protected $keyType = 'int';
     public $timestamps = false;

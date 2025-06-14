@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('category_levels', function (Blueprint $table) {
-            $table->id('level_id');
-            $table->string('level_name', 50);
+        Schema::create('area', function (Blueprint $table) {
+            $table->id('area_id');
+            $table->string('area_name', 50);
         });
     }
 
@@ -22,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('category_levels');
+        Schema::dropIfExists('area');
     }
 };

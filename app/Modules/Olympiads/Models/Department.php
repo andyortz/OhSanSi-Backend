@@ -8,7 +8,7 @@ class Department extends Model
 {
     public $timestamps = false;
 
-    protected $table = 'departments';
+    protected $table = 'department';
     protected $primaryKey = 'department_id';
 
     protected $fillable = ['department_name'];

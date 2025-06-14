@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OlympiadAreaLevel extends Model
 {
-    protected $table = 'olympiad_area_levels';
+    protected $table = 'olympiad_area_level';
     public $timestamps = false;
 
     protected $fillable = [

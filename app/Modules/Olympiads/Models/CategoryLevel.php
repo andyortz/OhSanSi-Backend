@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CategoryLevel extends Model
 {
-    protected $table = 'category_levels';
+    protected $table = 'category_level';
     protected $primaryKey = 'level_id';
     public $timestamps = false;
 

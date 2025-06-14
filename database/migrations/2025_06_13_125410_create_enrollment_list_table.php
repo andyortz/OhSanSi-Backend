@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('enrollment_lists', function (Blueprint $table) {
+        Schema::create('enrollment_list', function (Blueprint $table) {
             $table->unsignedBigInteger('olympiad_id');
             $table->id('list_id');
             $table->enum('status', ['PAGADO', 'PENDIENTE'])->default('PENDIENTE');
@@ -20,7 +20,7 @@ return new class extends Migration
             
             $table->foreign('enrollment_responsible_ci')
                 ->references('person_ci')
-                ->on('persons')
+                ->on('person')
                 ->onDelete('cascade');
             $table->foreign('olympiad_id')
                 ->references('olympiad_id') 
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('enrollment_lists');
+        Schema::dropIfExists('enrollment_list');
     }
 };

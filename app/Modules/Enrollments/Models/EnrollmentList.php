@@ -9,7 +9,7 @@ use App\Modules\Enrollments\Models\Enrollment;
 
 class EnrollmentList extends Model
 {
-    protected $table = 'enrollment_lists';
+    protected $table = 'enrollment_list';
     protected $primaryKey = 'list_id';
     protected $keyType = 'int';
     public $timestamps = false;

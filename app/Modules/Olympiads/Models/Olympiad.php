@@ -9,7 +9,7 @@ use App\Modules\Persons\Models\OlympistDetail;
 class Olympiad extends Model
 {
 
-    protected $table = 'olympiads';
+    protected $table = 'olympiad';
     public $timestamps = false;
     protected $primaryKey = 'olympiad_id';
 

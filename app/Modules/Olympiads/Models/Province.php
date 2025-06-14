@@ -8,7 +8,7 @@ class Province extends Model
 {
     public $timestamps = false;
 
-    protected $table = 'provinces';
+    protected $table = 'province';
     protected $primaryKey = 'province_id';
 
     protected $fillable = [

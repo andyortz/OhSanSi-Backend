@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('schools', function (Blueprint $table) {
+        Schema::create('school', function (Blueprint $table) {
             $table->smallIncrements("school_id");
             $table->string('school_name', 100);
             $table ->unsignedSmallInteger('province_id');
@@ -19,7 +19,7 @@ return new class extends Migration
             // Relación a provincias
             $table->foreign('province_id')
                 ->references('province_id')
-                ->on('provinces')
+                ->on('province')
                 ->onDelete('restrict');
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('schools');
+        Schema::dropIfExists('school');
     }
 };
