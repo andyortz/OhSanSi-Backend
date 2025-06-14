@@ -23,18 +23,18 @@ class StoreOlympiadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'gestion' => [
+            'year' => [
                 'required',
                 'integer',
                 'min:2000',
                 'max:2200',
-                Rule::unique('olimpiadas')->ignore($this->olympiad) // Ignora el registro actual al editar
+                Rule::unique('olympiad')->ignore($this->olympiad) // Ignora el registro actual al editar
                 
             ],
-            'costo' => 'required|numeric|min:0|max:999999.99',
-            'fecha_inicio' => 'required|date',
-            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
-            'max_categorias_olimpista' => 'required|integer|min:1',
+            'cost' => 'required|numeric|min:0|max:999999.99',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'max_categories_per_olympist' => 'required|integer|min:1',
             // 'creado_en' se asignará automáticamente (timestamp)
             //
         ];
@@ -42,12 +42,12 @@ class StoreOlympiadRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'gestion.required' => 'La gestión es obligatoria.',
-            'gestion.unique' => 'Ya existe una olimpiada registrada para esa gestión',
-            'costo.required' => 'El costo es obligatorio.',
-            'fecha_inicio.required' => 'La fecha inicio es obligatoria.',
-            'fecha_fin.required'   => 'La fecha fin es obligatoria.',
-            'max_categorias_olimpista' => 'La cantidad maxima de categorias por olimpista es obligatoria'
+            'year.required' => 'La gestión es obligatoria.',
+            'year.unique' => 'Ya existe una olimpiada registrada para esa gestión',
+            'cost.required' => 'El costo es obligatorio.',
+            'start_date.required' => 'La fecha inicio es obligatoria.',
+            'end_date.required'   => 'La fecha fin es obligatoria.',
+            'max_categories_per_olympist' => 'La cantidad maxima de categorias por olimpista es obligatoria'
         ];
     }
 }
