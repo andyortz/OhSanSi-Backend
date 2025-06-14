@@ -4,7 +4,7 @@ namespace App\Modules\Olympiads\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreNivelRequest extends FormRequest
+class StoreLevelRequest extends FormRequest
 {
     public function authorize(): bool
     {
