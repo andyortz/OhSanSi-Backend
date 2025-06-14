@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Modules\Olympiads\Controllers\OlimpiadaAreaController;
 use App\Modules\Olympiads\Controllers\NivelCategoriaController;
-use App\Modules\Olympiads\Controllers\AreasController;
+use App\Modules\Olympiads\Controllers\AreaController;
 use App\Modules\Olympiads\Controllers\GradosController;
 use App\Modules\Olympiads\Controllers\InscripcionAreaController;
 use App\Modules\Persons\Controllers\TutorController;
@@ -14,7 +14,7 @@ use App\Modules\Olympiads\Controllers\DepartamentoController;
 use App\Modules\Olympiads\Controllers\ProvinciaController;
 use App\Modules\Olympiads\Controllers\OlimpiadaGestionController;
 use App\Modules\Olympiads\Controllers\AreasFiltroController;
-use App\Modules\Olympiads\Controllers\colegiosController;
+use App\Modules\Olympiads\Controllers\SchoolController;
 use App\Modules\Persons\Controllers\OlympistController;
 // use App\Modules\Persons\Controllers\VincularController; no se usa
 use App\Modules\Olympiads\Controllers\EstructuraOlimpiadaController;
@@ -75,9 +75,9 @@ Route::prefix('receipts')->middleware('throttle:100,1')->group(function () {
 });
 
 Route::prefix('schools')->middleware('throttle:100,1')->group(function () {
-    Route::get('/', [colegiosController::class, 'index']); //si
-    Route::get('/names', [colegiosController::class, 'soloNombres']); //si
-    Route::get('/provinces/{id}', [colegiosController::class, 'porProvincia']);//si
+    Route::get('/', [SchoolController::class, 'index']); //si
+    Route::get('/names', [SchoolController::class, 'onlyNames']); //si
+    Route::get('/provinces/{id}', [SchoolController::class, 'byProvince']);//si
 });
 
 Route::post('/ocr', [PaymentSlipController::class, 'process']); //si, falta datos
@@ -90,7 +90,7 @@ Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
     Route::get('/max-categories', [OlimpiadaController::class, 'getMaxCategorias']); //si
     Route::get('/{id}/max-categories', [OlimpiadaAreaController::class, 'maxCategorias']); //si
     Route::get('/{id}/levels-areas', [OlimpiadaController::class, 'getAreasConNiveles']); //si
-    Route::get('/{id}/areas', [AreasController::class, 'areasPorOlimpiada']); //si
+    Route::get('/{id}/areas', [AreaController::class, 'areasByOlympiad']); //si
     Route::get('/{id}/management', [OlimpiadaGestionController::class, 'show']); //si 
     Route::get('/{year}/statistics', [OlimpiadaController::class, 'getStatistics']); //si
     Route::get('/{year}', [OlimpiadaGestionController::class, 'show']); //si
@@ -107,8 +107,8 @@ Route::prefix('levels')->middleware('throttle:100,1')->group(function () {
 });
 
 Route::prefix('areas')->middleware('throttle:100,1')->group(function () {
-    Route::get('/', [AreasController::class, 'index']);//si
-    Route::post('/', [AreasController::class, 'store']);//si
+    Route::get('/', [AreaController::class, 'index']);//si
+    Route::post('/', [AreaController::class, 'store']);//si
     Route::post('/association', [NivelCategoriaController::class, 'asociarNivelesPorArea']); //Masomenos
 }); 
 
