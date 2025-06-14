@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-
+//OJITO
 class StoreInscripcionRequest extends FormRequest
 {
     public function authorize(): bool

@@ -5,7 +5,7 @@ namespace App\Modules\Olympiads\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreNivelAreaOlimpiadaRequest extends FormRequest
+class StoreOlympiadAreaLevelRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -42,7 +42,7 @@ class StoreNivelAreaOlimpiadaRequest extends FormRequest
             'area_id' => [
                 'required',
                 'integer',
-                Rule::exists('areas', 'area_id')
+                Rule::exists('area', 'area_id')
             ],
             'level_id' => [
                 'required',

@@ -5,7 +5,7 @@ namespace App\Modules\Persons\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreProfesorRequest extends FormRequest
+class StoreTeacherRequest extends FormRequest
 {
     /**
      * Determina si el usuario está autorizado para realizar esta solicitud.

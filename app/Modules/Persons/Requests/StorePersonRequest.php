@@ -5,7 +5,7 @@ namespace App\Modules\Persons\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StorePersonaRequest extends FormRequest
+class StorePersonRequest extends FormRequest
 {
     /**
      * Determina si el usuario está autorizado para realizar esta solicitud.
@@ -23,7 +23,7 @@ class StorePersonaRequest extends FormRequest
         return [
             'names' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
             'surnames' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
-            'ci' => 'required|integer|unique:persona,ci_persona',
+            'ci' => 'required|integer|unique:person,person_ci',
             'phone' => 'nullable|integer',
             'email' => 'required|email:rfc,dns|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|max:100',
         ];

@@ -5,7 +5,7 @@ namespace App\Modules\Persons\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreOlimpistaRequest extends FormRequest
+class StoreOlympistRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -18,11 +18,11 @@ class StoreOlimpistaRequest extends FormRequest
             'names'              => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
             'surnames'           => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
             'ci'                 => 'required|integer', //cedula_identidad
-            'birthdate'   => 'required|date',
-            'email' => 'required|email:rfc,dns|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|max:100',
-            'school'   => 'required|integer',
+            'birthdate'          => 'required|date',
+            'email'              => 'required|email:rfc,dns|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|max:100',
+            'school'             => 'required|integer',
             'grade_id'           => 'required|integer',
-            'tutor_ci'           => 'required|integer|exists:persona,ci_persona',
+            'tutor_ci'           => 'required|integer|exists:person,person_ci', // cedula_identidad del tutor
         ];
     }
 

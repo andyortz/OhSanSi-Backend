@@ -14,8 +14,8 @@ class StoreNivelRequest extends FormRequest
     public function rules(): array
     {
         return [
-            '*.name' => 'required|string|max:50',
-            '*.area_id' => 'required|exists:areas,area_id',
+            '*.level_name' => 'required|string|max:50',
+            '*.area_id' => 'required|exists:area,area_id',
             '*.grade_min' => 'required|integer|exists:grade,grade_id',
             '*.grade_max' => 'required|integer|exists:grade,grade_id',
         ];
@@ -24,12 +24,12 @@ class StoreNivelRequest extends FormRequest
     public function messages(): array
     {
         return [
-            '*.name.required' => 'El campo name es obligatorio.',
+            '*.level_name.required' => 'El campo nombre es obligatorio.',
             '*.area_id.required' => 'El área es obligatoria.',
-            '*.grado_min.required' => 'El grado mínimo es obligatorio.',
-            '*.grado_max.required' => 'El grado máximo es obligatorio.',
-            '*.grado_min.exists' => 'El grado mínimo no existe.',
-            '*.grado_max.exists' => 'El grado máximo no existe.',
+            '*.grade_min.required' => 'El grado mínimo es obligatorio.',
+            '*.grade_max.required' => 'El grado máximo es obligatorio.',
+            '*.grade_min.exists' => 'El grado mínimo no existe.',
+            '*.grade_max.exists' => 'El grado máximo no existe.',
         ];
     }
 }
