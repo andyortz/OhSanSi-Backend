@@ -78,7 +78,7 @@ class DatosExcelController
             
             $row['index'] = $index;
             $tutorsData[$row[11]] = TutorResolver::extractTutorData($row);
-            $olimpistasData[$row[2]] = OlympistResolver::extractOlimpistaData($row, $resultadoFinal);
+            $olimpistasData[$row[2]] = OlympistResolver::extractOlympistData($row, $finalResponse);
             $profesorData[$row[19]] = TeacherResolver::extractProfesorData($row,);
             // $areasData[] = AreaResolver::extractAreaData($row);
 

@@ -11,7 +11,7 @@ class OlympistResolver
      * Extraer los datos del olimpista desde la fila del Excel.
      * 
      * @param array $row
-     * @param int $fila
+     * @param int $row
      * @return array
      */
 
@@ -23,7 +23,7 @@ class OlympistResolver
         $unidadEducativa =$row[7];
 
         // Procesar la fecha de nacimiento
-        $fechaNacimiento = self::normalizeDate($row[3], $fila);
+        $fechaNacimiento = self::normalizeDate($row[3], $row);
 
         return [
             'names' => self::normalizeText($row[0]),

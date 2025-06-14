@@ -30,9 +30,9 @@ class EnrollmentService
             }
 
             return Enrollment::create([
-                'list_id' => $data['id_lista'], // Usamos el ID ya generado
-                'olympist_detail_id' => $detail->id_detalle_olimpista,
-                'level_id' => $data['nivel'],
+                'list_id' => $data['list_id'], // Usamos el ID ya generado
+                'olympist_detail_id' => $detail->olympist_detail_id,
+                'level_id' => $data['level'],
                 'academic_tutor_ci' => $academic_tutor_ci,
                 'status' => 'PENDIENTE',
                 'registration_date' => now(),

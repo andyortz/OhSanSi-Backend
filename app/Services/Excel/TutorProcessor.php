@@ -14,11 +14,11 @@ class TutorProcessor
         foreach ($tutorsData as $tutor) {
             try {
                 $filteredTutor = [
-                    'names' => $tutor['nombres'],
-                    'surnames' => $tutor['apellidos'],
+                    'names' => $tutor['names'],
+                    'surnames' => $tutor['surnames'],
                     'ci' => $tutor['ci'],
-                    'phone' => $tutor['celular'],
-                    'email' => $tutor['correo_electronico'],
+                    'phone' => $tutor['phone'],
+                    'email' => $tutor['email'],
                     // 'rol_parentesco' => $tutor['rol_parentesco'],
                 ];
                 // Validación manual utilizando las reglas y mensajes del FormRequest

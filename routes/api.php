@@ -97,7 +97,7 @@ Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
 });
 Route::prefix('excel')->middleware('throttle:100,1')->group(function () {
     Route::post('/data', [ExcelImportController::class, 'import']); //si, ya ta posi
-    Route::post('/registration', [DatosExcelController::class, 'cleanDates']); //si
+    Route::post('/registration', [DatosExcelController::class, 'cleanDates']); //si, ya ta posi
 });
 Route::prefix('levels')->middleware('throttle:100,1')->group(function () {
     Route::get('/', [NivelCategoriaController::class, 'index3']); //si

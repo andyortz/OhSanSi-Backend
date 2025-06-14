@@ -26,9 +26,9 @@ class EnrollmentProcessor
         // Obtener CI de un olimpista para encontrar la olimpiada
         $olympiadId = Olympiad::where('start_date', '<=', $today) ->first();
         // $primerCI = $interested[0]['ci'] ?? null;
-        // $detalle = DetalleOlimpista::where('ci_olimpista', $primerCI)->first();
+        // $detail = DetalleOlimpista::where('ci_olimpista', $primerCI)->first();
 
-        // if (!$detalle) {
+        // if (!$detail) {
         //     $finalResponse['enrollments_errors'][] = [
         //         // 'ci' => $primerCI?? 'Desconocido',
         //         'message' => 'Complete los campos campos correctamente antes de inscribir',
@@ -72,8 +72,8 @@ class EnrollmentProcessor
                     );
                     // continue;
                 }
-                $detalle = DetalleOlimpista::where('ci_olimpista', $data['ci'])->first();
-                if ($detalle == null) {
+                $detail = OlympistDetail::where('olympist_ci', $data['ci'])->first();
+                if ($detail == null) {
                     self::agregarErrorInscripcion(
                         $finalResponse,
                         $data['ci'],
@@ -110,11 +110,11 @@ class EnrollmentProcessor
                     $existingLevel = DB::table('enrollment')
                         ->join('olympist_detail', 'enrollment.olympist_detail_id', 'olympist_detail.olympist_detail_id')
                         ->where('olympist_detail.olympist_ci', $data['ci'])
-                        ->where('enrollment.level_id', $data['nivel'])
+                        ->where('enrollment.level_id', $data['level'])
                         ->pluck('enrollment.level_id')
                         ->first();
 
-                    if ($existingLevel == $data['nivel']) {
+                    if ($existingLevel == $data['level']) {
                         self::agregarErrorInscripcion(
                             $finalResponse,
                             $data['ci'],
@@ -130,7 +130,7 @@ class EnrollmentProcessor
 
                     $finalResponse['enrollments_saved'][] = [
                         'ci' => $data['ci'],
-                        'level' => $data['nivel'],
+                        'level' => $data['level'],
                         'list_id' => $enrollment->list_id ?? null,
                     ];
                 }
