@@ -11,11 +11,8 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
-class OlimpiadaController
+class OlympiadController
 {
-    /**
-     * Devuelve la olimpiada activa (si existe) comparando fechas con la actual.
-     */
     public function verificarOlimpiadaAbierta()
     {
         $hoy = Carbon::now()->toDateString();
@@ -36,13 +33,13 @@ class OlimpiadaController
             ], 404);
         }
     }
-    public function getMaxCategorias(Request $request)
+    public function getMaxCategories(Request $request)
     {
         $request->validate([
-            'fecha' => 'required|date'
+            'date' => 'required|date'
         ]);
 
-        $fecha = $request->input('fecha');
+        $fecha = $request->input('date');
 
         $olimpiada = Olimpiada::where('fecha_inicio', '<=', $fecha)
             ->where('fecha_fin', '>=', $fecha)
@@ -173,6 +170,19 @@ class OlimpiadaController
         ];
     }
 
-
+    public function getMaxCategoriesById($id)
+    {
+        $olympiad = Olympiad::find($id);
+        if (!$olympiad) {
+            return response()->json([
+                'message' => 'Olimpiada no encontrada',
+                'status' => 404
+            ], 404);
+        }
+        return response()->json([
+            'message' => 'Máximo de categorías obtenido correctamente',
+            'max_categories' => $olympiad->max_categories_per_olympist
+        ], 200);
+    }
 
 }

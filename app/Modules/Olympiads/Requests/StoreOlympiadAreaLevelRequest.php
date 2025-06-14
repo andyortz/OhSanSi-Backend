@@ -28,7 +28,7 @@ class StoreOlympiadAreaLevelRequest extends FormRequest
                 'integer',
                 Rule::exists('olympiad', 'olympiad_id'),
                 function ($attribute, $value, $fail) {
-                    $exists = \App\Models\NivelAreaOlimpiada::where([
+                    $exists = \App\Models\OlympiadAreaLevel::where([
                         'olympiad_id' => $this->olympiad_id,
                         'area_id' => $this->area_id,
                         'level_id' => $this->level_id

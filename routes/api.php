@@ -3,8 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Modules\Olympiads\Controllers\OlimpiadaAreaController;
-use App\Modules\Olympiads\Controllers\NivelCategoriaController;
+use App\Modules\Olympiads\Controllers\CategoryLevelController;
 use App\Modules\Olympiads\Controllers\AreaController;
 use App\Modules\Olympiads\Controllers\GradeController;
 use App\Modules\Olympiads\Controllers\InscripcionAreaController;
@@ -16,7 +15,7 @@ use App\Modules\Olympiads\Controllers\OlimpiadaGestionController;
 use App\Modules\Olympiads\Controllers\AreasFiltroController;
 use App\Modules\Olympiads\Controllers\SchoolController;
 use App\Modules\Persons\Controllers\OlympistController;
-use App\Modules\Olympiads\Controllers\OlimpiadaController;
+use App\Modules\Olympiads\Controllers\OlympiadController;
 use App\Modules\Enrollments\Controllers\VerifyEnrollmentController;
 use App\Modules\Olympiads\Controllers\InscripcionNivelesController;
 use App\Modules\Enrollments\Controllers\EnrollmentListController;
@@ -84,12 +83,12 @@ Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
     Route::post('/', [OlympiadRegistrationController::class, 'store']); //si
     Route::get('/', [OlimpiadaGestionController::class, 'index']); //si
     Route::get('/now', [OlimpiadaGestionController::class, 'index2']); //si
-    Route::get('/max-categories', [OlimpiadaController::class, 'getMaxCategorias']); //si
-    Route::get('/{id}/max-categories', [OlimpiadaAreaController::class, 'maxCategorias']); //si
-    Route::get('/{id}/levels-areas', [OlimpiadaController::class, 'getAreasConNiveles']); //si
+    Route::get('/max-categories', [OlympiadController::class, 'getMaxCategories']); //si // falta acabar
+    Route::get('/{id}/max-categories', [OlympiadController::class, 'getMaxCategoriesById']); //si
+    Route::get('/{id}/levels-areas', [OlympiadController::class, 'getAreasConNiveles']); //si
     Route::get('/{id}/areas', [AreaController::class, 'areasByOlympiad']); //si
     Route::get('/{id}/management', [OlimpiadaGestionController::class, 'show']); //si 
-    Route::get('/{year}/statistics', [OlimpiadaController::class, 'getStatistics']); //si
+    Route::get('/{year}/statistics', [OlympiadController::class, 'getStatistics']); //si
     Route::get('/{year}', [OlimpiadaGestionController::class, 'show']); //si
 });
 Route::prefix('excel')->middleware('throttle:100,1')->group(function () {
@@ -97,26 +96,26 @@ Route::prefix('excel')->middleware('throttle:100,1')->group(function () {
     Route::post('/registration', [DatosExcelController::class, 'cleanDates']); //si, ya ta posi
 });
 Route::prefix('levels')->middleware('throttle:100,1')->group(function () {
-    Route::get('/', [NivelCategoriaController::class, 'index3']); //si
-    Route::post('/', [NivelCategoriaController::class, 'newCategoria']); //si
-    // Route::get('/areas/{id}', [NivelCategoriaController::class, 'nivelesPorArea']);  //no da, no sale resultados, no se usa
-    Route::get('/{id}', [NivelCategoriaController::class, 'index4']); //si
+    Route::get('/', [CategoryLevelController::class, 'index']); //si
+    Route::post('/', [CategoryLevelController::class, 'store']); //si
+    Route::get('/{id}', [CategoryLevelController::class, 'getByOlympiad']); //si
 });
 
 Route::prefix('areas')->middleware('throttle:100,1')->group(function () {
     Route::get('/', [AreaController::class, 'index']);//si
     Route::post('/', [AreaController::class, 'store']);//si
-    Route::post('/association', [NivelCategoriaController::class, 'asociarNivelesPorArea']); //Masomenos
+    Route::post('/association', [CategoryLevelController::class, 'associateLevelsWithArea']); //ojito lo cambie
+    // Masomenos, como que masomenos mamahuebo???
 }); 
 
 Route::prefix('grades')->middleware('throttle:100,1')->group(function () {
     Route::get('/', [GradeController::class, 'index']);//si
-    Route::post('/levels', [NivelCategoriaController::class,'asociarGrados']);//si
-    Route::get('/levels/{id}', [NivelCategoriaController::class, 'getById']);//si
+    Route::post('/levels', [CategoryLevelController::class,'associateGrades']);//si
+    Route::get('/levels/{id}', [CategoryLevelController::class, 'getById']);//si
 });
 Route::post('/tutors', [TutorController::class, 'store']); //si, ta posi
 Route::get('/tutors/{ci}',[TutorController::class,'buscarPorCi']); //si, ta posi
 Route::post('/payment/verification', [PagoValidacionController::class, 'verificar']);
 
-Route::get('/levels-areas/{id}', [NivelCategoriaController::class, 'getByNivelesById']);//si
+Route::get('/levels-areas/{id}', [CategoryLevelController::class, 'getByNivelesById']);//si
 Route::post('/login', [AuthController::class, 'login']);
