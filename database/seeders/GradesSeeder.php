@@ -24,7 +24,7 @@ class GradesSeeder extends Seeder
             ['grade_name' => '6to Secundaria'],
         ];
 
-        DB::table('grades')->insert($grades);
+        DB::table('grade')->insert($grades);
     }
 
 }

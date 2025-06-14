@@ -21,6 +21,6 @@ class DepartmentsSeeder extends Seeder
             ['department_id' => 9, 'department_name' => 'Pando'],
         ];
 
-        DB::table('departments')->insert($departments);
+        DB::table('department')->insert($departments);
     }
 }

@@ -9,7 +9,7 @@ class LevelGradesSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('level_grades')->insert([
+        DB::table('level_grade')->insert([
             ['level_id' => 1, 'grade_id' => 1, 'olympiad_id' => null],
             ['level_id' => 2, 'grade_id' => 2, 'olympiad_id' => null],
             ['level_id' => 3, 'grade_id' => 3, 'olympiad_id' => null],

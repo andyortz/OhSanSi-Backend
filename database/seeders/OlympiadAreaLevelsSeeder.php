@@ -9,7 +9,7 @@ class OlympiadAreaLevelsSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('olympiad_area_levels')->insert([
+        DB::table('olympiad_area_level')->insert([
             [
                 'olympiad_id' => 1,
                 'area_id' => 1,

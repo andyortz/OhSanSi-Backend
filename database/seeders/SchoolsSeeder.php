@@ -153,6 +153,6 @@ class SchoolsSeeder extends Seeder
             
         ];
 
-        DB::table('schools')->insert($schools);
+        DB::table('school')->insert($schools);
     }
 }

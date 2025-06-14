@@ -24,6 +24,6 @@ class AreasSeeder extends Seeder
             ['area_name'=>'FÍSICA'],
         ];
 
-        DB::table('areas')->insert($areas);
+        DB::table('area')->insert($areas);
     }
 }

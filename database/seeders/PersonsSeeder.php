@@ -93,6 +93,6 @@ class PersonsSeeder extends Seeder
                 'phone' => '56789012'
             ]
         ];
-        DB::table('persons')->insert($persons);
+        DB::table('person')->insert($persons);
     }
 }

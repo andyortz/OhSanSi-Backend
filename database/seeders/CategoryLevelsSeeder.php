@@ -45,6 +45,6 @@ class CategoryLevelsSeeder extends Seeder
             ['level_name'=>'LEGO S '],
         ];
 
-        DB::table('category_levels')->insert($levels);
+        DB::table('category_level')->insert($levels);
     }
 }

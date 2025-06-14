@@ -9,7 +9,7 @@ class ProvincesSeeder extends Seeder
 {
     public function run(): void
     {
-        $departments = DB::table('departments')->pluck('department_id', 'department_name');
+        $departments = DB::table('department')->pluck('department_id', 'department_name');
 
         $provinces = [
             // CHUQUISACA
@@ -145,6 +145,6 @@ class ProvincesSeeder extends Seeder
 
         ];
 
-        DB::table('provincia')->insert($provinces);
+        DB::table('province')->insert($provinces);
     }
 }

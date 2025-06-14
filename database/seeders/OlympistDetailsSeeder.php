@@ -85,6 +85,6 @@ class OlympistDetailsSeeder extends Seeder
             ]
         ];
 
-        DB::table('olympist_details')->insert($detalles);
+        DB::table('olympist_detail')->insert($detalles);
     }
 }
