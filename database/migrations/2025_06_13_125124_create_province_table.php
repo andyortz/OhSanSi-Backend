@@ -17,7 +17,7 @@ return new class extends Migration
 
             $table->unsignedSmallInteger('department_id'); // FK a int2
 
-            $table ->foreign(department_id)
+            $table ->foreign('department_id')
                 ->references('department_id')
                 ->on('department')
                 ->onDelete('cascade');
