@@ -24,7 +24,7 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->foreign('olympiad_id')
                 ->references('olympiad_id') 
-                ->on('olimpiad')
+                ->on('olympiad')
                 ->onDelete('cascade');
         });
     }
