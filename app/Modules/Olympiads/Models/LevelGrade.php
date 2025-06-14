@@ -25,7 +25,7 @@ class LevelGrade extends Model
 
     public function level()
     {
-        return $this->belongsTo(NivelCategoria::class, 'level_id');
+        return $this->belongsTo(CategoryLevel::class, 'level_id');
     }
 
     public function areaLevels()

@@ -17,7 +17,7 @@ class StoreOlympistRequest extends FormRequest
         return [
             'names'              => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
             'surnames'           => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
-            'ci'                 => 'required|integer', //cedula_identidad
+            'olympist_ci'        => 'required|integer', //cedula_identidad
             'birthdate'          => 'required|date',
             'email'              => 'required|email:rfc,dns|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|max:100',
             'school'             => 'required|integer',
@@ -39,8 +39,8 @@ class StoreOlympistRequest extends FormRequest
         'surnames.required' => 'El campo apellidos del olimpista es obligatorio.',
         'surnames.regex' => 'El campo apellidos del olimpista solo puede contener letras y espacios.',
 
-        'ci.required' => 'La cédula de identidad del olimpista es obligatoria.', //cedula_identidad
-        'ci.integer' => 'La cédula de identidad del olimpista debe ser un número.', //cedula_identidad
+        'olympist_ci.required' => 'La cédula de identidad del olimpista es obligatoria.', //cedula_identidad
+        'olympist_ci.integer' => 'La cédula de identidad del olimpista debe ser un número.', //cedula_identidad
         'birthdate.required' => 'La fecha de nacimiento del olimpista es obligatoria.',
         'birthdate.date' => 'La fecha de nacimiento del olimpista no tiene un formato válido.',
         

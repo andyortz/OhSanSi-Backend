@@ -19,8 +19,8 @@ class Area extends Model
         $this->attributes['area_name'] = strtoupper($value);
     }
 
-    public function asociaciones()
+    public function olympiadAreaLevel()
     {
-        return $this->hasMany(OlympiadAreaLevel::class, 'id_area');
+        return $this->hasMany(OlympiadAreaLevel::class, 'area_id');
     }
 }

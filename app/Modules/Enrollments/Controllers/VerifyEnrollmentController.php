@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class VerificarInscripcionController
+class VerifyEnrollmentController
 {
     public function verificar(Request $request)
     {
@@ -118,13 +118,13 @@ class VerificarInscripcionController
         ]);
     }
     
-    public function getInscripcionesPorCI($ci)
+    public function getEnrollmentsByCI($ci)
     {
         try {
             // 1. Buscar el detalle olimpista
-            $detalle = DetalleOlimpista::where('ci_olimpista', $ci)->first();
+            $detail = OlympistDetail::where('olympist_ci', $ci)->first();
 
-            if (!$detalle) {
+            if (!$detail) {
                 return response()->json([
                     'success' => false,
                     'message' => 'No se encontró el olimpista'
@@ -132,11 +132,11 @@ class VerificarInscripcionController
             }
 
             // 2. Obtener la olimpiada actual
-            $olimpiadaActual = Olimpiada::whereDate('fecha_inicio', '<=', now())
-                ->whereDate('fecha_fin', '>=', now())
+            $currentOlympiad = Olympiad::whereDate('start_date', '<=', now())
+                ->whereDate('end_date', '>=', now())
                 ->first();
 
-            if (!$olimpiadaActual) {
+            if (!$currentOlympiad) {
                 return response()->json([
                     'success' => false,
                     'message' => 'No hay una olimpiada activa actualmente'
@@ -144,32 +144,32 @@ class VerificarInscripcionController
             }
 
             // 3. Obtener inscripciones con relaciones necesarias
-            $inscripciones = Inscripcion::with([
-                'nivel:id_nivel,nombre',
-                'nivel.asociaciones' => function($query) use ($olimpiadaActual) {
-                    $query->where('id_olimpiada', $olimpiadaActual->id_olimpiada)
-                        ->with('area:id_area,nombre');
+            $enrollments = Enrollment::with([
+                'level:level_id,level_name',
+                'level.olympiadAreaLevel' => function($query) use ($currentOlympiad) {
+                    $query->where('olympiad_id', $currentOlympiad->olympiad_id)
+                        ->with('area:area_id,area_name');
                 }
             ])
-            ->where('id_detalle_olimpista', $detalle->id_detalle_olimpista)
+            ->where('olympist_detail_id', $detail->olympist_detail_id)
             ->get();
 
             // 4. Formatear la respuesta
             $response = [
                 
-                'inscripciones' => $inscripciones->map(function ($inscripcion) {
+                'enrollments' => $enrollments->map(function ($enrollment) {
                     // Filtrar solo asociaciones válidas (no null)
-                    $asociacionValida = $inscripcion->nivel->asociaciones->firstWhere('area', '!=', null);
+                    $validAssociation = $enrollment->level->olympiadAreaLevel->firstWhere('area', '!=', null);
                     
                     return [
-                        'id_inscripcion' => $inscripcion->id_inscripcion,
-                        'nivel' => $inscripcion->nivel ? [
-                            'id_nivel' => $inscripcion->nivel->id_nivel,
-                            'nombre' => $inscripcion->nivel->nombre
+                        'enrollment_id' => $enrollment->enrollment_id,
+                        'level' => $enrollment->level ? [
+                            'level_id' => $enrollment->level->level_id,
+                            'level_name' => $enrollment->level->level_name
                         ] : null,
-                        'area' => $asociacionValida ? [
-                            'id_area' => $asociacionValida->area->id_area,
-                            'nombre' => $asociacionValida->area->nombre
+                        'area' => $validAssociation ? [
+                            'area_id' => $validAssociation->area->area_id,
+                            'area_name' => $validAssociation->area->area_name
                         ] : null
                     ];
                 })

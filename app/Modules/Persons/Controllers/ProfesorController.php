@@ -1,17 +1,17 @@
 <?php
 
 namespace App\Modules\Persons\Controllers;
-
+//OJITO
 use App\Modules\Persons\Models\Person;
-use App\Services\Registers\PersonaService;
-use App\Http\Requests\StorePersonaRequest;
+use App\Services\Registers\PersonService;
+use App\Modules\Persons\Requests\StoreTeacherRequest;
 use Illuminate\Http\Request;
 
 class ProfesorController
 {
     public function buscarPorCi($ci)
     {
-        $tutor = Persona::where('ci_persona', $ci)->first();
+        $tutor = Person::where('person_ci', $ci)->first();
 
         if ($tutor) {
             return response()->json([
@@ -29,7 +29,7 @@ class ProfesorController
 
     public function getByEmail($email)
     {
-        $tutor = Persona::where('correo_electronico', $email)->first();
+        $tutor = Person::where('email', $email)->first();
 
         return $tutor
             ? response()->json($tutor)
@@ -40,14 +40,14 @@ class ProfesorController
     {
         try {
             $validated = $request->validate([
-                'nombres' => 'nullable|string|max:100',
-                'apellidos' => 'nullable|string|max:100',
-                'ci' => 'nullable|integer|unique:persona,ci_persona',
-                'celular' => 'nullable|string|max:20',
-                'correo_electronico' => 'nullable|email|max:100',
+                'names' => 'nullable|string|max:100',
+                'surname' => 'nullable|string|max:100',
+                'ci' => 'nullable|integer|unique:person,person_ci',
+                'phone' => 'nullable|string|max:20',
+                'email' => 'nullable|email|max:100',
             ]);
 
-            $persona = PersonaService::register($validated);
+            $persona = PersonService::register($validated);
 
             return response()->json([
                 'message' => 'Profesor registrado exitosamente',

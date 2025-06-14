@@ -2,7 +2,7 @@
 
 namespace App\Services\Excel;
 
-use App\Modules\Persons\Controllers\OlimpistaController;
+use App\Modules\Persons\Controllers\OlympistController;
 use App\Modules\Persons\Requests\StoreOlimpistaRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Modules\Persons\Models\Person;
@@ -16,7 +16,7 @@ class OlimpistasProcessor
 {
     public static function save(array $olimpistasData, array &$resultado)
     {
-        $controller = app(OlimpistaController::class);
+        $controller = app(OlympistController::class);
 
         foreach ($olimpistasData as $olimpista) {
             try {

@@ -24,7 +24,7 @@ class CategoryLevel extends Model
         return $this->belongsToMany(Grade::class, 'level_grades', 'level_id', 'grade_id')->withPivot('olympiad_id');
     }
 
-    public function olympiadAreaLevel()
+    public function olympiadAreaLevel()//asociaciones
     {
         return $this->hasMany(OlympiadAreaLevel::class, 'level_id');
     }

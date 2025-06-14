@@ -8,28 +8,27 @@ use App\Modules\Olympiads\Controllers\NivelCategoriaController;
 use App\Modules\Olympiads\Controllers\AreasController;
 use App\Modules\Olympiads\Controllers\GradosController;
 use App\Modules\Olympiads\Controllers\InscripcionAreaController;
-use App\Modules\Persons\Controllers\TutoresControllator;
+use App\Modules\Persons\Controllers\TutorController;
 use App\Modules\Olympiads\Controllers\OlympiadRegistrationController;
-use App\Modules\Persons\Controllers\StudentRegistrationController;
 use App\Modules\Olympiads\Controllers\DepartamentoController;
 use App\Modules\Olympiads\Controllers\ProvinciaController;
 use App\Modules\Olympiads\Controllers\OlimpiadaGestionController;
 use App\Modules\Olympiads\Controllers\AreasFiltroController;
 use App\Modules\Olympiads\Controllers\colegiosController;
-use App\Modules\Persons\Controllers\OlimpistaController;
-use App\Modules\Persons\Controllers\VincularController;
+use App\Modules\Persons\Controllers\OlympistController;
+// use App\Modules\Persons\Controllers\VincularController; no se usa
 use App\Modules\Olympiads\Controllers\EstructuraOlimpiadaController;
 use App\Modules\Olympiads\Controllers\OlimpiadaController;
-use App\Modules\Enrollments\Controllers\VerificarInscripcionController;
+use App\Modules\Enrollments\Controllers\VerifyEnrollmentController;
 use App\Modules\Olympiads\Controllers\InscripcionNivelesController;
-use App\Modules\Enrollments\Controllers\ListaInscripcionController;
+use App\Modules\Enrollments\Controllers\EnrollmentListController;
 use App\Modules\Enrollments\Controllers\ExcelImportController;
 use App\Modules\Enrollments\Controllers\DatosExcelController;
 use App\Modules\Persons\Controllers\PersonaController;
-use App\Modules\Enrollments\Controllers\BoletaController;
+use App\Modules\Enrollments\Controllers\PaymentSlipController;
 use App\Modules\Enrollments\Controllers\TestPreprocessorController;
 // use App\Http\Controllers\PagoValidacionController;
-use App\Modules\Enrollments\Controllers\ConsultaPagoController;
+use App\Modules\Enrollments\Controllers\PaymentConsultationController;
 use App\Modules\Olympiads\Controllers\AuthController;
 use App\Imports\OlimpistaImport;
 use App\Imports\TutoresImport;
@@ -41,10 +40,10 @@ Route::get('/user', function (Request $request) {
 
 
 Route::prefix('olympists')->middleware('throttle:100,1')->group(function () {
-    Route::post('/', [OlimpistaController::class, 'store']); //si
-    Route::get('/{ci}', [OlimpistaController::class, 'getByCedula']);//si
-    Route::get('/{ci}/enrollments', [VerificarInscripcionController::class, 'getInscripcionesPorCI']);//si
-    Route::get('/{ci}/areas-levels', [OlimpistaController::class, 'getAreasNivelesInscripcion']); //si
+    Route::post('/', [OlympistController::class, 'store']); //si, ta posi
+    Route::get('/{ci}', [OlympistController::class, 'getByCi']);//si, ta posi
+    Route::get('/{ci}/enrollments', [VerifyEnrollmentController::class, 'getEnrollmentsByCI']);//si, falta mas datos para probar
+    Route::get('/{ci}/areas-levels', [OlympistController::class, 'getEnrollmentAreaLevels']); //si, ta posi
 });
 
 Route::prefix('person')->middleware('throttle:100,1')->group(function () { 
@@ -64,15 +63,15 @@ Route::prefix('departaments')->middleware('throttle:100,1')->group(function () {
 Route::prefix('enrollments')->middleware('throttle:100,1')->group(function () {
     Route::post('/with-tutor', [InscripcionNivelesController::class, 'storeWithTutor']); //si
     // Route::post('/one', [InscripcionNivelesController::class, 'storeOne']);  //no se usa
-    Route::get('/participants/{id}',[ListaInscripcionController::class, 'getById']); //si
-    Route::get('/pending/{ci}', [ListaInscripcionController::class, 'listasPagoPendiente']); //mmm
-    Route::get('/{ci}/{status}', [ListaInscripcionController::class, 'obtenerPorResponsable'])//si
+    Route::get('/participants/{id}',[EnrollmentListController::class, 'getById']); //si, ta posi
+    Route::get('/pending/{ci}', [EnrollmentListController::class, 'pendingPaymentlists']); //mmm
+    Route::get('/{ci}/{status}', [EnrollmentListController::class, 'getByResponsible'])//si
     ->where('estado', 'PENDIENTE|PAGADO|TODOS');
 });
 
 Route::prefix('receipts')->middleware('throttle:100,1')->group(function () {
-    Route::get('/individual/{id}', [ListaInscripcionController::class, 'individual']);   //si 
-    Route::get('/group/{id}', [ListaInscripcionController::class, 'grupal']);   //si
+    Route::get('/individual/{id}', [EnrollmentListController::class, 'individual']);   //si, falta datos
+    Route::get('/group/{id}', [EnrollmentListController::class, 'group']);   //si, falta datos
 });
 
 Route::prefix('schools')->middleware('throttle:100,1')->group(function () {
@@ -81,8 +80,8 @@ Route::prefix('schools')->middleware('throttle:100,1')->group(function () {
     Route::get('/provinces/{id}', [colegiosController::class, 'porProvincia']);//si
 });
 
-Route::post('/ocr', [BoletaController::class, 'procesar']); //si
-Route::get('/payment/{ci}', [ConsultaPagoController::class, 'verificarPorCi']); //si
+Route::post('/ocr', [PaymentSlipController::class, 'process']); //si, falta datos
+Route::get('/payment/{ci}', [PaymentConsultationController::class, 'verificarPorCi']); //si, falta datos
 
 Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
     Route::post('/', [OlympiadRegistrationController::class, 'store']); //si
@@ -118,8 +117,8 @@ Route::prefix('grades')->middleware('throttle:100,1')->group(function () {
     Route::post('/levels', [NivelCategoriaController::class,'asociarGrados']);//si
     Route::get('/levels/{id}', [NivelCategoriaController::class, 'getById']);//si
 });
-Route::post('/tutors', [TutoresControllator::class, 'store']); //si
-Route::get('/tutors/{ci}',[TutoresControllator::class,'buscarPorCi']); //si
+Route::post('/tutors', [TutorController::class, 'store']); //si, ta posi
+Route::get('/tutors/{ci}',[TutorController::class,'buscarPorCi']); //si, ta posi
 Route::post('/payment/verification', [PagoValidacionController::class, 'verificar']);
 
 Route::get('/levels-areas/{id}', [NivelCategoriaController::class, 'getByNivelesById']);//si

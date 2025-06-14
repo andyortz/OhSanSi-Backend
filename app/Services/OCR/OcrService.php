@@ -14,7 +14,7 @@ class OcrService
         $this->apiKey = env('OCR_SPACE_API_KEY');
     }
 
-    public function extraerTexto(string $imagePath): string
+    public function extractText(string $imagePath): string
     {
         $response = Http::attach(
                 'file', file_get_contents($imagePath), basename($imagePath)

@@ -1,16 +1,16 @@
 <?php
 
 namespace App\Modules\Persons\Controllers;
-
+//OJITO
 use App\Modules\Persons\Models\Person;
 
-class PersonaController
+class PersonController
 {
     public function getByCi($ci)
     {
-        $persona = Persona::where('ci_persona', $ci)->get();
+        $person = Person::where('person_ci', $ci)->get();
 
-        if ($persona->isEmpty()) {
+        if ($person->isEmpty()) {
             return response()->json([
                 'message' => 'La persona no esta registrada.',
                 'ci' => $ci,
@@ -18,6 +18,6 @@ class PersonaController
             ], 404);
         }
 
-        return response()->json($persona, 200);
+        return response()->json($person, 200);
     }
 }
