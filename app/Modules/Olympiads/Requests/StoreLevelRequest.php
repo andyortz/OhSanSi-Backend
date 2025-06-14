@@ -24,7 +24,7 @@ class StoreNivelRequest extends FormRequest
     public function messages(): array
     {
         return [
-            '*.name.required' => 'El campo name es obligatorio.',
+            '*.name.required' => 'El campo nombre es obligatorio.',
             '*.area_id.required' => 'El área es obligatoria.',
             '*.grado_min.required' => 'El grado mínimo es obligatorio.',
             '*.grado_max.required' => 'El grado máximo es obligatorio.',
