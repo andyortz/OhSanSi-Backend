@@ -23,7 +23,7 @@ class StorePersonRequest extends FormRequest
         return [
             'names' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
             'surnames' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u',
-            'person_ci' => 'required|integer|unique:person,person_ci',
+            'ci' => 'required|integer|unique:person,person_ci',
             'phone' => 'nullable|integer',
             'email' => 'required|email:rfc,dns|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/|max:100',
         ];

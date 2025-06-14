@@ -14,7 +14,7 @@ class PersonService
             
             $person->names = $data['names'];
             $person->surnames = $data['surnames'];
-            $person->person_ci = $data['person_ci'];
+            $person->person_ci = $data['ci'];
             $person->phone = $data['phone'] ?? null;
             $person->email = $data['email'];
             

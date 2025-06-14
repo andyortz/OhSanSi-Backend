@@ -4,14 +4,14 @@ namespace App\Services\ImportHelpers;
 
 use App\Modules\Olympiads\Models\CategoryLevel;
 
-class NivelResolver
+class LevelResolver
 {
-    public static function resolve(string $nombreNivel): ?int
+    public static function resolve(string $levelName): ?int
     {
         //intentamos encontrar el nivel por su nombre y id_area
-        $nivel = NivelCategoria::where('nombre', 'ilike', trim($nombreNivel))
+        $level = CategoryLevel::where('level_name', 'ilike', trim($levelName))
             ->first();
         
-        return $nivel?->id_nivel ?? null;
+        return $level?->level_id ?? null;
     }
 }

@@ -5,21 +5,21 @@ namespace App\Services\Excel;
 use App\Modules\Persons\Models\Person;
 use App\Modules\Persons\Requests\StoreTutorRequest;
 use Illuminate\Support\Facades\Validator;
-use App\Services\Registers\PersonaService;
+use App\Services\Registers\PersonService;
 
-class TutoresProcessor
+class TutorProcessor
 {
-    public static function save(array $tutorsData, array &$resultado): void
+    public static function save(array $tutorsData, array &$finalResponse): void
     {
         foreach ($tutorsData as $tutor) {
             try {
                 $filteredTutor = [
-                    'nombres' => $tutor['nombres'],
-                    'apellidos' => $tutor['apellidos'],
+                    'names' => $tutor['nombres'],
+                    'surnames' => $tutor['apellidos'],
                     'ci' => $tutor['ci'],
-                    'celular' => $tutor['celular'],
-                    'correo_electronico' => $tutor['correo_electronico'],
-                    'rol_parentesco' => $tutor['rol_parentesco'],
+                    'phone' => $tutor['celular'],
+                    'email' => $tutor['correo_electronico'],
+                    // 'rol_parentesco' => $tutor['rol_parentesco'],
                 ];
                 // Validación manual utilizando las reglas y mensajes del FormRequest
                 $formRequest = new StoreTutorRequest();
@@ -33,31 +33,31 @@ class TutoresProcessor
                 
                 // Validamos si existe errores, sino continuamos a ver si el tutor ya existe
                 if ($validator->fails()) {
-                    $resultado['tutores_errores'][] = [
+                    $finalResponse['tutors_errors'][] = [
                         'ci' => $tutor['ci'] ?? 'Desconocido',
                         'message' => $validator->errors()->all(),
-                        'fila' => $tutor['fila'] + 2
+                        'row' => $tutor['index'] + 2
                     ];
                     continue;
-                }else if (Persona::where('ci_persona', $tutor['ci'])->exists()) {
-                    $resultado['tutores_omitidos'][] = [
+                }else if (Person::where('person_ci', $tutor['ci'])->exists()) {
+                    $finalResponse['tutors_omitted'][] = [
                         'ci' => $tutor['ci'],
                         'message' => 'El tutor ya se encuentra registrado en el sistema',
-                        'fila'=>$tutor['fila']+2
+                        'row'=>$tutor['index']+2
                     ];
                     continue;
                 }
 
                 // Registro si la validación fue exitosa
                 $validated = $validator->validated();
-                $persona = PersonaService::register($validated);
+                $person = PersonService::register($validated);
 
-                $resultado['tutores_guardados'][] = $filteredTutor;
+                $finalResponse['tutors_saved'][] = $filteredTutor;
             } catch (\Throwable $e) {
-                $resultado['tutores_errores'][] = [
+                $finalResponse['tutors_errors'][] = [
                     'ci' => $tutor['ci'],
                     'message' => $e->getMessage(),
-                    'fila' => $tutor['fila'] + 2
+                    'row' => $tutor['index'] + 2
                 ];
             }
         }

@@ -2,29 +2,29 @@
 
 namespace App\Services\ImportHelpers;
 
-class TutorResolver
+class TeacherResolver
 {
     /**
-     * Extraer los datos del tutor desde la fila del Excel.
+     * Extraer los datos del profesor desde la fila del Excel.
      * 
      * @param array $row
      * @return array
      */
-    
 
-    public static function extractTutorData(array $row): array
+    
+    public static function extractProfesorData(array $row): array
     {
         return [
-            'names' => self::normalizeText($row[9]),  // Columna 10 (Nombre del tutor)
-            'surnames' => self::normalizeText($row[10]),  // Columna 11 (Apellido del tutor)
-            'ci' => $row[11],  // Columna 12 (CI del tutor)
-            'phone' => strval($row[12]), // Columna 13 (Celular del tutor)
-            'email' => $row[13],  // Columna 14 (Correo electrónico del tutor)
+            'names' => self::normalizeText($row[16]),  
+            'surnames' => self::normalizeText($row[17]),  
+            'ci' => $row[18],  
+            'phone' => strval($row[19]),
+            'email' => $row[20], 
             // 'rol_parentesco' => 'Madre',
-            'index' => $row['index'],
+            'index' => $row['index'],  // Asumiendo que la fila es la primera columna
         ];
     }
-    
+
     private static function normalizeText($text) {
         $replacements = [
         'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u',
@@ -32,7 +32,6 @@ class TutorResolver
         'ñ' => 'n', 'Ñ' => 'N'
         ];
         $without_accents = strtr($text, $replacements);
-        
         // Convertir a mayúsculas
         return strtoupper($without_accents);
     }
