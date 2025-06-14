@@ -6,18 +6,16 @@ use Illuminate\Support\Facades\Route;
 use App\Modules\Olympiads\Controllers\OlimpiadaAreaController;
 use App\Modules\Olympiads\Controllers\NivelCategoriaController;
 use App\Modules\Olympiads\Controllers\AreaController;
-use App\Modules\Olympiads\Controllers\GradosController;
+use App\Modules\Olympiads\Controllers\GradeController;
 use App\Modules\Olympiads\Controllers\InscripcionAreaController;
 use App\Modules\Persons\Controllers\TutorController;
 use App\Modules\Olympiads\Controllers\OlympiadRegistrationController;
-use App\Modules\Olympiads\Controllers\DepartamentoController;
+use App\Modules\Olympiads\Controllers\DepartamentController;
 use App\Modules\Olympiads\Controllers\ProvinciaController;
 use App\Modules\Olympiads\Controllers\OlimpiadaGestionController;
 use App\Modules\Olympiads\Controllers\AreasFiltroController;
 use App\Modules\Olympiads\Controllers\SchoolController;
 use App\Modules\Persons\Controllers\OlympistController;
-// use App\Modules\Persons\Controllers\VincularController; no se usa
-use App\Modules\Olympiads\Controllers\EstructuraOlimpiadaController;
 use App\Modules\Olympiads\Controllers\OlimpiadaController;
 use App\Modules\Enrollments\Controllers\VerifyEnrollmentController;
 use App\Modules\Olympiads\Controllers\InscripcionNivelesController;
@@ -27,7 +25,6 @@ use App\Modules\Enrollments\Controllers\DatosExcelController;
 use App\Modules\Persons\Controllers\PersonaController;
 use App\Modules\Enrollments\Controllers\PaymentSlipController;
 use App\Modules\Enrollments\Controllers\TestPreprocessorController;
-// use App\Http\Controllers\PagoValidacionController;
 use App\Modules\Enrollments\Controllers\PaymentConsultationController;
 use App\Modules\Olympiads\Controllers\AuthController;
 use App\Imports\OlimpistaImport;
@@ -57,7 +54,7 @@ Route::prefix('provinces')->middleware('throttle:100,1')->group(function () {
 });
 
 Route::prefix('departaments')->middleware('throttle:100,1')->group(function () {
-    Route::get('/', [DepartamentoController::class, 'index']);  //si
+    Route::get('/', [DepartamentController::class, 'index']);  //si
 });
 
 Route::prefix('enrollments')->middleware('throttle:100,1')->group(function () {
@@ -113,7 +110,7 @@ Route::prefix('areas')->middleware('throttle:100,1')->group(function () {
 }); 
 
 Route::prefix('grades')->middleware('throttle:100,1')->group(function () {
-    Route::get('/', [GradosController::class, 'index']);//si
+    Route::get('/', [GradeController::class, 'index']);//si
     Route::post('/levels', [NivelCategoriaController::class,'asociarGrados']);//si
     Route::get('/levels/{id}', [NivelCategoriaController::class, 'getById']);//si
 });

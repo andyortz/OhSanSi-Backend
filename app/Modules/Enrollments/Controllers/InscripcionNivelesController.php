@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Olympiads\Controllers;
+namespace App\Modules\Enrollments\Controllers;
 
 use App\Modules\Enrollments\Models\EnrollmentList;
 use App\Modules\Persons\Models\Person;

@@ -4,11 +4,11 @@ namespace App\Modules\Olympiads\Controllers;
 
 use App\Modules\Olympiads\Models\Department;
 
-class DepartamentoController
+class DepartamentController
 {
     public function index()
     {
-        $departamentos = Departamento::all();
-        return response()->json($departamentos, 200);
+        $departaments = Departament::all();
+        return response()->json($departaments, 200);
     }
 }

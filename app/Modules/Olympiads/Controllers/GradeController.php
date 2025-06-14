@@ -4,11 +4,11 @@ namespace App\Modules\Olympiads\Controllers;
 use App\Modules\Olympiads\Models\Grade;
 use Illuminate\Http\Request;
 
-class GradosController
+class GradeController
 {
     public function index()
     {
-        $grados = Grado::all();
-        return response()->json($grados, 200);
+        $grades = Grade::all();
+        return response()->json($grades, 200);
     }
 }
