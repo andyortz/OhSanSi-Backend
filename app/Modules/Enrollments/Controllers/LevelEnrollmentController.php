@@ -152,7 +152,7 @@ class LevelEnrollmentController
         $request->validate([
             'ci' => 'required|exists:person,person_ci',
             'levels' => 'required|array|min:1',
-            'levels.*levelid' => 'integer|exists:category_level,level_id',
+            'levels.*level_id' => 'integer|exists:category_level,level_id',
             'levels.*.ci_tutor_academico' => 'nullable|exists:person,person_ci',
             'responsible_ci' => 'required|exists:person,person_ci',
         ]);

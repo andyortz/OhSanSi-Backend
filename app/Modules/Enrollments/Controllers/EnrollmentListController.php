@@ -7,7 +7,7 @@ use App\Modules\Olympiads\Models\OlympiadAreaLevel;
 use App\Modules\Enrollments\Models\Payment;
 use App\Modules\Persons\Models\Person;
 use App\Modules\Enrollments\Models\Enrollment;
-
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -220,7 +220,7 @@ class EnrollmentListController
     public function individual($id)
     {
         try {
-            $lista = EnrollmentList::with([
+            $list = EnrollmentList::with([
                 'olympiad:cost,olympiad_id',
                 'enrollments.olympistDetail.olympist',
                 'enrollments.level.olympiadAreaLevel.area',
@@ -273,15 +273,16 @@ class EnrollmentListController
                 ],
                 'olympist' => [
                     'ci' => $list->enrollments->first()->olympistDetail->olympist->person_ci,
-                    'names' => $list->enrollments>first()->olympistDetail->olympist->names,
+                    'names' => $list->enrollments->first()->olympistDetail->olympist->names,
                     'surnames' => $list->enrollments->first()->olympistDetail->olympist->surnames
                 ],
                 'levels' => $levels
             ], 200);
+        }catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Lista de inscripción no encontrada.'], 404);
+
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
     

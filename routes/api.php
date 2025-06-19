@@ -41,8 +41,8 @@ Route::prefix('olympists')->middleware('throttle:100,1')->group(function () {
 });
 
 Route::prefix('person')->middleware('throttle:100,1')->group(function () { 
-    Route::post('/', [PersonaController::class, 'store']); //no existe
-    Route::get('/{ci}', [PersonaController::class, 'getByCi']); //si
+    // Route::post('/', [PersonController::class, 'store']); //no existe
+    Route::get('/{ci}', [PersonController::class, 'getByCi']); //si
 });
 
 Route::prefix('provinces')->middleware('throttle:100,1')->group(function () {
@@ -55,7 +55,7 @@ Route::prefix('departments')->middleware('throttle:100,1')->group(function () {
 });
 
 Route::prefix('enrollments')->middleware('throttle:100,1')->group(function () {
-    Route::post('/with-tutor', [LevelEnrollmentController::class, 'storeWithTutor']); //si
+    Route::post('/with-tutor', [LevelEnrollmentController::class, 'storeWithTutor']); //si, ya ta posi
     // Route::post('/one', [InscripcionNivelesController::class, 'storeOne']);  //no se usa creo
     Route::get('/participants/{id}',[EnrollmentListController::class, 'getById']); //si, ta posi
     Route::get('/pending/{ci}', [EnrollmentListController::class, 'pendingPaymentlists']); //si, falta datos para probar
