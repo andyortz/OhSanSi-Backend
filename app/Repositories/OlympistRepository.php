@@ -49,7 +49,7 @@ class OlympistRepository
                     ->map(function($areaLevel) {
                         return [
                             'level_id' => $areaLevel->gradeLevel->level_id,
-                            'level_name' => $areaLevel->gradeLevel->level->name,
+                            'level_name' => $areaLevel->gradeLevel->level->level_name,
                             'grade_id' => $areaLevel->gradeLevel->grade_id
                         ];
                     })
