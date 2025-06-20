@@ -9,7 +9,7 @@ class PaymentVerificationService
 {
     public function verifyPaymentOCR(array $ocrData): array
     {
-        $voucher = $ocrData['concept'] ?? null;
+        $voucher = $ocrData['clarification'] ?? null;
         $ci = $ocrData['document'] ?? null;
         $amount = $ocrData['total_import'] ?? null;
         $idListRequested = $ocrData['list_id'] ?? null;
