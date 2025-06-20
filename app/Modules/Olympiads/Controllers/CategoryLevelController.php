@@ -191,7 +191,7 @@ class CategoryLevelController
             $gradesNull = $level->grades->filter(function ($grade) {
                 return $grade->gradeLevelPivot->contains('olympiad_id', null);
             });
-            $allGrades = $olympiadGrades->merge($gradesNull)->unique('grado_id');
+            $allGrades = $olympiadGrades->merge($gradesNull)->unique('grade_id');
                 return [
                 'level_id' => $level->level_id,
                 'level_name' => $level->level_name,
