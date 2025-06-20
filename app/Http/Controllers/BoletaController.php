@@ -26,20 +26,20 @@ class BoletaController extends Controller
     public function procesar(Request $request): Response
     {
         $request->validate([
-            'boleta' => 'required|image|mimes:jpg,jpeg,png|max:5120',
-            'id_lista' => 'required|integer|exists:lista_inscripcion,id_lista',
+            'voucher' => 'required|image|mimes:jpg,jpeg,png|max:5120',
+            'list_id' => 'required|integer|exists:lista_inscripcion,id_lista',
         ]);
 
-        $idLista = $request->input('id_lista');
-        $relativePath = $request->file('boleta')->store('boletas', 'public');
+        $idLista = $request->input('list_id');
+        $relativePath = $request->file('voucher')->store('voucher', 'public');
         $absolutePath = storage_path('app/public/' . $relativePath);
 
         try {
             $rawText = $this->ocrService->extraerTexto($absolutePath);
             $fields = $this->parser->parse($rawText);
 
-            // Agregar id_lista al array de datos OCR para validación
-            $fields['id_lista'] = $idLista;
+            // Agregar list_id al array de datos OCR para validación
+            $fields['list_id'] = $idLista;
 
             // Verificar pago
             $verificacion = $this->validador->verificarPagoOCR($fields);
