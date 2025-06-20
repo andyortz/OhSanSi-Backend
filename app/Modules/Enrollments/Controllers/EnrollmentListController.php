@@ -202,7 +202,7 @@ class EnrollmentListController
             $item = [
                 'list_id' => $list->list_id,
                 'status' => $list->status,
-                'detalle' => $allSameDetalle ? $this->individualFormat($enrollments) : $this->groupFormat($enrollments)
+                'detail' => $allSameDetalle ? $this->individualFormat($enrollments) : $this->groupFormat($enrollments)
             ];
             $answer[] = $item;
         }
