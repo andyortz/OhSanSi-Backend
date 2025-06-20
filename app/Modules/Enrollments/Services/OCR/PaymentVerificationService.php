@@ -40,7 +40,7 @@ class PaymentVerificationService
             ];
         }
 
-        if ($payment->id_lista != $idListRequested) {
+        if ((int)$payment->list_id !== (int)$idListRequested) {
             return [
                 'verified' => false,
                 'message' => 'El comprobante no corresponde a la inscripción actual seleccionada.',
