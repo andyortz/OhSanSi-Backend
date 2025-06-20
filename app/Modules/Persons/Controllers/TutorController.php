@@ -3,7 +3,7 @@
 namespace App\Modules\Persons\Controllers;
 
 use App\Modules\Persons\Models\Person;
-use App\Services\Registers\PersonService;
+use App\Modules\Persons\Services\Registers\PersonService;
 use App\Modules\Persons\Requests\StorePersonRequest;
 use Illuminate\Http\Request;
 

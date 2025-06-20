@@ -5,18 +5,13 @@ namespace App\Modules\Enrollments\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Modules\Persons\Models\Person;
-// use App\Services\ImportHelpers\ProvinciaResolver; 
-// use App\Services\ImportHelpers\ColegioResolver;
-// use App\Services\ImportHelpers\GradoResolver;
-// use App\Services\ImportHelpers\NivelResolver;
-use App\Services\ImportHelpers\TutorResolver;
-use App\Services\ImportHelpers\OlympistResolver;
-// use App\Services\ImportHelpers\AreaResolver;
-use App\Services\ImportHelpers\TeacherResolver;
-use App\Services\Excel\TutorProcessor;
-use App\Services\Excel\OlympistProcessor;
-use App\Services\Excel\TeacherProcessor;
-use App\Services\Excel\EnrollmentProcessor;
+use App\Modules\Persons\Services\ImportHelpers\TutorResolver;
+use App\Modules\Persons\Services\ImportHelpers\OlympistResolver;
+use App\Modules\Persons\Services\ImportHelpers\TeacherResolver;
+use App\Modules\Persons\Services\Processors\TutorProcessor;
+use App\Modules\Persons\Services\Processors\OlympistProcessor;
+use App\Modules\Persons\Services\Processors\TeacherProcessor;
+use App\Modules\Enrollments\Services\Excel\EnrollmentProcessor;
 
 class ExcelDataController
 {
@@ -58,8 +53,6 @@ class ExcelDataController
             $tutorsData[$row[11]] = TutorResolver::extractTutorData($row);
             $dataOlympists[$row[2]] = OlympistResolver::extractOlympistData($row, $finalResponse);
             $dataTeachers[$row[19]] = TeacherResolver::extractProfesorData($row,);
-            // $areasData[] = AreaResolver::extractAreaData($row);
-
             
             $sanitizedData[] = $row;
         }

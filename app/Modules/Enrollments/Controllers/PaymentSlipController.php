@@ -4,10 +4,10 @@ namespace App\Modules\Enrollments\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Services\OCR\OcrService;
-use App\Services\OCR\PaymentVerificationService;
+use App\Modules\Enrollments\Services\OCR\OcrService;
+use App\Modules\Enrollments\Services\OCR\PaymentVerificationService;
 use Symfony\Component\HttpFoundation\Response;
-use App\Services\OCR\OcrTextParser;
+use App\Modules\Enrollments\Services\OCR\OcrTextParser;
 use Illuminate\Support\Facades\Log;
 
 class PaymentSlipController

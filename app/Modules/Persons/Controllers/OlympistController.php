@@ -5,7 +5,7 @@ namespace App\Modules\Persons\Controllers;
 
 use App\Modules\Persons\Models\Person;
 use App\Repositories\OlympistRepository;
-use App\Services\Registers\OlympistService;
+use App\Modules\Persons\Services\Registers\OlympistService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;

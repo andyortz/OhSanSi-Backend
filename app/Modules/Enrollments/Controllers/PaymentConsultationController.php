@@ -3,7 +3,7 @@
 namespace App\Modules\Enrollments\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\OCR\PaymentConsultationService;
+use App\Modules\Enrollments\Services\OCR\PaymentConsultationService;
 
 class PaymentConsultationController
 {
