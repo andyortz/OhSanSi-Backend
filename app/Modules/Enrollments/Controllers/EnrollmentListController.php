@@ -376,7 +376,7 @@ class EnrollmentListController
                     'department' => $department->department_name,
                     'province' => $province-> province_name,
                     'area' => $area->area_name,
-                    'level' => $level->Level_name,
+                    'level' => $level->level_name,
                 ];
             }
         }

@@ -86,7 +86,7 @@ Route::prefix('olympiads')->middleware('throttle:100,1')->group(function () {
     Route::get('/{id}/levels-areas', [OlympiadController::class, 'getAreasWithLevels']); //si
     Route::get('/{id}/areas', [AreaController::class, 'areasByOlympiad']); //si
     Route::get('/{year}/management', [OlympiadManagmentController::class, 'show']); //si 
-    //Route::get('/{year}', [OlympiadManagmentController::class, 'show']); //si lo mismo?
+    Route::get('/{year}', [OlympiadManagmentController::class, 'show']); 
     Route::get('/{year}/statistics', [OlympiadController::class, 'getStatistics']); //si
 });
 Route::prefix('excel')->middleware('throttle:100,1')->group(function () {
