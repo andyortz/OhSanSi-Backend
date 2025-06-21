@@ -69,6 +69,7 @@ class OlympistProcessor
                     }else{
                         $school = School::where('school_name', $olympist['school'])->first();
                         $olympist['school'] = $school->school_id;
+                        // dd([$olympist['school']]);
                     }
                     
                     //Validación para grado válido

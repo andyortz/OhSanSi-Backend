@@ -19,7 +19,7 @@ class OlympistDetail extends Model
         'olympiad_id',
         'olympist_ci',
         'grade_id',
-        'school',
+        'school_id',
         'guardian_legal_ci',
     ];
 
@@ -50,6 +50,6 @@ class OlympistDetail extends Model
 
     public function school()
     {
-        return $this->belongsTo(School::class, 'school', 'school_id');
+        return $this->belongsTo(School::class, 'school_id', 'school_id');
     }
 }

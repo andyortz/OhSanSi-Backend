@@ -32,7 +32,7 @@ class OlympistService
                 'olympiad_id' => $data['olympiad_id'] ?? 1,
                 'olympist_ci' => $person->person_ci,
                 'grade_id' => $data['grade_id'],
-                'school' => $data['school'],
+                'school_id' => $data['school'],
                 'guardian_legal_ci' => $tutorCi
             ]);
 

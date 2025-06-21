@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('olympiad_id');
             $table->unsignedBigInteger('olympist_ci');
             $table->unsignedBigInteger('grade_id');
-            $table->unsignedBigInteger('school');
+            $table->unsignedBigInteger('school_id');
             $table->unsignedBigInteger('guardian_legal_ci');
 
             // Foreign keys
@@ -33,7 +33,7 @@ return new class extends Migration
                 ->references('grade_id')
                 ->on('grade')
                 ->onDelete('cascade');
-            $table->foreign('school')
+            $table->foreign('school_id')
                 ->references('school_id')
                 ->on('school')
                 ->onDelete('cascade');
