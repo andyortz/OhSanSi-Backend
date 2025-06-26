@@ -89,7 +89,7 @@ class EnrollmentListController
                     'name_level' => $insc->level->level_name,
                     'name_area' => $insc->level->olympiadAreaLevel->first()->area->area_name ?? 'Sin área'
                 ];
-            })->unique('id')->values()->toArray()
+            })->unique('level_id')->values()->toArray()
         ];
     }
 
